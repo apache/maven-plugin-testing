@@ -27,7 +27,6 @@
   </parent>
 
   <artifactId>maven-plugin-testing-tools</artifactId>
-  <version>1.0-alpha-4-SNAPSHOT</version>
   <name>Maven Plugin Testing Tools</name>
 
   <dependencies>
