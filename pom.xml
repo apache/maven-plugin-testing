@@ -43,12 +43,11 @@
     <maven>2.0.6</maven>
   </prerequisites>
 
-<!-- TODO see MPA-110
   <issueManagement>
     <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
+    <url>http://jira.codehaus.org/browse/MPLUGINTESTING</url>
   </issueManagement>
--->
+
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk</developerConnection>
