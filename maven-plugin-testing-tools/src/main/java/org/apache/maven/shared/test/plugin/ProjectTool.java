@@ -19,9 +19,9 @@
 package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +49,8 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
@@ -260,8 +262,8 @@ public class ProjectTool
         File output = new File( pomFile.getParentFile(), "pom-" + testVersion + ".xml" );
         output.deleteOnExit();
 
-        FileReader reader = null;
-        FileWriter writer = null;
+        Reader reader = null;
+        Writer writer = null;
 
         Model model = null;
         String finalName = null;
@@ -269,7 +271,7 @@ public class ProjectTool
         
         try
         {
-            reader = new FileReader( input );
+            reader = ReaderFactory.newXmlReader( input );
             
             model = new MavenXpp3Reader().read( reader );
         }
@@ -388,7 +390,7 @@ public class ProjectTool
                 configDom.addChild( skipDom );
             }
 
-            writer = new FileWriter( output );
+            writer = WriterFactory.newXmlWriter( output );
 
             new MavenXpp3Writer().write( writer, model );
         }

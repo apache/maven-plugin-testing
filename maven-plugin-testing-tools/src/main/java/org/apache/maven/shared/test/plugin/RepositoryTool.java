@@ -19,8 +19,8 @@
 package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 
 import org.apache.maven.artifact.Artifact;
@@ -44,6 +44,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -237,13 +238,13 @@ public class RepositoryTool
             String pomArtifactId = null;
             String pomVersion = null;
 
-            FileReader reader = null;
+            Reader reader = null;
 
             File currentPom = pom;
 
             try
             {
-                reader = new FileReader( pom );
+                reader = ReaderFactory.newXmlReader( pom );
 
                 Model model = pomReader.read( reader );
 
