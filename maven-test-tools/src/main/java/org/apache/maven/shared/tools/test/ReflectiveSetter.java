@@ -1,3 +1,5 @@
+package org.apache.maven.shared.tools.test;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.tools.test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -27,18 +28,29 @@ import java.util.Map;
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.StringUtils;
 
+/**
+ * @version $Id$
+ */
 public class ReflectiveSetter
 {
-
     private Map cachedPropertySetters = new HashMap();
 
     private final Class targetClass;
 
+    /**
+     * @param targetClass
+     */
     public ReflectiveSetter( Class targetClass )
     {
         this.targetClass = targetClass;
     }
 
+    /**
+     * @param propertyName
+     * @param value
+     * @param target
+     * @throws Throwable
+     */
     public void setProperty( String propertyName, Object value, Object target )
         throws Throwable
     {
@@ -100,11 +112,13 @@ public class ReflectiveSetter
             this.method = method;
         }
 
+        /** {@inheritDoc} */
         public String getProperty()
         {
             return name;
         }
 
+        /** {@inheritDoc} */
         public void set( Object value, Object target )
             throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
@@ -135,11 +149,13 @@ public class ReflectiveSetter
             this.field = field;
         }
 
+        /** {@inheritDoc} */
         public String getProperty()
         {
             return name;
         }
 
+        /** {@inheritDoc} */
         public void set( Object value, Object target )
             throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
         {
@@ -156,5 +172,4 @@ public class ReflectiveSetter
             }
         }
     }
-
 }

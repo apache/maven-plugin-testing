@@ -1,3 +1,5 @@
+package org.apache.maven.shared.tools.easymock;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.tools.easymock;
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,9 +34,12 @@ import junit.framework.Assert;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
+/**
+ * @version $Id$
+ */
 public class TestFileManager
 {
-
+    /** Temp dir from "java.io.tmpdir" property */
     public static final String TEMP_DIR_PATH = System.getProperty( "java.io.tmpdir" );
 
     private List filesToDelete = new ArrayList();
@@ -50,6 +54,12 @@ public class TestFileManager
 
     private boolean warnAboutCleanup = false;
 
+    /**
+     * Default constructor
+     *
+     * @param baseFilename
+     * @param fileSuffix
+     */
     public TestFileManager( String baseFilename, String fileSuffix )
     {
         this.baseFilename = baseFilename;
@@ -64,7 +74,7 @@ public class TestFileManager
 
         Runnable warning = new Runnable()
         {
-
+            /** {@inheritDoc} */
             public void run()
             {
                 maybeWarnAboutCleanUp();
@@ -77,7 +87,7 @@ public class TestFileManager
         Runtime.getRuntime().addShutdownHook( cleanupWarning );
     }
 
-    private void maybeWarnAboutCleanUp()
+    protected void maybeWarnAboutCleanUp()
     {
         if ( warnAboutCleanup )
         {
@@ -85,12 +95,18 @@ public class TestFileManager
         }
     }
 
+    /**
+     * @param toDelete
+     */
     public void markForDeletion( File toDelete )
     {
         filesToDelete.add( toDelete );
         warnAboutCleanup = true;
     }
 
+    /**
+     * @return a temp dir
+     */
     public synchronized File createTempDir()
     {
         try
@@ -99,6 +115,7 @@ public class TestFileManager
         }
         catch ( InterruptedException e )
         {
+            // ignored
         }
 
         File dir = new File( TEMP_DIR_PATH, baseFilename + System.currentTimeMillis() );
@@ -109,6 +126,11 @@ public class TestFileManager
         return dir;
     }
 
+    /**
+     * @return a temp file
+     * @throws IOException if any
+     * @todo maybe use {@link FileUtils#createTempFile(String, String, File)}
+     */
     public synchronized File createTempFile()
         throws IOException
     {
@@ -119,6 +141,9 @@ public class TestFileManager
         return tempFile;
     }
 
+    /**
+     * @throws IOException if any
+     */
     public void cleanUp()
         throws IOException
     {
@@ -144,6 +169,11 @@ public class TestFileManager
         warnAboutCleanup = false;
     }
 
+    /**
+     * @param dir
+     * @param filename
+     * @param shouldExist
+     */
     public void assertFileExistence( File dir, String filename, boolean shouldExist )
     {
         File file = new File( dir, filename );
@@ -158,6 +188,12 @@ public class TestFileManager
         }
     }
 
+    /**
+     * @param dir
+     * @param filename
+     * @param contentsTest
+     * @throws IOException if any
+     */
     public void assertFileContents( File dir, String filename, String contentsTest )
         throws IOException
     {
@@ -182,6 +218,13 @@ public class TestFileManager
         Assert.assertEquals( contentsTest, writer.toString() );
     }
 
+    /**
+     * @param dir
+     * @param filename
+     * @param contents
+     * @return
+     * @throws IOException if any
+     */
     public File createFile( File dir, String filename, String contents )
         throws IOException
     {
@@ -207,6 +250,11 @@ public class TestFileManager
         return file;
     }
 
+    /**
+     * @param file
+     * @return
+     * @throws IOException if any
+     */
     public String getFileContents( File file )
         throws IOException
     {
@@ -231,6 +279,7 @@ public class TestFileManager
         return result;
     }
 
+    /** {@inheritDoc} */
     protected void finalize()
         throws Throwable
     {
@@ -239,11 +288,16 @@ public class TestFileManager
         super.finalize();
     }
 
+    /**
+     * @param filename
+     * @param content
+     * @return
+     * @throws IOException if any
+     */
     public File createFile( String filename, String content )
         throws IOException
     {
         File dir = createTempDir();
         return createFile( dir, filename, content );
     }
-
 }

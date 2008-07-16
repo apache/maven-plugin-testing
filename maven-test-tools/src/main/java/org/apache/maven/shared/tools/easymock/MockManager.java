@@ -1,3 +1,5 @@
+package org.apache.maven.shared.tools.easymock;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.tools.easymock;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,21 +25,35 @@ import java.util.List;
 
 import org.easymock.MockControl;
 
+/**
+ * Manager of MockControl
+ *
+ * @version $Id$
+ * @see MockControl
+ */
 public class MockManager
 {
-
     private List mockControls = new ArrayList();
 
+    /**
+     * @param control to be add to the manager
+     */
     public void add( MockControl control )
     {
         mockControls.add( control );
     }
 
+    /**
+     * Clear all controls from the manager
+     */
     public void clear()
     {
         mockControls.clear();
     }
 
+    /**
+     * @see MockControl#replay()
+     */
     public void replayAll()
     {
         for ( Iterator it = mockControls.iterator(); it.hasNext(); )
@@ -49,6 +64,9 @@ public class MockManager
         }
     }
 
+    /**
+     * @see MockControl#verify()
+     */
     public void verifyAll()
     {
         for ( Iterator it = mockControls.iterator(); it.hasNext(); )
@@ -58,5 +76,4 @@ public class MockManager
             control.verify();
         }
     }
-
 }

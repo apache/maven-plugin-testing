@@ -1,3 +1,5 @@
+package org.apache.maven.shared.tools.easymock;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.tools.easymock;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,13 +29,21 @@ import java.io.StringWriter;
 
 import org.codehaus.plexus.util.IOUtil;
 
+/**
+ * @version $Id$
+ */
 public final class TestUtils
 {
-
     private TestUtils()
     {
+        //nop
     }
 
+    /**
+     * @param file
+     * @param testStr
+     * @throws IOException if any
+     */
     public static void writeToFile( File file, String testStr )
         throws IOException
     {
@@ -50,6 +59,12 @@ public final class TestUtils
         }
     }
 
+    /**
+     * @param file
+     * @return
+     * @throws IOException if any
+     * @todo maybe used {@link IOUtil#toString(java.io.Reader)}
+     */
     public static String readFile( File file )
         throws IOException
     {
@@ -72,6 +87,10 @@ public final class TestUtils
         return buffer.toString();
     }
 
+    /**
+     * @param error
+     * @return
+     */
     public static String toString( Throwable error )
     {
         StringWriter sw = new StringWriter();
