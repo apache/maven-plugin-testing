@@ -19,21 +19,12 @@
   ~ under the License.
   -->
 
-<project name="Maven Plugin Testing Harness">
+<project name="Maven Testing Tools">
   <body>
     <menu ref="parent" />
 
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
-      <item name="Getting Started" href="/getting-started/index.html"/>
-      <item name="FAQ" href="/faq.html"/>
-    </menu>
-
-    <menu name="Examples">
-      <item name="Testing Complex Mojo Parameters" href="/examples/complex-mojo-parameters.html"/>
-      <item name="Testing Multiproject" href="/examples/multiproject.html"/>
-      <item name="Testing Repositories" href="/examples/repositories.html"/>
-      <item name="Testing Project Artifact" href="/examples/artifact.html"/>
     </menu>
 
     <menu ref="reports" inherit="bottom" />
