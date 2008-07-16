@@ -35,7 +35,7 @@
   <packaging>pom</packaging>
 
   <name>Maven Plugin Testing</name>
-  <description>The Maven Plugin Testing contains the necessary tools to be able to test Maven Plugins.</description>
+  <description>The Maven Plugin Testing contains the necessary modules to be able to test Maven Plugins.</description>
   <url>http://maven.apache.org/plugin-testing/</url>
   <inceptionYear>2008</inceptionYear>
 
@@ -141,13 +141,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4.3</version>
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-6</version>
+          <version>2.0-beta-7</version>
           <configuration>
-            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugins-testing/${artifactId}-${version}</stagingSiteURL>
+            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-testing/${artifactId}-${version}</stagingSiteURL>
           </configuration>
         </plugin>
         <plugin>
