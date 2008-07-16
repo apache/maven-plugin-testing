@@ -1,3 +1,5 @@
+package org.apache.maven.shared.test.plugin;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,12 +59,14 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * Testing tool used to read MavenProject instances from pom.xml files, and to create plugin jar
  * files (package phase of the normal build process) for distribution to a test local repository
  * directory.
- * 
+ *
  * @plexus.component role="org.apache.maven.shared.test.plugin.ProjectTool" role-hint="default"
  * @author jdcasey
+ * @version $Id$
  */
 public class ProjectTool
 {
+    /** Plexus role */
     public static final String ROLE = ProjectTool.class.getName();
 
     public static final String INTEGRATION_TEST_DEPLOYMENT_REPO_URL = "integration-test.deployment.repo.url";
@@ -95,6 +98,10 @@ public class ProjectTool
 
     /**
      * Construct a MavenProject instance from the specified POM file.
+     *
+     * @param pomFile current POM file
+     * @return the Maven project from a file
+     * @throws TestToolsException if any
      */
     public MavenProject readProject( File pomFile )
         throws TestToolsException
@@ -105,6 +112,11 @@ public class ProjectTool
     /**
      * Construct a MavenProject instance from the specified POM file, using the specified local
      * repository directory to resolve ancestor POMs as needed.
+     *
+     * @param pomFile current POM file
+     * @param localRepositoryBasedir
+     * @return the Maven project from a file and a local repo
+     * @throws TestToolsException if any
      */
     public MavenProject readProject( File pomFile, File localRepositoryBasedir )
         throws TestToolsException
@@ -124,6 +136,10 @@ public class ProjectTool
 
     /**
      * Construct a MavenProject instance from the specified POM file with dependencies.
+     *
+     * @param pomFile current POM file
+     * @return the Maven project with dependencies from a file
+     * @throws TestToolsException if any
      */
     public MavenProject readProjectWithDependencies( File pomFile )
         throws TestToolsException
@@ -134,6 +150,11 @@ public class ProjectTool
     /**
      * Construct a MavenProject instance from the specified POM file with dependencies, using the specified local
      * repository directory to resolve ancestor POMs as needed.
+     *
+     * @param pomFile current POM file
+     * @param localRepositoryBasedir
+     * @return the Maven project with dependencies from a file and a local repo
+     * @throws TestToolsException if any
      */
     public MavenProject readProjectWithDependencies( File pomFile, File localRepositoryBasedir )
         throws TestToolsException
@@ -160,22 +181,23 @@ public class ProjectTool
     }
 
     /**
-     * Run the plugin's Maven build up to the package phase, in order to produce a jar file for 
+     * Run the plugin's Maven build up to the package phase, in order to produce a jar file for
      * distribution to a test-time local repository. The testVersion parameter specifies the version
      * to be used in the &lt;version/&gt; element of the plugin configuration, and also in fully
-     * qualified, unambiguous goal invocations (as in 
+     * qualified, unambiguous goal invocations (as in
      * org.apache.maven.plugins:maven-eclipse-plugin:test:eclipse).
-     * 
+     *
      * @param pomFile The plugin's POM
-     * @param testVersion The version to use for testing this plugin. To promote test resiliency, 
-     *   this version should remain unchanged, regardless of what plugin version is under 
+     * @param testVersion The version to use for testing this plugin. To promote test resiliency,
+     *   this version should remain unchanged, regardless of what plugin version is under
      *   development.
      * @param skipUnitTests In cases where test builds occur during the unit-testing phase (usually
      *   a bad testing smell), the plugin jar must be produced <b>without</b> running unit tests.
      *   Otherwise, the testing process will result in a recursive loop of building a plugin jar and
      *   trying to unit test it during the build. In these cases, set this flag to <code>true</code>.
-     * @return The resulting MavenProject, after the test version and skip flag (for unit tests) 
+     * @return The resulting MavenProject, after the test version and skip flag (for unit tests)
      *   have been appropriately configured.
+     * @throws TestToolsException if any
      */
     public MavenProject packageProjectArtifact( File pomFile, String testVersion, boolean skipUnitTests )
         throws TestToolsException
@@ -184,24 +206,25 @@ public class ProjectTool
     }
 
     /**
-     * Run the plugin's Maven build up to the package phase, in order to produce a jar file for 
+     * Run the plugin's Maven build up to the package phase, in order to produce a jar file for
      * distribution to a test-time local repository. The testVersion parameter specifies the version
      * to be used in the &lt;version/&gt; element of the plugin configuration, and also in fully
-     * qualified, unambiguous goal invocations (as in 
+     * qualified, unambiguous goal invocations (as in
      * org.apache.maven.plugins:maven-eclipse-plugin:test:eclipse).
-     * 
+     *
      * @param pomFile The plugin's POM
-     * @param testVersion The version to use for testing this plugin. To promote test resiliency, 
-     *   this version should remain unchanged, regardless of what plugin version is under 
+     * @param testVersion The version to use for testing this plugin. To promote test resiliency,
+     *   this version should remain unchanged, regardless of what plugin version is under
      *   development.
      * @param skipUnitTests In cases where test builds occur during the unit-testing phase (usually
      *   a bad testing smell), the plugin jar must be produced <b>without</b> running unit tests.
      *   Otherwise, the testing process will result in a recursive loop of building a plugin jar and
      *   trying to unit test it during the build. In these cases, set this flag to <code>true</code>.
-     * @param logFile The file to which build output should be logged, in order to allow later 
+     * @param logFile The file to which build output should be logged, in order to allow later
      *   inspection in case this build fails.
-     * @return The resulting MavenProject, after the test version and skip flag (for unit tests) 
+     * @return The resulting MavenProject, after the test version and skip flag (for unit tests)
      *   have been appropriately configured.
+     * @throws TestToolsException if any
      */
     public MavenProject packageProjectArtifact( File pomFile, String testVersion, boolean skipUnitTests, File logFile )
         throws TestToolsException
@@ -248,11 +271,12 @@ public class ProjectTool
      * currently under test. If test builds will be executed from the unit-testing phase, also inject
      * &lt;skip&gt;true&lt;/skip&gt; into the configuration of the <code>maven-surefire-plugin</code>
      * to allow production of a test-only version of the plugin jar without running unit tests.
-     * 
+     *
      * @param pomFile The plugin POM
      * @param testVersion The version that allows test builds to reference the plugin under test
      * @param skipUnitTests If true, configure the surefire plugin to skip unit tests
      * @return Information about mangled POM, including the temporary file to which it was written.
+     * @throws TestToolsException if any
      */
     protected PomInfo manglePomForTesting( File pomFile, String testVersion, boolean skipUnitTests )
         throws TestToolsException
@@ -268,11 +292,11 @@ public class ProjectTool
         Model model = null;
         String finalName = null;
         String buildDirectory = null;
-        
+
         try
         {
             reader = ReaderFactory.newXmlReader( input );
-            
+
             model = new MavenXpp3Reader().read( reader );
         }
         catch ( IOException e )
@@ -303,7 +327,7 @@ public class ProjectTool
             {
                 buildDirectory = "target";
             }
-            
+
             buildDirectory = ( buildDirectory+File.separatorChar+"it-build-target" );
             build.setDirectory( buildDirectory );
             build.setOutputDirectory( buildDirectory+File.separatorChar+"classes" );
@@ -320,39 +344,39 @@ public class ProjectTool
 
                 finalName = model.getArtifactId() + "-" + model.getVersion() + "." + ext;
             }
-            
+
             DistributionManagement distMgmt = new DistributionManagement();
-            
+
             DeploymentRepository deployRepo = new DeploymentRepository();
-            
+
             deployRepo.setId( "integration-test.output" );
-            
+
             File tmpDir = FileUtils.createTempFile( "integration-test-repo", "", null );
             String tmpUrl = tmpDir.toURL().toExternalForm();
-            
+
             deployRepo.setUrl( tmpUrl );
-            
+
             distMgmt.setRepository( deployRepo );
             distMgmt.setSnapshotRepository( deployRepo );
-            
+
             Repository localAsRemote = new Repository();
             localAsRemote.setId( "testing.mainLocalAsRemote" );
-            
+
             File localRepoDir = repositoryTool.findLocalRepositoryDirectory();
             localAsRemote.setUrl( localRepoDir.toURL().toExternalForm() );
-            
+
             model.addRepository( localAsRemote );
             model.addPluginRepository( localAsRemote );
-            
+
             Site site = new Site();
-            
+
             site.setId( "integration-test.output" );
             site.setUrl( tmpUrl );
-            
+
             distMgmt.setSite( site );
-            
+
             model.setDistributionManagement( distMgmt );
-            
+
             model.addProperty( INTEGRATION_TEST_DEPLOYMENT_REPO_URL, tmpUrl );
 
             if ( skipUnitTests )
@@ -420,10 +444,10 @@ public class ProjectTool
         private final String finalName;
 
         private final String buildDirectory;
-        
+
         private final String buildOutputDirectory;
 
-        PomInfo( File pomFile, String groupId, String artifactId, String version, String buildDirectory, 
+        PomInfo( File pomFile, String groupId, String artifactId, String version, String buildDirectory,
                  String buildOutputDirectory, String finalName )
         {
             this.pomFile = pomFile;
@@ -449,7 +473,7 @@ public class ProjectTool
         {
             return buildOutputDirectory;
         }
-        
+
         String getFinalName()
         {
             return finalName;
@@ -460,7 +484,5 @@ public class ProjectTool
             return new File( buildDirectory + "/test-build-logs/" + groupId + "_" + artifactId + "_" + version
                 + ".build.log" );
         }
-
     }
-
 }

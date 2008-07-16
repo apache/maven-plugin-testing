@@ -1,3 +1,5 @@
+package org.apache.maven.shared.test.plugin;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,10 +61,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  *
  * @plexus.component role="org.apache.maven.shared.test.plugin.RepositoryTool" role-hint="default"
  * @author jdcasey
+ * @version $Id$
  */
 public class RepositoryTool
     implements Contextualizable
 {
+    /** Plexus role */
     public static final String ROLE = RepositoryTool.class.getName();
 
     /**
@@ -91,6 +94,9 @@ public class RepositoryTool
 
     /**
      * Lookup and return the location of the normal Maven local repository.
+     *
+     * @return the location of the normal Maven local repository.
+     * @throws TestToolsException if any
      */
     public File findLocalRepositoryDirectory()
         throws TestToolsException
@@ -108,20 +114,21 @@ public class RepositoryTool
         {
             throw new TestToolsException( "Error building Maven settings.", e );
         }
-        
+
         if ( settings == null || settings.getLocalRepository() == null
             || settings.getLocalRepository().trim().length() < 1 )
         {
             return new File( System.getProperty( "user.home" ), ".m2/repository" );
         }
-        else
-        {
-            return new File( settings.getLocalRepository() );
-        }
+
+        return new File( settings.getLocalRepository() );
     }
 
     /**
      * Construct an ArtifactRepository instance that refers to the normal Maven local repository.
+     *
+     * @return an ArtifactRepository instance
+     * @throws TestToolsException if any
      */
     public ArtifactRepository createLocalArtifactRepositoryInstance()
         throws TestToolsException
@@ -133,7 +140,10 @@ public class RepositoryTool
 
     /**
      * Construct an ArtifactRepository instance that refers to the test-time Maven local repository.
+     *
      * @param localRepositoryDirectory The location of the local repository to be used for test builds.
+     * @return an ArtifactRepository instance
+     * @throws TestToolsException if any
      */
     public ArtifactRepository createLocalArtifactRepositoryInstance( File localRepositoryDirectory )
         throws TestToolsException
@@ -157,7 +167,6 @@ public class RepositoryTool
         {
             throw new TestToolsException( "Error converting local repo directory to a URL.", e );
         }
-
     }
 
     /**
@@ -172,19 +181,20 @@ public class RepositoryTool
      * </p>
      *
      * @param project
+     * @param realPomFile
      * @param targetLocalRepoBasedir
-     * @throws TestToolsException
+     * @throws TestToolsException if any
      */
     public void createLocalRepositoryFromComponentProject( MavenProject project, File realPomFile, File targetLocalRepoBasedir )
         throws TestToolsException
     {
         Artifact artifact = project.getArtifact();
-        
+
         if ( "pom".equals( project.getPackaging() ) )
         {
             artifact.setFile( project.getFile() );
         }
-        
+
         ArtifactRepository localRepository = createLocalArtifactRepositoryInstance( targetLocalRepoBasedir );
 
         String localPath = localRepository.pathOf( artifact );
@@ -215,6 +225,7 @@ public class RepositoryTool
      * @param realPomFile The real plugin POM; a starting point, but the POM is already installed,
      *   so we won't actually install this file, only use it to locate parents.
      * @param localRepo The test-time local repository instance
+     * @throws TestToolsException if any
      */
     private void installLocallyReachableAncestorPoms( File realPomFile, ArtifactRepository localRepo )
         throws TestToolsException
@@ -311,11 +322,12 @@ public class RepositoryTool
      * Retrieve the PlexusContainer instance used to instantiate this component. The container is
      * used to retrieve the default ArtifactRepositoryLayout component, for use in constructing
      * instances of ArtifactRepository that can be used to access local repositories.
+     *
+     * @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable#contextualize(org.codehaus.plexus.context.Context)
      */
     public void contextualize( Context context )
         throws ContextException
     {
         this.container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
-
 }

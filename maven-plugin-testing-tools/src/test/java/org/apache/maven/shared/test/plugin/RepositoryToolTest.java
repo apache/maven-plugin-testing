@@ -1,3 +1,5 @@
+package org.apache.maven.shared.test.plugin;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
 
@@ -27,10 +28,12 @@ import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.shared.tools.easymock.TestFileManager;
 import org.codehaus.plexus.PlexusTestCase;
 
+/**
+ * @version $Id$
+ */
 public class RepositoryToolTest
     extends PlexusTestCase
 {
-
     private TestFileManager fileManager;
 
     public void setUp()
@@ -81,5 +84,4 @@ public class RepositoryToolTest
         fileManager.assertFileContents( targetLocalRepoBasedir, "group/artifact/test/artifact-test.jar", jarContent );
 
     }
-
 }

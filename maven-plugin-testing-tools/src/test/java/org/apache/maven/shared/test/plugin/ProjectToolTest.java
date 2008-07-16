@@ -1,3 +1,5 @@
+package org.apache.maven.shared.test.plugin;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +18,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.test.plugin;
 
 import java.io.File;
 import java.util.Collection;
@@ -30,10 +31,12 @@ import org.apache.maven.shared.test.plugin.ProjectTool.PomInfo;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.StringUtils;
 
+/**
+ * @version $Id$
+ */
 public class ProjectToolTest
     extends PlexusTestCase
 {
-
     public void testManglePomForTesting_ShouldPopulateOutDirAndFinalName()
         throws Exception
     {
@@ -58,10 +61,10 @@ public class ProjectToolTest
         MavenProject project = tool.packageProjectArtifact( pomFile, "test", true );
 
         String expectedPath = "target/it-build-target/maven-plugin-testing-tools-test.jar";
-        
+
         // be nice with windows
         String actualPath = StringUtils.replace( project.getArtifact().getFile().getPath(), "\\", "/" );
-        
+
         assertEquals( expectedPath, actualPath );
     }
 

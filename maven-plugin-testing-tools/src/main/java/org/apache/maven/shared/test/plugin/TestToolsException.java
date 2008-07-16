@@ -1,3 +1,5 @@
+package org.apache.maven.shared.test.plugin;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,22 +18,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.shared.test.plugin;
 
+/**
+ * Wrap errors when Test Tools exception occurred.
+ *
+ * @version $Id$
+ */
 public class TestToolsException
     extends Exception
 {
+    static final long serialVersionUID = -2578830270609952507L;
 
-    private static final long serialVersionUID = 1L;
-
+    /**
+     * @param message given message
+     * @param cause given cause
+     */
     public TestToolsException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
+    /**
+     * @param message a given message
+     */
     public TestToolsException( String message )
     {
         super( message );
     }
-
 }
