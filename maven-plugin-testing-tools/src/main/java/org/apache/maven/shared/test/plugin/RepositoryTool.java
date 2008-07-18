@@ -185,7 +185,8 @@ public class RepositoryTool
      * @param targetLocalRepoBasedir
      * @throws TestToolsException if any
      */
-    public void createLocalRepositoryFromComponentProject( MavenProject project, File realPomFile, File targetLocalRepoBasedir )
+    public void createLocalRepositoryFromComponentProject( MavenProject project, File realPomFile,
+                                                           File targetLocalRepoBasedir )
         throws TestToolsException
     {
         Artifact artifact = project.getArtifact();

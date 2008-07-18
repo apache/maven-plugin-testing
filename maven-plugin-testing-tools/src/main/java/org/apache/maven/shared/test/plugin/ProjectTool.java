@@ -237,12 +237,14 @@ public class ProjectTool
         goals.add( "package" );
 
         File buildLog = logFile == null ? pomInfo.getBuildLogFile() : logFile;
-        System.out.println( "Now Building test version of the plugin...\nUsing staged plugin-pom: " + pomInfo.getPomFile().getAbsolutePath() );
+        System.out.println( "Now Building test version of the plugin...\nUsing staged plugin-pom: "
+            + pomInfo.getPomFile().getAbsolutePath() );
 
         buildTool.executeMaven( pomInfo.getPomFile(), properties, goals, buildLog );
 
-        File artifactFile = new File( pomInfo.getPomFile().getParentFile(), pomInfo.getBuildDirectory() + "/" + pomInfo.getFinalName() );
-        System.out.println("Using IT Plugin Jar: "+artifactFile.getAbsolutePath());
+        File artifactFile = new File( pomInfo.getPomFile().getParentFile(),
+                                      pomInfo.getBuildDirectory() + "/" + pomInfo.getFinalName() );
+        System.out.println( "Using IT Plugin Jar: " + artifactFile.getAbsolutePath() );
         try
         {
             MavenProject project = projectBuilder.build( pomInfo.getPomFile(), repositoryTool
@@ -328,10 +330,11 @@ public class ProjectTool
                 buildDirectory = "target";
             }
 
-            buildDirectory = ( buildDirectory+File.separatorChar+"it-build-target" );
+            buildDirectory = ( buildDirectory + File.separatorChar + "it-build-target" );
             build.setDirectory( buildDirectory );
-            build.setOutputDirectory( buildDirectory+File.separatorChar+"classes" );
-            System.out.println("Using "+build.getDirectory()+" and "+build.getOutputDirectory()+" to build IT version of plugin");
+            build.setOutputDirectory( buildDirectory + File.separatorChar + "classes" );
+            System.out.println( "Using " + build.getDirectory() + " and " + build.getOutputDirectory()
+                + " to build IT version of plugin" );
             model.setBuild( build );
 
             finalName = build.getFinalName();

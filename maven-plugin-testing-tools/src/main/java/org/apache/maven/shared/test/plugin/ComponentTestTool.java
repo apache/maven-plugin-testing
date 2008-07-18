@@ -125,7 +125,8 @@ public class ComponentTestTool
      * @return The base-directory location of the generated local repository
      * @throws TestToolsException if any
      */
-    public File prepareComponentForUnitTestingWithMavenBuilds( File pomFile, String testVersion, File localRepositoryDir )
+    public File prepareComponentForUnitTestingWithMavenBuilds( File pomFile, String testVersion,
+                                                               File localRepositoryDir )
         throws TestToolsException
     {
         return prepareForTesting( pomFile, testVersion, true, localRepositoryDir );
@@ -188,7 +189,8 @@ public class ComponentTestTool
 
         MavenProject project = projectTool.packageProjectArtifact( pomFile, testVersion, skipUnitTests, buildLog );
 
-        repositoryTool.createLocalRepositoryFromComponentProject( project, new File( realProjectDir, "pom.xml" ), localRepoDir );
+        repositoryTool.createLocalRepositoryFromComponentProject( project, new File( realProjectDir, "pom.xml" ),
+                                                                  localRepoDir );
 
         return localRepoDir;
     }

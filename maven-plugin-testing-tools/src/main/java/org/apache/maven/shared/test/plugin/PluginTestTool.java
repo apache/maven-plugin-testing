@@ -190,7 +190,8 @@ public class PluginTestTool
 
         MavenProject project = projectTool.packageProjectArtifact( pomFile, testVersion, skipUnitTests, buildLog );
 
-        repositoryTool.createLocalRepositoryFromComponentProject( project, new File( realProjectDir, "pom.xml" ), localRepoDir );
+        repositoryTool.createLocalRepositoryFromComponentProject( project, new File( realProjectDir, "pom.xml" ),
+                                                                  localRepoDir );
 
         return localRepoDir;
     }
