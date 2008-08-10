@@ -107,6 +107,6 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-plugin-testing-tools</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-plugin-testing-tools</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-testing/trunk/maven-plugin-testing-tools</url>
+    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk/maven-plugin-testing-tools</url>
   </scm>
 </project>

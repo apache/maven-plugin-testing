@@ -51,7 +51,7 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-testing/trunk</url>
+    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk</url>
   </scm>
 
   <mailingLists>
