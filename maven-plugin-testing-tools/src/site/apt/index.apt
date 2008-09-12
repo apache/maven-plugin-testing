@@ -1,12 +1,12 @@
   ---
-  Maven Plugin-Testing Tools
+  Introduction
   ---
   John Casey
   ---
   13 November 2006
   ---
   
-Maven Plugin-Testing Tools
+Maven Plugin Testing Tools
 
   This API is meant to provide a series of convenience tools for developers wishing to test Maven 
   plugins. The primary focus of the library is on integration testing, since it is not well-supported
