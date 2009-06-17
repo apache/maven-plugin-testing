@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.UnknownRepositoryLayoutException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
@@ -44,9 +44,11 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.model.Site;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -84,7 +86,7 @@ public class ProjectTool
     /**
      * @plexus.requirement
      */
-    private MavenProjectBuilder projectBuilder;
+    private ProjectBuilder projectBuilder;
 
     /**
      * @plexus.requirement
@@ -95,6 +97,11 @@ public class ProjectTool
      * @plexus.requirement
      */
     private ArtifactFactory artifactFactory;
+
+    /**
+     * @plexus.requirement
+     */    
+    private ArtifactRepositoryFactory artifactRepositoryFactory;
 
     /**
      * Construct a MavenProject instance from the specified POM file.
@@ -126,7 +133,8 @@ public class ProjectTool
             ArtifactRepository localRepository = repositoryTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
-            return projectBuilder.build( pomFile, localRepository, null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            return projectBuilder.build( pomFile, request );
         }
         catch ( ProjectBuildingException e )
         {
@@ -164,17 +172,10 @@ public class ProjectTool
             ArtifactRepository localRepository = repositoryTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
-            return projectBuilder.buildWithDependencies( pomFile, localRepository, null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            return projectBuilder.buildProjectWithDependencies( pomFile, request ).getProject();
         }
         catch ( ProjectBuildingException e )
-        {
-            throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
-        }
-        catch ( ArtifactNotFoundException e )
         {
             throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
         }
@@ -247,8 +248,9 @@ public class ProjectTool
         System.out.println( "Using IT Plugin Jar: " + artifactFile.getAbsolutePath() );
         try
         {
-            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), repositoryTool
-                .createLocalArtifactRepositoryInstance(), null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", "file://", "default", null, null ) );
+            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request );
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project
                 .getVersion(), null, project.getPackaging() );
@@ -265,6 +267,12 @@ public class ProjectTool
             throw new TestToolsException(
                                           "Error building MavenProject instance from test pom: " + pomInfo.getPomFile(),
                                           e );
+        }
+        catch ( UnknownRepositoryLayoutException e )
+        {
+            throw new TestToolsException(
+                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
+                                         e );
         }
     }
 

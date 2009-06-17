@@ -31,6 +31,7 @@ import org.apache.maven.artifact.installer.ArtifactInstaller;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -104,7 +105,7 @@ public class RepositoryTool
         Settings settings;
         try
         {
-            settings = settingsBuilder.buildSettings();
+            settings = settingsBuilder.buildSettings( new DefaultMavenExecutionRequest() );
         }
         catch ( IOException e )
         {
