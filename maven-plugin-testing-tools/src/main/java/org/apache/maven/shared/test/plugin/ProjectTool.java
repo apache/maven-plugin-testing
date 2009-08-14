@@ -134,7 +134,7 @@ public class ProjectTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
-            return projectBuilder.build( pomFile, request );
+            return projectBuilder.build( pomFile, request ).getProject();
         }
         catch ( ProjectBuildingException e )
         {
@@ -173,7 +173,7 @@ public class ProjectTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
-            return projectBuilder.buildProjectWithDependencies( pomFile, request ).getProject();
+            return projectBuilder.build( pomFile, request ).getProject();
         }
         catch ( ProjectBuildingException e )
         {
@@ -250,7 +250,7 @@ public class ProjectTool
         {
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
             request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", "file://", "default", null, null ) );
-            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request );
+            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project
                 .getVersion(), null, project.getPackaging() );
