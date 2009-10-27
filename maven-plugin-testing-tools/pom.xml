@@ -55,6 +55,10 @@ under the License.
       <artifactId>maven-core</artifactId>
     </dependency>    
     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+    </dependency>    
+    <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-invoker</artifactId>
       <version>2.0.10</version>
@@ -63,6 +67,12 @@ under the License.
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-test-tools</artifactId>
       <version>2.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <version>1.0-beta-6</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -84,7 +94,7 @@ under the License.
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.0-beta-1</version>
+        <version>1.4.1</version>
         <executions>
           <execution>
             <goals>

@@ -249,7 +249,7 @@ public class ProjectTool
         try
         {
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
-            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", "file://", "default", null, null ) );
+            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(), "default", null, null ) );
             MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project
@@ -269,6 +269,12 @@ public class ProjectTool
                                           e );
         }
         catch ( UnknownRepositoryLayoutException e )
+        {
+            throw new TestToolsException(
+                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
+                                         e );
+        }
+        catch ( IOException e )
         {
             throw new TestToolsException(
                                          "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
