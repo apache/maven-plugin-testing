@@ -94,7 +94,7 @@ under the License.
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.4.1</version>
+        <version>${plexusVersion}</version>
         <executions>
           <execution>
             <goals>

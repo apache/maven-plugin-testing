@@ -141,6 +141,7 @@ under the License.
 
   <properties>
     <mavenVersion>3.0-SNAPSHOT</mavenVersion>
+    <plexusVersion>1.5.0</plexusVersion>
   </properties>
 
   <dependencyManagement>
@@ -172,7 +173,7 @@ under the License.
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
-        <version>1.5.0</version>
+        <version>${plexusVersion}</version>
       </dependency>    
     
       <dependency>
