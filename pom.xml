@@ -141,7 +141,7 @@ under the License.
 
   <properties>
     <mavenVersion>3.0-SNAPSHOT</mavenVersion>
-    <plexusVersion>1.5.0</plexusVersion>
+    <plexusVersion>1.5.1</plexusVersion>
   </properties>
 
   <dependencyManagement>
