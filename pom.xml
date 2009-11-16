@@ -140,7 +140,7 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.0-alpha-3</mavenVersion>
+    <mavenVersion>3.0-alpha-4</mavenVersion>
     <plexusVersion>1.5.1</plexusVersion>
   </properties>
 
