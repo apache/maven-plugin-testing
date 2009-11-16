@@ -208,6 +208,7 @@ public class BuildTool
             {
                 try
                 {
+                    output.getParentFile().mkdirs();
                     writer = new FileWriter( output );
                 }
                 catch ( IOException e )
