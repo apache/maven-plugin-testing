@@ -254,6 +254,7 @@ under the License.
     <plugins>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
+        <inherited>false</inherited>
         <executions>
           <execution>
             <id>attach-descriptor</id>
