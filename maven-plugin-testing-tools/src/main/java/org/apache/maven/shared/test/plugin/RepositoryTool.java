@@ -47,6 +47,7 @@ import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -102,10 +103,19 @@ public class RepositoryTool
     public File findLocalRepositoryDirectory()
         throws TestToolsException
     {
+        String localRepo = System.getProperty( "maven.local.repo" );
+        if ( StringUtils.isNotEmpty( localRepo ) )
+        {
+            return new File( localRepo );
+        }
+
         Settings settings;
         try
         {
-            settings = settingsBuilder.buildSettings( new DefaultMavenExecutionRequest() );
+            DefaultMavenExecutionRequest request = new DefaultMavenExecutionRequest();
+            request.setUserSettingsFile( new File( System.getProperty( "user.home" ), ".m2/settings.xml" ) );
+            request.setGlobalSettingsFile( new File( System.getProperty( "maven.home" ), "conf/settings.xml" ) );
+            settings = settingsBuilder.buildSettings( request );
         }
         catch ( IOException e )
         {
