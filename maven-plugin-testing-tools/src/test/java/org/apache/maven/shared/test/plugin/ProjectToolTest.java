@@ -46,9 +46,10 @@ public class ProjectToolTest
 
         PomInfo info = tool.manglePomForTesting( pomFile, "test", true );
 
-        assertEquals( "target"+File.separatorChar+"it-build-target", info.getBuildDirectory() );
+        assertEquals( "target" + File.separatorChar + "it-build-target", info.getBuildDirectory() );
         assertEquals( "maven-plugin-testing-tools-test.jar", info.getFinalName() );
-        assertEquals( "target"+File.separatorChar+"it-build-target"+File.separatorChar+"classes",info.getBuildOutputDirectory() );
+        assertEquals( "target" + File.separatorChar + "it-build-target" + File.separatorChar + "classes",
+                      info.getBuildOutputDirectory() );
     }
 
     public void testPackageProjectArtifact_ShouldPopulateArtifactFileWithJarLocation()

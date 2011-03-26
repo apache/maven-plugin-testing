@@ -236,7 +236,7 @@ public class ProjectTool
         List goals = new ArrayList();
         goals.add( "package" );
 
-        File buildLog = logFile == null ? pomInfo.getBuildLogFile() : logFile;
+        File buildLog = ( logFile == null ) ? pomInfo.getBuildLogFile() : logFile;
         System.out.println( "Now Building test version of the plugin...\nUsing staged plugin-pom: "
             + pomInfo.getPomFile().getAbsolutePath() );
 

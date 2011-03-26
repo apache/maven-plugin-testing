@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import org.codehaus.plexus.util.IOUtil;
 
@@ -47,7 +48,7 @@ public final class TestUtils
     public static void writeToFile( File file, String testStr )
         throws IOException
     {
-        FileWriter fw = null;
+        Writer fw = null;
         try
         {
             fw = new FileWriter( file );
@@ -70,21 +71,30 @@ public final class TestUtils
     {
         StringBuffer buffer = new StringBuffer();
 
-        BufferedReader reader = new BufferedReader( new FileReader( file ) );
+        BufferedReader reader = null;
 
-        String line = null;
-
-        while ( ( line = reader.readLine() ) != null )
+        try
         {
-            if ( buffer.length() > 0 )
+            reader = new BufferedReader( new FileReader( file ) );
+
+            String line = null;
+
+            while ( ( line = reader.readLine() ) != null )
             {
-                buffer.append( '\n' );
+                if ( buffer.length() > 0 )
+                {
+                    buffer.append( '\n' );
+                }
+
+                buffer.append( line );
             }
 
-            buffer.append( line );
+            return buffer.toString();
         }
-
-        return buffer.toString();
+        finally
+        {
+            IOUtil.close( reader );
+        }
     }
 
     /**
