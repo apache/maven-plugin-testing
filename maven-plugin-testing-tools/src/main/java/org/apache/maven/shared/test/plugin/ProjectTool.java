@@ -50,6 +50,9 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -62,10 +65,10 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * files (package phase of the normal build process) for distribution to a test local repository
  * directory.
  *
- * @plexus.component role="org.apache.maven.shared.test.plugin.ProjectTool" role-hint="default"
  * @author jdcasey
  * @version $Id$
  */
+@Component( role = ProjectTool.class )
 public class ProjectTool
 {
     /** Plexus role */
@@ -73,34 +76,22 @@ public class ProjectTool
 
     public static final String INTEGRATION_TEST_DEPLOYMENT_REPO_URL = "integration-test.deployment.repo.url";
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private BuildTool buildTool;
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private RepositoryTool repositoryTool;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ProjectBuilder projectBuilder;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactHandlerManager artifactHandlerManager;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactFactory artifactFactory;
 
-    /**
-     * @plexus.requirement
-     */    
+    @Requirement
     private ArtifactRepositoryFactory artifactRepositoryFactory;
 
     /**
@@ -250,6 +241,7 @@ public class ProjectTool
         {
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
             request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(), "default", null, null ) );
+            request.setRepositorySession( new MavenRepositorySystemSession() );
             MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project

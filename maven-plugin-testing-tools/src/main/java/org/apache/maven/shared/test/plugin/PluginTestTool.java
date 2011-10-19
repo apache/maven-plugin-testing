@@ -20,6 +20,8 @@ package org.apache.maven.shared.test.plugin;
  */
 
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -39,23 +41,19 @@ import java.io.IOException;
  * plugin's ancestor POMs cannot be resolved.
  * </p>
  *
- * @plexus.component role="org.apache.maven.shared.test.plugin.PluginTestTool" role-hint="default"
  * @author jdcasey
  * @version $Id$
  */
+@Component( role = PluginTestTool.class )
 public class PluginTestTool
 {
     /** Plexus role */
     public static final String ROLE = PluginTestTool.class.getName();
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private ProjectTool projectTool;
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private RepositoryTool repositoryTool;
 
     /**

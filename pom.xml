@@ -140,7 +140,7 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.0-alpha-4</mavenVersion>
+    <mavenVersion>3.0</mavenVersion>
     <plexusVersion>1.5.1</plexusVersion>
   </properties>
 
@@ -168,12 +168,10 @@ under the License.
         <artifactId>maven-plugin-api</artifactId>
         <version>${mavenVersion}</version>
       </dependency>    
- 
-    
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-container-default</artifactId>
-        <version>${plexusVersion}</version>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${mavenVersion}</version>
       </dependency>    
     
       <dependency>
