@@ -160,7 +160,7 @@ under the License.
           <artifactId>maven-site-plugin</artifactId>
           <version>3.0</version>
           <configuration>
-            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-testing/${artifactId}-${version}</stagingSiteURL>
+            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-testing/${project.artifactId}-${project.version}</stagingSiteURL>
           </configuration>
         </plugin>
         <plugin>
