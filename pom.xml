@@ -128,9 +128,9 @@ under the License.
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/branches/plugin-testing-mvn-2.x/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/branches/plugin-testing-mvn-2.x/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-testing/branches/plugin-testing-mvn-2.x/</url>
   </scm>
   <issueManagement>
     <system>jira</system>
