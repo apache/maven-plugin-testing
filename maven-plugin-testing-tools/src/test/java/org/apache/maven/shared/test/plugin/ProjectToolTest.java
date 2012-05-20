@@ -20,6 +20,7 @@ package org.apache.maven.shared.test.plugin;
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -29,6 +30,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.shared.test.plugin.ProjectTool.PomInfo;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -37,19 +39,30 @@ import org.codehaus.plexus.util.StringUtils;
 public class ProjectToolTest
     extends PlexusTestCase
 {
+
+    private File getPom( String test )
+        throws IOException
+    {
+        File src = new File( "src/test/resources/projects/" + test );
+        File dst = new File( "target/unit/projects/" + test );
+
+        FileUtils.copyDirectoryStructureIfModified( src, dst );
+
+        return new File( dst, "pom.xml" );
+    }
+
     public void testManglePomForTesting_ShouldPopulateOutDirAndFinalName()
         throws Exception
     {
         ProjectTool tool = (ProjectTool) lookup( ProjectTool.ROLE, "default" );
 
-        File pomFile = new File( "pom.xml" );
+        File pomFile = getPom( "basic" );
 
         PomInfo info = tool.manglePomForTesting( pomFile, "test", true );
 
-        assertEquals( "target" + File.separatorChar + "it-build-target", info.getBuildDirectory() );
-        assertEquals( "maven-plugin-testing-tools-test.jar", info.getFinalName() );
-        assertEquals( "target" + File.separatorChar + "it-build-target" + File.separatorChar + "classes",
-                      info.getBuildOutputDirectory() );
+        assertEquals( "target"+File.separatorChar+"it-build-target", info.getBuildDirectory() );
+        assertEquals( "maven-it-plugin-test.jar", info.getFinalName() );
+        assertEquals( "target"+File.separatorChar+"it-build-target"+File.separatorChar+"classes",info.getBuildOutputDirectory() );
     }
 
     public void testPackageProjectArtifact_ShouldPopulateArtifactFileWithJarLocation()
@@ -57,11 +70,11 @@ public class ProjectToolTest
     {
         ProjectTool tool = (ProjectTool) lookup( ProjectTool.ROLE, "default" );
 
-        File pomFile = new File( "pom.xml" );
+        File pomFile = getPom( "basic" );
 
         MavenProject project = tool.packageProjectArtifact( pomFile, "test", true );
 
-        String expectedPath = "target/it-build-target/maven-plugin-testing-tools-test.jar";
+        String expectedPath = "target/unit/projects/basic/target/it-build-target/maven-it-plugin-test.jar";
 
         // be nice with windows
         String actualPath = StringUtils.replace( project.getArtifact().getFile().getPath(), "\\", "/" );
@@ -74,14 +87,14 @@ public class ProjectToolTest
     {
         ProjectTool tool = (ProjectTool) lookup( ProjectTool.ROLE, "default" );
 
-        File pomFile = new File( "pom.xml" );
+        File pomFile = getPom( "basic" );
 
         MavenProject project = tool.packageProjectArtifact( pomFile, "test", true );
 
         Artifact artifact = project.getArtifact();
 
-        assertEquals( "jar", artifact.getType() );
-        assertTrue( artifact.getFile().exists() );
+        assertEquals( "maven-plugin", artifact.getType() );
+        assertTrue( "Missing " + artifact.getFile(), artifact.getFile().exists() );
 
         Collection metadata = artifact.getMetadataList();
 

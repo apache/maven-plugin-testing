@@ -32,6 +32,7 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Disposable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -41,10 +42,10 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 /**
  * Test-tool used to execute Maven builds in order to test plugin functionality.
  *
- * @plexus.component role="org.apache.maven.shared.test.plugin.BuildTool" role-hint="default"
  * @author jdcasey
  * @version $Id$
  */
+@Component(role=BuildTool.class)
 public class BuildTool
     implements Initializable, Disposable
 {
@@ -208,6 +209,7 @@ public class BuildTool
             {
                 try
                 {
+                    output.getParentFile().mkdirs();
                     writer = new FileWriter( output );
                 }
                 catch ( IOException e )

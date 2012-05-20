@@ -25,7 +25,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.plugin-testing</groupId>
     <artifactId>maven-plugin-testing</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-plugin-testing-tools</artifactId>
@@ -40,38 +40,39 @@ under the License.
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
-      <version>1.0-alpha-9-stable-1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-settings</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-invoker</artifactId>
-      <version>2.0.9</version>
-    </dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-aether-provider</artifactId>
+    </dependency>    
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-invoker</artifactId>
+      <version>2.0.10</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-test-tools</artifactId>
-      <version>1.0-alpha-2</version>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -92,17 +93,17 @@ under the License.
       </plugin>
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-maven-plugin</artifactId>
-        <version>1.3</version>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>${plexusVersion}</version>
         <executions>
           <execution>
-            <id>create-component-descriptor</id>
             <goals>
-              <goal>descriptor</goal>
+              <goal>generate-metadata</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

@@ -72,6 +72,13 @@ public class ReflectiveSetter
             setter = new FieldSetter( propertyName, field );
         }
 
+        if ( setter == null )
+        {
+            throw new IllegalArgumentException( "No such property: " + propertyName + " in: " + targetClass
+                + ". Searched for: {method:" + preferredMethodName + ", method:" + propertyName + ", field:"
+                + propertyName + "}" );
+        }
+
         cachedPropertySetters.put( setter.getProperty(), setter );
 
         try

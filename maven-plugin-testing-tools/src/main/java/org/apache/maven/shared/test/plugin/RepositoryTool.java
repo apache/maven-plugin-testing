@@ -31,21 +31,29 @@ import org.apache.maven.artifact.installer.ArtifactInstaller;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.DefaultMavenExecutionResult;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.settings.MavenSettingsBuilder;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -59,35 +67,30 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * plugin's ancestor POMs cannot be resolved.
  * </p>
  *
- * @plexus.component role="org.apache.maven.shared.test.plugin.RepositoryTool" role-hint="default"
  * @author jdcasey
  * @version $Id$
  */
+@Component( role = RepositoryTool.class )
 public class RepositoryTool
     implements Contextualizable
 {
     /** Plexus role */
     public static final String ROLE = RepositoryTool.class.getName();
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactRepositoryFactory repositoryFactory;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private MavenSettingsBuilder settingsBuilder;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactFactory artifactFactory;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactInstaller artifactInstaller;
+
+    @Requirement
+    private LegacySupport legacySupport;
 
     // contextualized.
     private PlexusContainer container;
@@ -101,10 +104,19 @@ public class RepositoryTool
     public File findLocalRepositoryDirectory()
         throws TestToolsException
     {
+        String localRepo = System.getProperty( "maven.local.repo" );
+        if ( StringUtils.isNotEmpty( localRepo ) )
+        {
+            return new File( localRepo );
+        }
+
         Settings settings;
         try
         {
-            settings = settingsBuilder.buildSettings();
+            DefaultMavenExecutionRequest request = new DefaultMavenExecutionRequest();
+            request.setUserSettingsFile( new File( System.getProperty( "user.home" ), ".m2/settings.xml" ) );
+            request.setGlobalSettingsFile( new File( System.getProperty( "maven.home" ), "conf/settings.xml" ) );
+            settings = settingsBuilder.buildSettings( request );
         }
         catch ( IOException e )
         {
@@ -206,6 +218,9 @@ public class RepositoryTool
             destination.getParentFile().mkdirs();
         }
 
+        legacySupport.setSession( new MavenSession( container, new MavenRepositorySystemSession(),
+                                                    new DefaultMavenExecutionRequest(),
+                                                    new DefaultMavenExecutionResult() ) );
         try
         {
             artifactInstaller.install( artifact.getFile(), artifact, localRepository );
@@ -214,6 +229,10 @@ public class RepositoryTool
         {
             throw new TestToolsException( "Error installing plugin artifact to target local repository: "
                 + targetLocalRepoBasedir, e );
+        }
+        finally
+        {
+            legacySupport.setSession( null );
         }
 
         installLocallyReachableAncestorPoms( realPomFile, localRepository );

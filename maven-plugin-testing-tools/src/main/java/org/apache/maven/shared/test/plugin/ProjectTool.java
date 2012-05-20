@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.UnknownRepositoryLayoutException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
@@ -44,10 +44,15 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.model.Site;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -60,10 +65,10 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * files (package phase of the normal build process) for distribution to a test local repository
  * directory.
  *
- * @plexus.component role="org.apache.maven.shared.test.plugin.ProjectTool" role-hint="default"
  * @author jdcasey
  * @version $Id$
  */
+@Component( role = ProjectTool.class )
 public class ProjectTool
 {
     /** Plexus role */
@@ -71,30 +76,23 @@ public class ProjectTool
 
     public static final String INTEGRATION_TEST_DEPLOYMENT_REPO_URL = "integration-test.deployment.repo.url";
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private BuildTool buildTool;
 
-    /**
-     * @plexus.requirement role-hint="default"
-     */
+    @Requirement
     private RepositoryTool repositoryTool;
 
-    /**
-     * @plexus.requirement
-     */
-    private MavenProjectBuilder projectBuilder;
+    @Requirement
+    private ProjectBuilder projectBuilder;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactHandlerManager artifactHandlerManager;
 
-    /**
-     * @plexus.requirement
-     */
+    @Requirement
     private ArtifactFactory artifactFactory;
+
+    @Requirement
+    private ArtifactRepositoryFactory artifactRepositoryFactory;
 
     /**
      * Construct a MavenProject instance from the specified POM file.
@@ -126,7 +124,8 @@ public class ProjectTool
             ArtifactRepository localRepository = repositoryTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
-            return projectBuilder.build( pomFile, localRepository, null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            return projectBuilder.build( pomFile, request ).getProject();
         }
         catch ( ProjectBuildingException e )
         {
@@ -164,17 +163,10 @@ public class ProjectTool
             ArtifactRepository localRepository = repositoryTool
                 .createLocalArtifactRepositoryInstance( localRepositoryBasedir );
 
-            return projectBuilder.buildWithDependencies( pomFile, localRepository, null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            return projectBuilder.build( pomFile, request ).getProject();
         }
         catch ( ProjectBuildingException e )
-        {
-            throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
-        }
-        catch ( ArtifactNotFoundException e )
         {
             throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomFile, e );
         }
@@ -236,7 +228,7 @@ public class ProjectTool
         List goals = new ArrayList();
         goals.add( "package" );
 
-        File buildLog = ( logFile == null ) ? pomInfo.getBuildLogFile() : logFile;
+        File buildLog = logFile == null ? pomInfo.getBuildLogFile() : logFile;
         System.out.println( "Now Building test version of the plugin...\nUsing staged plugin-pom: "
             + pomInfo.getPomFile().getAbsolutePath() );
 
@@ -247,8 +239,10 @@ public class ProjectTool
         System.out.println( "Using IT Plugin Jar: " + artifactFile.getAbsolutePath() );
         try
         {
-            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), repositoryTool
-                .createLocalArtifactRepositoryInstance(), null );
+            ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
+            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(), "default", null, null ) );
+            request.setRepositorySession( new MavenRepositorySystemSession() );
+            MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project
                 .getVersion(), null, project.getPackaging() );
@@ -265,6 +259,18 @@ public class ProjectTool
             throw new TestToolsException(
                                           "Error building MavenProject instance from test pom: " + pomInfo.getPomFile(),
                                           e );
+        }
+        catch ( UnknownRepositoryLayoutException e )
+        {
+            throw new TestToolsException(
+                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
+                                         e );
+        }
+        catch ( IOException e )
+        {
+            throw new TestToolsException(
+                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
+                                         e );
         }
     }
 

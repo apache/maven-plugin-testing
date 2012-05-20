@@ -23,10 +23,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -203,7 +201,7 @@ public class TestFileManager
 
         File file = new File( dir, filename );
 
-        Reader reader = null;
+        FileReader reader = null;
         StringWriter writer = new StringWriter();
 
         try
@@ -234,7 +232,7 @@ public class TestFileManager
 
         file.getParentFile().mkdirs();
 
-        Writer writer = null;
+        FileWriter writer = null;
 
         try
         {
@@ -262,7 +260,7 @@ public class TestFileManager
     {
         String result = null;
 
-        Reader reader = null;
+        FileReader reader = null;
         try
         {
             reader = new FileReader( file );
