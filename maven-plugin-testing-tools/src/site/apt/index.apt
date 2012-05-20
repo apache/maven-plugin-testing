@@ -36,7 +36,7 @@ Maven Plugin Testing Tools
   (possibly after resolving them from a remote repository). Because of this, the only practical way 
   to use the current plugin within an integration-test build is to install it into some sort of local 
   repository, then direct Maven to use that local repository for the build. To avoid side effects in
-  other builds (remember, we're building Maven plugins here...and they're used to build other projects),
+  other builds (remember, we're building Maven plugins here... and they're used to build other projects),
   it's critical to avoid using the main local repository used for normal Maven builds. Therefore,
   plugin integration tests require a custom local repository, to which the integration-testing builds
   can be directed. Further complicating this testing scenario is the fact that the plugin's parent
@@ -96,7 +96,7 @@ Maven Plugin Testing Tools
     
 * Utilities Included in this Library
 
-  For more information on the APIs described below, see the {{{apidocs/index.html}JavaDocs}}.
+  For more information on the APIs described below, see the {{{./apidocs/index.html}JavaDocs}}.
 
   * <<PluginTestTool>> - The main entry point for setting up the plugin-testing environment, this
     utility orchestrates the ProjectTool, RepositoryTool, and BuildTool in order to produce a local
