@@ -20,7 +20,6 @@ package org.apache.maven.shared.tools.easymock;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.easymock.MockControl;
@@ -33,7 +32,7 @@ import org.easymock.MockControl;
  */
 public class MockManager
 {
-    private List mockControls = new ArrayList();
+    private List<MockControl> mockControls = new ArrayList<MockControl>();
 
     /**
      * @param control to be add to the manager
@@ -56,10 +55,8 @@ public class MockManager
      */
     public void replayAll()
     {
-        for ( Iterator it = mockControls.iterator(); it.hasNext(); )
+        for ( MockControl control : mockControls )
         {
-            MockControl control = (MockControl) it.next();
-
             control.replay();
         }
     }
@@ -69,10 +66,8 @@ public class MockManager
      */
     public void verifyAll()
     {
-        for ( Iterator it = mockControls.iterator(); it.hasNext(); )
+        for ( MockControl control : mockControls )
         {
-            MockControl control = (MockControl) it.next();
-
             control.verify();
         }
     }

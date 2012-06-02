@@ -33,14 +33,14 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class ReflectiveSetter
 {
-    private Map cachedPropertySetters = new HashMap();
+    private Map<String, Setter> cachedPropertySetters = new HashMap<String, Setter>();
 
-    private final Class targetClass;
+    private final Class<?> targetClass;
 
     /**
      * @param targetClass
      */
-    public ReflectiveSetter( Class targetClass )
+    public ReflectiveSetter( Class<?> targetClass )
     {
         this.targetClass = targetClass;
     }

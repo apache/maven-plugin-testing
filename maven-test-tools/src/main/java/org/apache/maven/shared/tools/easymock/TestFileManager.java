@@ -42,7 +42,7 @@ public class TestFileManager
     /** Temp dir from "java.io.tmpdir" property */
     public static final String TEMP_DIR_PATH = System.getProperty( "java.io.tmpdir" );
 
-    private List filesToDelete = new ArrayList();
+    private List<File> filesToDelete = new ArrayList<File>();
 
     private final String baseFilename;
 
@@ -147,9 +147,9 @@ public class TestFileManager
     public void cleanUp()
         throws IOException
     {
-        for ( Iterator it = filesToDelete.iterator(); it.hasNext(); )
+        for ( Iterator<File> it = filesToDelete.iterator(); it.hasNext(); )
         {
-            File file = (File) it.next();
+            File file = it.next();
 
             if ( file.exists() )
             {
