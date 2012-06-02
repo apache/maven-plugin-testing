@@ -45,7 +45,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
  * @author jdcasey
  * @version $Id$
  */
-@Component(role=BuildTool.class)
+@Component( role = BuildTool.class )
 public class BuildTool
     implements Initializable, Disposable
 {
@@ -68,7 +68,7 @@ public class BuildTool
      *   resulting from the Maven invocation.
      * @throws TestToolsException if any
      */
-    public InvocationResult executeMaven( File pom, Properties properties, List goals, File buildLogFile )
+    public InvocationResult executeMaven( File pom, Properties properties, List<String> goals, File buildLogFile )
         throws TestToolsException
     {
         InvocationRequest request = createBasicInvocationRequest( pom, properties, goals, buildLogFile );
@@ -132,7 +132,7 @@ public class BuildTool
     }
 
     /**
-     * If we're logging output to a logfile using standard output handlers, make sure these are
+     * If we're logging output to a log file using standard output handlers, make sure these are
      * closed.
      *
      * @param request
@@ -169,7 +169,7 @@ public class BuildTool
      * @return The standardized InvocationRequest for the test build, ready for any necessary
      *   customizations.
      */
-    public InvocationRequest createBasicInvocationRequest( File pom, Properties properties, List goals,
+    public InvocationRequest createBasicInvocationRequest( File pom, Properties properties, List<String> goals,
                                                            File buildLogFile )
     {
         InvocationRequest request = new DefaultInvocationRequest();

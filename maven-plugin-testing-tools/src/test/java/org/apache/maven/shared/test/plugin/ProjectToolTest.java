@@ -96,14 +96,12 @@ public class ProjectToolTest
         assertEquals( "maven-plugin", artifact.getType() );
         assertTrue( "Missing " + artifact.getFile(), artifact.getFile().exists() );
 
-        Collection metadata = artifact.getMetadataList();
+        Collection<ArtifactMetadata> metadata = artifact.getMetadataList();
 
         boolean foundPomMetadata = false;
 
-        for ( Iterator it = metadata.iterator(); it.hasNext(); )
+        for ( ArtifactMetadata metadataItem : metadata )
         {
-            ArtifactMetadata metadataItem = (ArtifactMetadata) it.next();
-
             if ( metadataItem instanceof ProjectArtifactMetadata )
             {
                 foundPomMetadata = true;

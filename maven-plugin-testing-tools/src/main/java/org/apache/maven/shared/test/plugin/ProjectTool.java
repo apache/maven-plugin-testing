@@ -225,7 +225,7 @@ public class ProjectTool
 
         Properties properties = new Properties();
 
-        List goals = new ArrayList();
+        List<String> goals = new ArrayList<String>();
         goals.add( "package" );
 
         File buildLog = logFile == null ? pomInfo.getBuildLogFile() : logFile;
@@ -390,12 +390,10 @@ public class ProjectTool
 
             if ( skipUnitTests )
             {
-                List plugins = build.getPlugins();
+                List<Plugin> plugins = build.getPlugins();
                 Plugin plugin = null;
-                for ( Iterator iter = plugins.iterator(); iter.hasNext(); )
+                for ( Plugin plug : plugins )
                 {
-                    Plugin plug = (Plugin) iter.next();
-
                     if ( "maven-surefire-plugin".equals( plug.getArtifactId() ) )
                     {
                         plugin = plug;
