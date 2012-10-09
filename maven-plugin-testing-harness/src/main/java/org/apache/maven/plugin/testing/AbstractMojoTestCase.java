@@ -19,6 +19,7 @@ package org.apache.maven.plugin.testing;
  * under the License.
  */
 
+import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.logging.Log;
@@ -118,7 +119,7 @@ public abstract class AbstractMojoTestCase
         Reader reader = null;
         try
         {
-            reader = ReaderFactory.newXmlReader( pluginPom );
+            reader = new XmlStreamReader( pluginPom );
 
             Xpp3Dom pluginPomDom = Xpp3DomBuilder.build( reader );
     
