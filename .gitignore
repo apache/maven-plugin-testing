@@ -6,4 +6,5 @@ target
 #idea
 *.iml
 .idea
+.java-version
 
