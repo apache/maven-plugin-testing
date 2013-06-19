@@ -31,12 +31,6 @@ under the License.
   <artifactId>maven-plugin-testing-tools</artifactId>
   <name>Maven Plugin Testing Tools</name>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-plugin-testing-tools</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-plugin-testing-tools</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk/maven-plugin-testing-tools</url>
-  </scm>
-
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

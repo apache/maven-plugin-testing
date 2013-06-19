@@ -31,12 +31,6 @@ under the License.
   <artifactId>maven-test-tools</artifactId>
   <name>Maven Testing Tools</name>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-test-tools</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk/maven-test-tools</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk/maven-test-tools</url>
-  </scm>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
