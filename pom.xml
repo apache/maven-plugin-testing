@@ -132,16 +132,21 @@ under the License.
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MPLUGINTESTING</url>
   </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://builds.apache.org/job/maven-plugin-testing/</url>
+  </ciManagement>
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugin-testing/</url>
+      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/content/${maven.site.path}</url>
     </site>
   </distributionManagement>
 
   <properties>
     <mavenVersion>3.0.5</mavenVersion>
     <plexusVersion>1.5.1</plexusVersion>
+    <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
   </properties>
 
   <dependencyManagement>
@@ -225,13 +230,21 @@ under the License.
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
-        </plugin>        
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.3</version><!-- TODO remove when upgrading parent to 24 -->
           <configuration>
-            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-testing/${project.artifactId}-${project.version}</stagingSiteURL>
+            <topSiteURL>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/content/${maven.site.path}</topSiteURL>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <checkoutDirectory>${maven.site.cache}/${maven.site.path}</checkoutDirectory>
+            <tryUpdate>true</tryUpdate>
           </configuration>
         </plugin>
         <plugin>
