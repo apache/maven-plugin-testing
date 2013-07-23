@@ -29,6 +29,8 @@ import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.shared.test.plugin.ProjectTool.PomInfo;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -109,5 +111,12 @@ public class ProjectToolTest
         }
 
         assertTrue( foundPomMetadata );
+    }
+    
+    @Override
+    protected void customizeContainerConfiguration(ContainerConfiguration configuration) 
+    {
+        configuration.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
+        configuration.setAutoWiring( true );      
     }
 }

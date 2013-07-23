@@ -26,6 +26,8 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.shared.tools.easymock.TestFileManager;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
@@ -84,4 +86,11 @@ public class RepositoryToolTest
         fileManager.assertFileContents( targetLocalRepoBasedir, "group/artifact/test/artifact-test.jar", jarContent );
 
     }
+    
+    @Override
+    protected void customizeContainerConfiguration(ContainerConfiguration configuration) 
+    {
+        configuration.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
+        configuration.setAutoWiring( true );      
+    }    
 }

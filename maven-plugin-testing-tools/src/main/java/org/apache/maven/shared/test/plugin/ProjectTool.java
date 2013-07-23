@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -50,7 +49,7 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.FileUtils;
@@ -241,7 +240,7 @@ public class ProjectTool
         {
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
             request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(), "default", null, null ) );
-            request.setRepositorySession( new MavenRepositorySystemSession() );
+            request.setRepositorySession( MavenRepositorySystemUtils.newSession() );
             MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
             Artifact artifact = artifactFactory.createArtifact( project.getGroupId(), project.getArtifactId(), project

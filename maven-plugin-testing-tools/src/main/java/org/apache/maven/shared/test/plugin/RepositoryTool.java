@@ -40,7 +40,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.MavenSettingsBuilder;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.PlexusConstants;
@@ -218,7 +218,7 @@ public class RepositoryTool
             destination.getParentFile().mkdirs();
         }
 
-        legacySupport.setSession( new MavenSession( container, new MavenRepositorySystemSession(),
+        legacySupport.setSession( new MavenSession( container, MavenRepositorySystemUtils.newSession(),
                                                     new DefaultMavenExecutionRequest(),
                                                     new DefaultMavenExecutionResult() ) );
         try

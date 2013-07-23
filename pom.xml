@@ -114,7 +114,7 @@ under the License.
   </mailingLists>
 
   <prerequisites>
-    <maven>3.0</maven>
+    <maven>3.1.0</maven>
   </prerequisites>
 
   <modules>
@@ -144,8 +144,8 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.0.5</mavenVersion>
-    <plexusVersion>1.5.1</plexusVersion>
+    <mavenVersion>3.1.0</mavenVersion>
+    <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
   </properties>
 
@@ -187,7 +187,7 @@ under the License.
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.8</version>
+        <version>3.0.10</version>
         <scope>provided</scope>
       </dependency>    
     
@@ -226,10 +226,18 @@ under the License.
             </systemProperties>
           </configuration>
         </plugin>
+        <!-- Not sure if this is intentional but MojoRule has an @Override annotation from the interface which is
+             only allowed starting in Java 1.6. So if the author intends only 1.5 then that @Override annotation needs
+             to be removed.
+         -->        
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
