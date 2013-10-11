@@ -31,7 +31,7 @@ under the License.
 
   <groupId>org.apache.maven.plugin-testing</groupId>
   <artifactId>maven-plugin-testing</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Testing</name>
@@ -114,7 +114,7 @@ under the License.
   </mailingLists>
 
   <prerequisites>
-    <maven>3.1.0</maven>
+    <maven>3.1.1</maven>
   </prerequisites>
 
   <modules>
@@ -144,7 +144,7 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.1.0</mavenVersion>
+    <mavenVersion>3.1.1</mavenVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
   </properties>
@@ -187,7 +187,7 @@ under the License.
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.10</version>
+        <version>3.0.15</version>
         <scope>provided</scope>
       </dependency>    
     
