@@ -22,22 +22,22 @@ package org.apache.maven.shared.tools.easymock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.MockControl;
+import org.easymock.IMocksControl;
 
 /**
- * Manager of MockControl
+ * Manager of IMocksControl
  *
  * @version $Id$
- * @see MockControl
+ * @see IMocksControl
  */
 public class MockManager
 {
-    private List<MockControl> mockControls = new ArrayList<MockControl>();
+    private List<IMocksControl> mockControls = new ArrayList<IMocksControl>();
 
     /**
      * @param control to be add to the manager
      */
-    public void add( MockControl control )
+    public void add( IMocksControl control )
     {
         mockControls.add( control );
     }
@@ -55,7 +55,7 @@ public class MockManager
      */
     public void replayAll()
     {
-        for ( MockControl control : mockControls )
+        for ( IMocksControl control : mockControls )
         {
             control.replay();
         }
@@ -66,7 +66,7 @@ public class MockManager
      */
     public void verifyAll()
     {
-        for ( MockControl control : mockControls )
+        for ( IMocksControl control : mockControls )
         {
             control.verify();
         }
