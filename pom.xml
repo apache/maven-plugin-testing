@@ -124,9 +124,9 @@ under the License.
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-testing/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-testing/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-testing/trunk</url>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</connection>
+    <developerConnection>scm:svn:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
+    <url>https://github.com/apache/maven-plugin-testing/</url>
   </scm>
   <issueManagement>
     <system>jira</system>
