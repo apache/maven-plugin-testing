@@ -125,7 +125,7 @@ under the License.
 
   <scm>
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</connection>
-    <developerConnection>scm:svn:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
     <url>https://github.com/apache/maven-plugin-testing/</url>
   </scm>
   <issueManagement>
@@ -259,6 +259,7 @@ under the License.
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
             <tagBase>https://svn.apache.org/repos/asf/maven/plugin-testing/tags</tagBase>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
         </plugin>
       </plugins>
