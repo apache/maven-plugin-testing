@@ -25,7 +25,7 @@ under the License.
   <parent>
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>23</version>
+    <version>24</version>
     <relativePath>../pom/maven/pom.xml</relativePath>
   </parent>
 
@@ -127,7 +127,7 @@ under the License.
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
     <url>https://github.com/apache/maven-plugin-testing/</url>
-    <tag>HEAD</tag>
+    <tag>master</tag>
   </scm>
   <issueManagement>
     <system>jira</system>
@@ -148,6 +148,12 @@ under the License.
     <mavenVersion>3.1.1</mavenVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
+    <!-- Not sure if this is intentional but MojoRule has an @Override annotation from the interface which is
+         only allowed starting in Java 1.6. So if the author intends only 1.5 then that @Override annotation needs
+         to be removed.
+     -->
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>    
   </properties>
 
   <dependencyManagement>
@@ -227,44 +233,36 @@ under the License.
             </systemProperties>
           </configuration>
         </plugin>
-        <!-- Not sure if this is intentional but MojoRule has an @Override annotation from the interface which is
-             only allowed starting in Java 1.6. So if the author intends only 1.5 then that @Override annotation needs
-             to be removed.
-         -->        
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.3</version><!-- TODO remove when upgrading parent to 24 -->
           <configuration>
             <topSiteURL>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/content/${maven.site.path}</topSiteURL>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <configuration>
-            <checkoutDirectory>${maven.site.cache}/${maven.site.path}</checkoutDirectory>
-            <tryUpdate>true</tryUpdate>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <configuration>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin><!-- TODO remove when upgrading to maven-parent 25 -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-bytecode-version</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <enforceBytecodeVersion>
+                  <maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+                </enforceBytecodeVersion>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <inherited>false</inherited>
@@ -279,27 +277,4 @@ under the License.
       </plugin>
     </plugins>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.7</version>
-      </plugin>
-    </plugins>
-  </reporting>
-  <profiles>
-    <profile>
-      <id>reporting</id>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9</version>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-  </profiles>
 </project>
