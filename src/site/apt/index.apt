@@ -37,8 +37,4 @@ Maven Plugin Testing
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-testing-harness/index.html}maven-plugin-testing-harness}} | Framework to test Maven Plugins with Maven Mock projects.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-testing-tools/index.html}maven-plugin-testing-tools}}     | A set of useful tools to help the Maven Plugin testing.
-*-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-test-tools/index.html}maven-test-tools}}                         | Framework to test Maven Plugins with {{{http://www.easymock.org/}Easymock}} objects.
-*-----------------------------------------------------------------------------+---------------------------------------------------------+
 

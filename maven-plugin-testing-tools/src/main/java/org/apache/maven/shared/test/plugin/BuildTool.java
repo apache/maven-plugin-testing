@@ -45,6 +45,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
  * @author jdcasey
  * @version $Id$
  */
+@Deprecated
 @Component( role = BuildTool.class )
 public class BuildTool
     implements Initializable, Disposable

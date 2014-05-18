@@ -70,6 +70,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * @author jdcasey
  * @version $Id$
  */
+@Deprecated
 @Component( role = RepositoryTool.class )
 public class RepositoryTool
     implements Contextualizable

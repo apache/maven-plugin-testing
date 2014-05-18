@@ -37,6 +37,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  * @version $Id$
  */
+@Deprecated
 public class TestFileManager
 {
     /** Temp dir from "java.io.tmpdir" property */

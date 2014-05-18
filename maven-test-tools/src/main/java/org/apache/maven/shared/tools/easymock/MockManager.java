@@ -30,6 +30,7 @@ import org.easymock.IMocksControl;
  * @version $Id$
  * @see IMocksControl
  */
+@Deprecated
 public class MockManager
 {
     private List<IMocksControl> mockControls = new ArrayList<IMocksControl>();

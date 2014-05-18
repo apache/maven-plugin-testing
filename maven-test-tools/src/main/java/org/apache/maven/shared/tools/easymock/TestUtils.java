@@ -32,6 +32,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  * @version $Id$
  */
+@Deprecated
 public final class TestUtils
 {
     private TestUtils()

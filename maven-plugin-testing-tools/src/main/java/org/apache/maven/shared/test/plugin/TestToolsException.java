@@ -24,6 +24,7 @@ package org.apache.maven.shared.test.plugin;
  *
  * @version $Id$
  */
+@Deprecated
 public class TestToolsException
     extends Exception
 {

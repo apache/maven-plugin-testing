@@ -44,6 +44,7 @@ import java.io.IOException;
  * @author jdcasey
  * @version $Id$
  */
+@Deprecated
 @Component( role = PluginTestTool.class )
 public class PluginTestTool
 {
