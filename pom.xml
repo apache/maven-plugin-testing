@@ -145,7 +145,7 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.1.1</mavenVersion>
+    <mavenVersion>3.2.1</mavenVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <!-- Not sure if this is intentional but MojoRule has an @Override annotation from the interface which is
