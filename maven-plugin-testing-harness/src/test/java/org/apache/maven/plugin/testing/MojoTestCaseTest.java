@@ -22,7 +22,9 @@ package org.apache.maven.plugin.testing;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
@@ -138,5 +140,24 @@ public class MojoTestCaseTest
         assertEquals( "myValueOne", (String)getVariableValueFromObject( mojo, "keyOne" ) );
 
     }
+
+    public void testPluginWithoutConfiguration() throws Exception {
+        pom =
+                "<project>" +
+                        "<build>" +
+                        "<plugins>" +
+                        "<plugin>" +
+                        "<artifactId>maven-simple-plugin</artifactId>" +
+                        "</plugin>" +
+                        "</plugins>" +
+                        "</build>" +
+                        "</project>";
+
+        pomDom = Xpp3DomBuilder.build( new StringReader( pom ) );
+
+        pluginConfiguration = extractPluginConfiguration( "maven-simple-plugin", pomDom );
+        assertNull("Plugin may be without configuration", pluginConfiguration);
+    }
+
 
 }
