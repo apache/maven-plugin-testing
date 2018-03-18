@@ -36,7 +36,7 @@ under the License.
 
   <name>Maven Plugin Testing</name>
   <description>The Maven Plugin Testing contains the necessary modules to be able to test Maven Plugins.</description>
-  <url>http://maven.apache.org/plugin-testing/</url>
+  <url>https://maven.apache.org/plugin-testing/</url>
   <inceptionYear>2008</inceptionYear>
 
   <mailingLists>
@@ -124,9 +124,9 @@ under the License.
   </modules>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
-    <url>https://github.com/apache/maven-plugin-testing/</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
+    <url>https://github.com/apache/maven-plugin-testing/tree/${project.scm.tag}</url>
     <tag>master</tag>
   </scm>
   <issueManagement>
@@ -135,7 +135,7 @@ under the License.
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/maven-plugin-testing/</url>
+    <url>https://builds.apache.org/job/maven-box/job/maven-plugin-testing/</url>
   </ciManagement>
   <distributionManagement>
     <site>
