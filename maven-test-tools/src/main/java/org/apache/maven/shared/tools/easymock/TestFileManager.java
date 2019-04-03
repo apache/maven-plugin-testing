@@ -110,9 +110,11 @@ public class TestFileManager
      */
     public synchronized File createTempDir()
     {
+        final int sleepDefault = 20;
+
         try
         {
-            Thread.sleep( 20 );
+            Thread.sleep( sleepDefault );
         }
         catch ( InterruptedException e )
         {

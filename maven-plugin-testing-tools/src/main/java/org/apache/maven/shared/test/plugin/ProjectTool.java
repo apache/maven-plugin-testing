@@ -240,7 +240,9 @@ public class ProjectTool
         try
         {
             ProjectBuildingRequest request = new DefaultProjectBuildingRequest();
-            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local", new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(), "default", null, null ) );
+            request.setLocalRepository( artifactRepositoryFactory.createArtifactRepository( "local",
+                                            new File( "target/localrepo" ).getCanonicalFile().toURL().toExternalForm(),
+                                            "default", null, null ) );
             request.setRepositorySession( MavenRepositorySystemUtils.newSession() );
             MavenProject project = projectBuilder.build( pomInfo.getPomFile(), request ).getProject();
 
@@ -256,21 +258,18 @@ public class ProjectTool
         }
         catch ( ProjectBuildingException e )
         {
-            throw new TestToolsException(
-                                          "Error building MavenProject instance from test pom: " + pomInfo.getPomFile(),
+            throw new TestToolsException( "Error building MavenProject instance from test pom: " + pomInfo.getPomFile(),
                                           e );
         }
         catch ( UnknownRepositoryLayoutException e )
         {
-            throw new TestToolsException(
-                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
-                                         e );
+            throw new TestToolsException( "Error building ArtifactRepository instance from test pom: "
+                + pomInfo.getPomFile(), e );
         }
         catch ( IOException e )
         {
-            throw new TestToolsException(
-                                         "Error building ArtifactRepository instance from test pom: " + pomInfo.getPomFile(),
-                                         e );
+            throw new TestToolsException( "Error building ArtifactRepository instance from test pom: "
+                + pomInfo.getPomFile(), e );
         }
     }
 
