@@ -117,9 +117,9 @@ under the License.
     <maven>3.1.1</maven>
   </prerequisites>
 
+  <!-- this project used to be a multimodule project. For easy of history comparison structure is kept -->
   <modules>
     <module>maven-plugin-testing-harness</module>
-    <module>maven-test-tools</module>
   </modules>
 
   <scm>
