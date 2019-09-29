@@ -158,46 +158,39 @@ under the License.
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
         <version>${mavenVersion}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-compat</artifactId>
         <version>${mavenVersion}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model</artifactId>
         <version>${mavenVersion}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
         <version>${mavenVersion}</version>
-        <scope>provided</scope>
-      </dependency>    
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
         <version>${mavenVersion}</version>
-        <scope>provided</scope>
-      </dependency>    
+      </dependency>
     
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>3.0.15</version>
-        <scope>provided</scope>
-      </dependency>    
+      </dependency>
     
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.11</version>
-        <scope>provided</scope>
-      </dependency>    
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
