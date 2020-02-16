@@ -50,7 +50,8 @@ public class StubArtifactCollector
 
     @Override
     public ArtifactResolutionResult collect( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                             Map managedVersions, ArtifactResolutionRequest repositoryRequest,
+                                             Map<String, Artifact> managedVersions,
+                                             ArtifactResolutionRequest repositoryRequest,
                                              ArtifactMetadataSource source, ArtifactFilter filter,
                                              List<ResolutionListener> listeners,
                                              List<ConflictResolver> conflictResolvers )
@@ -60,7 +61,7 @@ public class StubArtifactCollector
 
     @Override
     public ArtifactResolutionResult collect( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                             Map managedVersions, ArtifactRepository localRepository,
+                                             Map<String, Artifact> managedVersions, ArtifactRepository localRepository,
                                              List<ArtifactRepository> remoteRepositories,
                                              ArtifactMetadataSource source, ArtifactFilter filter,
                                              List<ResolutionListener> listeners,
@@ -71,7 +72,7 @@ public class StubArtifactCollector
 
     @Override
     public ArtifactResolutionResult collect( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                             Map managedVersions, ArtifactRepository localRepository,
+                                             Map<String, Artifact> managedVersions, ArtifactRepository localRepository,
                                              List<ArtifactRepository> remoteRepositories,
                                              ArtifactMetadataSource source, ArtifactFilter filter,
                                              List<ResolutionListener> listeners )

@@ -150,7 +150,8 @@ public class StubArtifactResolver
      */
     @Override
     public ArtifactResolutionResult resolveTransitively( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                                         Map managedVersions, ArtifactRepository localRepository,
+                                                         Map<String, Artifact> managedVersions,
+                                                         ArtifactRepository localRepository,
                                                          List<ArtifactRepository> remoteRepositories,
                                                          ArtifactMetadataSource source )
         throws ArtifactResolutionException, ArtifactNotFoundException
@@ -164,7 +165,8 @@ public class StubArtifactResolver
      */
     @Override
     public ArtifactResolutionResult resolveTransitively( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                                         Map managedVersions, ArtifactRepository localRepository,
+                                                         Map<String, Artifact> managedVersions,
+                                                         ArtifactRepository localRepository,
                                                          List<ArtifactRepository> remoteRepositories,
                                                          ArtifactMetadataSource source, ArtifactFilter filter )
         throws ArtifactResolutionException, ArtifactNotFoundException
@@ -178,7 +180,8 @@ public class StubArtifactResolver
      */
     @Override
     public ArtifactResolutionResult resolveTransitively( Set<Artifact> artifacts, Artifact originatingArtifact,
-                                                         Map managedVersions, ArtifactRepository localRepository,
+                                                         Map<String, Artifact> managedVersions,
+                                                         ArtifactRepository localRepository,
                                                          List<ArtifactRepository> remoteRepositories,
                                                          ArtifactMetadataSource source, ArtifactFilter filter,
                                                          List<ResolutionListener> listeners )
@@ -207,11 +210,6 @@ public class StubArtifactResolver
     {
         // TODO Auto-generated method stub
         
-    }
-    
-    public ArtifactResolutionResult collect( ArtifactResolutionRequest request )
-    {
-        return null;
     }
 
     @Override

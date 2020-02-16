@@ -144,8 +144,8 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
-    <plexusVersion>1.5.5</plexusVersion>
+    <mavenVersion>3.6.0</mavenVersion>
+    <plexusVersion>2.0.0</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>7</javaVersion>
   </properties>
@@ -177,27 +177,21 @@ under the License.
         <artifactId>maven-plugin-api</artifactId>
         <version>${mavenVersion}</version>
         <scope>provided</scope>
-      </dependency>    
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-aether-provider</artifactId>
-        <version>${mavenVersion}</version>
-        <scope>provided</scope>
-      </dependency>    
+      </dependency>
     
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>3.0.15</version>
         <scope>provided</scope>
-      </dependency>    
-    
+      </dependency>
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>provided</scope>
-      </dependency>    
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
