@@ -144,6 +144,7 @@ under the License.
   </distributionManagement>
 
   <properties>
+    <surefire.version>2.22.2</surefire.version>
     <mavenVersion>3.2.5</mavenVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
