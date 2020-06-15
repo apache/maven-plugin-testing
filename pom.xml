@@ -178,7 +178,7 @@ under the License.
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.15</version>
+        <version>3.3.0</version>
         <scope>provided</scope>
       </dependency>    
     
@@ -192,15 +192,11 @@ under the License.
   </dependencyManagement>
 
   <dependencies>
-  
-    <!-- misc -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    
   </dependencies>
-  
   
   <build>
     <pluginManagement>
