@@ -145,32 +145,35 @@ public abstract class AbstractMojoTestCase
                     MAVEN_VERSION == null || new DefaultArtifactVersion( "3.2.3" ).compareTo( MAVEN_VERSION ) < 0 );
 
         configurator = getContainer().lookup( ComponentConfigurator.class, "basic" );
-
-        InputStream is = getClass().getResourceAsStream( "/" + getPluginDescriptorLocation() );
-        Reader reader = new BufferedReader( new XmlStreamReader( is ) );
         Context context = container.getContext();
         Map<Object, Object> map = context.getContextData();
-        InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader, map, "${", "}" );
-        PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build( interpolationFilterReader );
 
-        Artifact artifact =
-            lookup( RepositorySystem.class ).createArtifact( pluginDescriptor.getGroupId(),
-                                                             pluginDescriptor.getArtifactId(),
-                                                             pluginDescriptor.getVersion(), ".jar" );
-
-        artifact.setFile( getPluginArtifactFile() );
-        pluginDescriptor.setPluginArtifact( artifact );
-        pluginDescriptor.setArtifacts( Arrays.asList( artifact ) );
-
-        for ( ComponentDescriptor<?> desc : pluginDescriptor.getComponents() )
+        try ( InputStream is = getClass().getResourceAsStream( "/" + getPluginDescriptorLocation() );
+              Reader reader = new BufferedReader( new XmlStreamReader( is ) ); 
+              InterpolationFilterReader interpolationReader = new InterpolationFilterReader( reader, map, "${", "}" ) )
         {
-            getContainer().addComponentDescriptor( desc );
-        }
-
-        mojoDescriptors = new HashMap<>();
-        for ( MojoDescriptor mojoDescriptor : pluginDescriptor.getMojos() )
-        {
-            mojoDescriptors.put( mojoDescriptor.getGoal(), mojoDescriptor );
+            
+            PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build( interpolationReader );
+    
+            Artifact artifact =
+                lookup( RepositorySystem.class ).createArtifact( pluginDescriptor.getGroupId(),
+                                                                 pluginDescriptor.getArtifactId(),
+                                                                 pluginDescriptor.getVersion(), ".jar" );
+    
+            artifact.setFile( getPluginArtifactFile() );
+            pluginDescriptor.setPluginArtifact( artifact );
+            pluginDescriptor.setArtifacts( Arrays.asList( artifact ) );
+    
+            for ( ComponentDescriptor<?> desc : pluginDescriptor.getComponents() )
+            {
+                getContainer().addComponentDescriptor( desc );
+            }
+    
+            mojoDescriptors = new HashMap<>();
+            for ( MojoDescriptor mojoDescriptor : pluginDescriptor.getMojos() )
+            {
+                mojoDescriptors.put( mojoDescriptor.getGoal(), mojoDescriptor );
+            }
         }
     }
 
@@ -572,11 +575,12 @@ public abstract class AbstractMojoTestCase
     protected PlexusConfiguration extractPluginConfiguration( String artifactId, File pom )
         throws Exception
     {
-        Reader reader = ReaderFactory.newXmlReader( pom );
-
-        Xpp3Dom pomDom = Xpp3DomBuilder.build( reader );
-
-        return extractPluginConfiguration( artifactId, pomDom );
+        
+        try ( Reader reader = ReaderFactory.newXmlReader( pom ) )
+        {
+            Xpp3Dom pomDom = Xpp3DomBuilder.build( reader );
+            return extractPluginConfiguration( artifactId, pomDom );
+        }
     }
 
     /**
