@@ -72,6 +72,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -146,12 +147,10 @@ public abstract class AbstractMojoTestCase
         configurator = getContainer().lookup( ComponentConfigurator.class, "basic" );
 
         InputStream is = getClass().getResourceAsStream( "/" + getPluginDescriptorLocation() );
-
-        XmlStreamReader reader = new XmlStreamReader( is );
-
-        InterpolationFilterReader interpolationFilterReader =
-            new InterpolationFilterReader( new BufferedReader( reader ), container.getContext().getContextData() );
-
+        Reader reader = new BufferedReader( new XmlStreamReader( is ) );
+        Context context = container.getContext();
+        Map<Object, Object> map = context.getContextData();
+        InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader, map, "${", "}" );
         PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build( interpolationFilterReader );
 
         Artifact artifact =
