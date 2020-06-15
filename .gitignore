@@ -3,6 +3,7 @@ target
 .classpath
 .project
 .settings
+.checkstyle
 #idea
 *.iml
 .idea
