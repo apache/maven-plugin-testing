@@ -122,7 +122,7 @@ under the License.
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/maven-box/job/maven-plugin-testing/</url>
+    <url>https://ci-builds.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/</url>
   </ciManagement>
   <distributionManagement>
     <site>
