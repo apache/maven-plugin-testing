@@ -101,10 +101,6 @@ under the License.
     </mailingList>
   </mailingLists>
 
-  <prerequisites>
-    <maven>3.1.1</maven>
-  </prerequisites>
-
   <!-- this project used to be a multimodule project. For easy of history comparison structure is kept -->
   <modules>
     <module>maven-plugin-testing-harness</module>
@@ -134,7 +130,6 @@ under the License.
   <properties>
     <surefire.version>2.22.2</surefire.version>
     <mavenVersion>3.2.5</mavenVersion>
-    <plexusVersion>1.5.5</plexusVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>7</javaVersion>
     <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
@@ -174,17 +169,17 @@ under the License.
         <version>${mavenVersion}</version>
         <scope>provided</scope>
       </dependency>    
-    
+
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.0</version> <!-- 3.4.x is Java8 -->
       </dependency>    
     
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>4.13.2</version>
         <scope>provided</scope>
       </dependency>    
     </dependencies>
