@@ -24,8 +24,7 @@ import java.io.File;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.apache.maven.artifact.repository.DefaultArtifactRepository;
-import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
+import org.eclipse.aether.repository.LocalRepository;
 
 /**
  * Stub for {@link ExpressionEvaluator}
@@ -102,8 +101,7 @@ public class ResolverExpressionEvaluatorStub
         else if ( "localRepository".equals( expression ) )
         {
             File localRepo = new File( PlexusTestCase.getBasedir(), "target/local-repo" );
-            return new DefaultArtifactRepository( "localRepository", "file://" + localRepo.getAbsolutePath(),
-                                                  new DefaultRepositoryLayout() );
+            return new LocalRepository( "file://" + localRepo.getAbsolutePath() );
         }
         else
         {

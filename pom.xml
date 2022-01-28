@@ -25,7 +25,7 @@ under the License.
   <parent>
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>34</version>
+    <version>35-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -129,9 +129,9 @@ under the License.
 
   <properties>
     <surefire.version>2.22.2</surefire.version>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>4.0.0-alpha-1-SNAPSHOT</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
-    <javaVersion>7</javaVersion>
+    <javaVersion>8</javaVersion>
     <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
   </properties>
 
@@ -165,7 +165,7 @@ under the License.
       </dependency>    
       <dependency>
         <groupId>org.apache.maven</groupId>
-        <artifactId>maven-aether-provider</artifactId>
+        <artifactId>maven-resolver-provider</artifactId>
         <version>${mavenVersion}</version>
         <scope>provided</scope>
       </dependency>    
