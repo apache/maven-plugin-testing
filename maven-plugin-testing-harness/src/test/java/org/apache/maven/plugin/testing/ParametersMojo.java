@@ -21,7 +21,6 @@ package org.apache.maven.plugin.testing;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 
 public class ParametersMojo
     extends AbstractMojo
@@ -36,7 +35,7 @@ public class ParametersMojo
 
     @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
     }
 }
