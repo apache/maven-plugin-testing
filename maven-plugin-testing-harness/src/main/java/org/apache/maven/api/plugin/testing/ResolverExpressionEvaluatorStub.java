@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,11 +21,11 @@ package org.apache.maven.plugin.testing;
 
 import java.io.File;
 
-import org.apache.maven.artifact.repository.MavenArtifactRepository;
-import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.testing.PlexusExtension;
+import org.eclipse.aether.repository.LocalRepository;
 
 /**
  * Stub for {@link ExpressionEvaluator}
@@ -83,7 +83,7 @@ public class ResolverExpressionEvaluatorStub
 
         if ( "basedir".equals( expression ) || "project.basedir".equals( expression ) )
         {
-            return PlexusTestCase.getBasedir();
+            return PlexusExtension.getBasedir();
         }
         else if ( expression.startsWith( "basedir" ) || expression.startsWith( "project.basedir" ) )
         {
@@ -102,8 +102,7 @@ public class ResolverExpressionEvaluatorStub
         else if ( "localRepository".equals( expression ) )
         {
             File localRepo = new File( PlexusTestCase.getBasedir(), "target/local-repo" );
-            return new MavenArtifactRepository( "localRepository", "file://" + localRepo.getAbsolutePath(),
-                    new DefaultRepositoryLayout(), null, null );
+            return new LocalRepository( "file://" + localRepo.getAbsolutePath() );
         }
         else
         {
@@ -125,7 +124,7 @@ public class ResolverExpressionEvaluatorStub
     @Override
     public File alignToBaseDirectory( File file )
     {
-        if ( file.getAbsolutePath().startsWith( PlexusTestCase.getBasedir() ) )
+        if ( file.getAbsolutePath().startsWith( PlexusExtension.getBasedir() ) )
         {
             return file;
         }
@@ -135,7 +134,7 @@ public class ResolverExpressionEvaluatorStub
         }
         else
         {
-            return new File( PlexusTestCase.getBasedir(), file.getPath() );
+            return new File( PlexusExtension.getBasedir(), file.getPath() );
         }
     }
 }

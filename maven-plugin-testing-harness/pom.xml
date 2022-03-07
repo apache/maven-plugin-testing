@@ -66,6 +66,22 @@ under the License.
       <artifactId>plexus-archiver</artifactId>
       <version>4.2.5</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core-api</artifactId>
+      <version>4.0.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-testing</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

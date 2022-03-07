@@ -53,7 +53,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
-import org.apache.maven.plugin.internal.MojoLogWrapper;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
@@ -258,7 +257,7 @@ public abstract class AbstractMojoTestCase
         {
             List<Module> modules = new ArrayList<>();
             addGuiceModules( modules );
-            container = new DefaultPlexusContainer( cc, modules.toArray( new Module[modules.size()] ) );
+            container = new DefaultPlexusContainer( cc, modules.toArray( new Module[0] ) );
         }
         catch ( PlexusContainerException e )
         {

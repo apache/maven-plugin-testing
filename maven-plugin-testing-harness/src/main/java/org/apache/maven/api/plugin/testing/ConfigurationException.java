@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,24 +19,39 @@ package org.apache.maven.plugin.testing;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
-public class ParametersMojo
-    extends AbstractMojo
+/**
+ * ConfigurationException
+ *
+ * @author jesse
+ */
+public class ConfigurationException
+    extends Exception
 {
-    public String plain;
+    /** serialVersionUID */
+    static final long serialVersionUID = -6180939638742159065L;
 
-    public String withProperty;
-
-    public String withDefault;
-
-    public String withPropertyAndDefault;
-
-    @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
+    /**
+     * @param message The detailed message.
+     */
+    public ConfigurationException( String message )
     {
+        super( message );
+    }
+
+    /**
+     * @param cause The detailed cause.
+     */
+    public ConfigurationException( Throwable cause )
+    {
+        super( cause );
+    }
+
+    /**
+     * @param message The detailed message.
+     * @param cause The detailed cause.
+     */
+    public ConfigurationException( String message, Throwable cause )
+    {
+        super( message, cause );
     }
 }
