@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,12 +20,13 @@ package org.apache.maven.plugin.testing;
  */
 
 import java.io.File;
+import java.util.Map;
 
-import org.apache.maven.artifact.repository.MavenArtifactRepository;
-import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.testing.PlexusExtension;
+import org.eclipse.aether.repository.LocalRepository;
 
 /**
  * Stub for {@link ExpressionEvaluator}
@@ -35,6 +36,14 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 public class ResolverExpressionEvaluatorStub
     implements ExpressionEvaluator
 {
+
+    private final Map<String, Object> properties;
+
+    public ResolverExpressionEvaluatorStub( Map<String, Object> properties )
+    {
+        this.properties = properties;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Object evaluate( String expr )
@@ -75,39 +84,34 @@ public class ResolverExpressionEvaluatorStub
             }
 
             // Was not an expression
-            if ( expression.indexOf( "$$" ) > -1 )
-            {
-                return expression.replaceAll( "\\$\\$", "\\$" );
-            }
-        }
-
-        if ( "basedir".equals( expression ) || "project.basedir".equals( expression ) )
-        {
-            return PlexusTestCase.getBasedir();
-        }
-        else if ( expression.startsWith( "basedir" ) || expression.startsWith( "project.basedir" ) )
-        {
-            int pathSeparator = expression.indexOf( "/" );
-
-            if ( pathSeparator > 0 )
-            {
-                value = PlexusTestCase.getBasedir() + expression.substring( pathSeparator );
-            }
-            else
-            {
-                System.out.println( "Got expression '" + expression + "' that was not recognised" );
-            }
-            return value;
-        }
-        else if ( "localRepository".equals( expression ) )
-        {
-            File localRepo = new File( PlexusTestCase.getBasedir(), "target/local-repo" );
-            return new MavenArtifactRepository( "localRepository", "file://" + localRepo.getAbsolutePath(),
-                    new DefaultRepositoryLayout(), null, null );
+            return expression.contains( "$$" )
+                    ? expression.replaceAll( "\\$\\$", "\\$" )
+                    : expression;
         }
         else
         {
-            return expr;
+            if ( "basedir".equals( expression ) || "project.basedir".equals( expression ) )
+            {
+                value = PlexusExtension.getBasedir();
+            }
+            else if ( expression.startsWith( "basedir" ) || expression.startsWith( "project.basedir" ) )
+            {
+                int pathSeparator = expression.indexOf( "/" );
+                if ( pathSeparator > 0 )
+                {
+                    value = PlexusTestCase.getBasedir() + expression.substring( pathSeparator );
+                }
+            }
+            else if ( "localRepository".equals( expression ) )
+            {
+                File localRepo = new File( PlexusTestCase.getBasedir(), "target/local-repo" );
+                return new LocalRepository( "file://" + localRepo.getAbsolutePath() );
+            }
+            if ( value == null && properties != null && properties.containsKey( expression ) )
+            {
+                value = properties.get( expression );
+            }
+            return value;
         }
     }
 
@@ -125,7 +129,7 @@ public class ResolverExpressionEvaluatorStub
     @Override
     public File alignToBaseDirectory( File file )
     {
-        if ( file.getAbsolutePath().startsWith( PlexusTestCase.getBasedir() ) )
+        if ( file.getAbsolutePath().startsWith( PlexusExtension.getBasedir() ) )
         {
             return file;
         }
@@ -135,7 +139,7 @@ public class ResolverExpressionEvaluatorStub
         }
         else
         {
-            return new File( PlexusTestCase.getBasedir(), file.getPath() );
+            return new File( PlexusExtension.getBasedir(), file.getPath() );
         }
     }
 }
