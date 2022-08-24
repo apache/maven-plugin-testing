@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.maven.api.Artifact;
 import org.apache.maven.api.LocalRepository;
@@ -57,6 +58,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -207,6 +209,11 @@ public class SessionStub
                     return result;
                 } );
 
+        Properties sysProps = new Properties();
+        Properties usrProps = new Properties();
+        doReturn( sysProps ).when( session ).getSystemProperties();
+        doReturn( usrProps ).when( session ).getUserProperties();
+
         when( session.getLocalRepository() ).thenReturn( localRepository );
         when( session.getService( RepositoryFactory.class ) ).thenReturn( repositoryFactory );
         when( session.getService( ProjectBuilder.class ) ).thenReturn( projectBuilder );
@@ -262,6 +269,8 @@ public class SessionStub
                     String url = iom.getArgument( 1, String.class );
                     return session.getService( RepositoryFactory.class ).createRemote( id, url );
                 } );
+        doAnswer( iom -> artifactManager.getPath( iom.getArgument( 0, Artifact.class ) ) )
+                .when( session ).getArtifactPath( any() );
 
         when( session.withLocalRepository( any() ) )
                 .thenAnswer( iom -> getMockSession( iom.getArgument( 0, LocalRepository.class ) ) );

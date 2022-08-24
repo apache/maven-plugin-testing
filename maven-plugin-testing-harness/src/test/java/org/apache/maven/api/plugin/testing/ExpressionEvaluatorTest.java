@@ -21,6 +21,9 @@ package org.apache.maven.api.plugin.testing;
 
 import javax.inject.Named;
 
+import java.nio.file.Paths;
+import java.util.Properties;
+
 import com.google.inject.Provides;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.plugin.MojoException;
@@ -31,6 +34,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 
 /**
  * @author Edwin Punzalan
@@ -96,7 +101,11 @@ public class ExpressionEvaluatorTest
     @Provides @SuppressWarnings( "unused" )
     Session session()
     {
-        return SessionStub.getMockSession( LOCAL_REPO );
+        Session session = SessionStub.getMockSession( LOCAL_REPO );
+        doReturn( new Properties() ).when( session ).getSystemProperties();
+        doReturn( new Properties() ).when( session ).getUserProperties();
+        doAnswer( iom -> Paths.get( MojoExtension.getBasedir() ) ).when( session ).getExecutionRootDirectory();
+        return session;
     }
 
 }

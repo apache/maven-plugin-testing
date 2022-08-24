@@ -20,6 +20,7 @@ package org.apache.maven.api.plugin.testing;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -35,13 +36,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.inject.internal.ProviderMethodsModule;
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.Mojo;
 import org.apache.maven.api.xml.Dom;
+import org.apache.maven.configuration.internal.EnhancedComponentConfigurator;
+import org.apache.maven.internal.impl.DefaultLog;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
+import org.apache.maven.plugin.PluginParameterExpressionEvaluatorV4;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -49,8 +57,11 @@ import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.expression.TypeAwareExpressionEvaluator;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.testing.PlexusExtension;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -63,6 +74,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -86,10 +98,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
         {
             InjectMojo injectMojo = parameterContext.findAnnotation( InjectMojo.class ).orElseGet(
                     () -> parameterContext.getDeclaringExecutable().getAnnotation( InjectMojo.class ) );
+            List<MojoParameter> mojoParameters = parameterContext.findRepeatableAnnotations( MojoParameter.class );
             Class<?> holder = parameterContext.getTarget().get().getClass();
             PluginDescriptor descriptor = extensionContext.getStore( ExtensionContext.Namespace.GLOBAL )
                     .get( PluginDescriptor.class, PluginDescriptor.class );
-            return lookupMojo( holder, injectMojo, descriptor );
+            return lookupMojo( holder, injectMojo, mojoParameters, descriptor );
         }
         catch ( Exception e )
         {
@@ -115,12 +128,15 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
                 {
                     binder.install( ProviderMethodsModule.forObject( context.getRequiredTestInstance() ) );
                     binder.requestInjection( context.getRequiredTestInstance() );
+                    binder.bind( Log.class ).toInstance( new DefaultLog(
+                            LoggerFactory.getLogger( "anonymous" ) ) );
                 } );
 
         Map<Object, Object> map = getContainer().getContext().getContextData();
 
         ClassLoader classLoader = context.getRequiredTestClass().getClassLoader();
-        try ( InputStream is = classLoader.getResourceAsStream( getPluginDescriptorLocation() );
+        try ( InputStream is = Objects.requireNonNull( classLoader.getResourceAsStream( getPluginDescriptorLocation() ),
+                                        "Unable to find plugin descriptor: " + getPluginDescriptorLocation() );
               Reader reader = new BufferedReader( new XmlStreamReader( is ) );
               InterpolationFilterReader interpolationReader = new InterpolationFilterReader( reader, map, "${", "}" ) )
         {
@@ -151,7 +167,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
         return "META-INF/maven/plugin.xml";
     }
 
-    private Mojo lookupMojo( Class<?> holder, InjectMojo injectMojo, PluginDescriptor descriptor ) throws Exception
+    private Mojo lookupMojo( Class<?> holder, InjectMojo injectMojo, List<MojoParameter> mojoParameters,
+                             PluginDescriptor descriptor ) throws Exception
     {
         String goal = injectMojo.goal();
         String pom = injectMojo.pom();
@@ -181,6 +198,15 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
             pomDom = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( path.toFile() ) );
         }
         Dom pluginConfiguration = extractPluginConfiguration( coord[1], pomDom );
+        if ( !mojoParameters.isEmpty() )
+        {
+            List<Dom> children = mojoParameters.stream()
+                    .map( mp -> new org.apache.maven.internal.xml.Xpp3Dom( mp.name(), mp.value() ) )
+                    .collect( Collectors.toList() );
+            Dom config = new org.apache.maven.internal.xml.Xpp3Dom( "configuration",
+                    null, null, children, null );
+            pluginConfiguration = Dom.merge( config, pluginConfiguration );
+        }
         Mojo mojo = lookupMojo( coord, pluginConfiguration, descriptor );
         return mojo;
     }
@@ -223,10 +249,33 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
         }
         if ( pluginConfiguration != null )
         {
-            Map<String, Object> properties = new HashMap<>();
-            properties.put( "session", getContainer().lookup( Session.class ) );
-            ExpressionEvaluator evaluator = new ResolverExpressionEvaluatorStub( properties );
-            ComponentConfigurator configurator = getContainer().lookup( ComponentConfigurator.class, "basic" );
+            Session session = getContainer().lookup( Session.class );
+            Project project;
+            try
+            {
+                project = getContainer().lookup( Project.class );
+            }
+            catch ( ComponentLookupException e )
+            {
+                project = null;
+            }
+            org.apache.maven.plugin.MojoExecution mojoExecution;
+            try
+            {
+                MojoExecution me = getContainer().lookup( MojoExecution.class );
+                mojoExecution = new org.apache.maven.plugin.MojoExecution(
+                        new org.apache.maven.model.Plugin( me.getPlugin() ),
+                        me.getGoal(),
+                        me.getExecutionId()
+                );
+            }
+            catch ( ComponentLookupException e )
+            {
+                mojoExecution = null;
+            }
+            ExpressionEvaluator evaluator = new WrapEvaluator( getContainer(),
+                    new PluginParameterExpressionEvaluatorV4( session, project, mojoExecution ) );
+            ComponentConfigurator configurator = new EnhancedComponentConfigurator();
             configurator.configureComponent( mojo, new XmlPlexusConfiguration( new Xpp3Dom( pluginConfiguration ) ),
                     evaluator, getContainer().getContainerRealm() );
         }
@@ -392,6 +441,62 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
         Objects.requireNonNull( field, "Field " + variable + " not found" );
         field.setAccessible( true );
         field.set( object, value );
+    }
+
+    static class WrapEvaluator implements TypeAwareExpressionEvaluator
+    {
+
+        private final PlexusContainer container;
+        private final TypeAwareExpressionEvaluator evaluator;
+
+        WrapEvaluator( PlexusContainer container, TypeAwareExpressionEvaluator evaluator )
+        {
+            this.container = container;
+            this.evaluator = evaluator;
+        }
+
+        @Override
+        public Object evaluate( String expression ) throws ExpressionEvaluationException
+        {
+            return evaluate( expression, null );
+        }
+
+        @Override
+        public Object evaluate( String expression, Class<?> type ) throws ExpressionEvaluationException
+        {
+            Object value = evaluator.evaluate( expression, type );
+            if ( value == null )
+            {
+                String expr = stripTokens( expression );
+                if ( expr != null )
+                {
+                    try
+                    {
+                        value = container.lookup( type, expr );
+                    }
+                    catch ( ComponentLookupException e )
+                    {
+                        // nothing
+                    }
+                }
+            }
+            return value;
+        }
+
+        private String stripTokens( String expr )
+        {
+            if ( expr.startsWith( "${" ) && expr.endsWith( "}" ) )
+            {
+                return expr.substring( 2, expr.length() - 1 );
+            }
+            return null;
+        }
+
+        @Override
+        public File alignToBaseDirectory( File path )
+        {
+            return evaluator.alignToBaseDirectory( path );
+        }
     }
 
 }

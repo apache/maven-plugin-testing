@@ -25,6 +25,7 @@ import java.util.Map;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.expression.TypeAwareExpressionEvaluator;
 import org.codehaus.plexus.testing.PlexusExtension;
 import org.eclipse.aether.repository.LocalRepository;
 
@@ -34,7 +35,7 @@ import org.eclipse.aether.repository.LocalRepository;
  * @author jesse
  */
 public class ResolverExpressionEvaluatorStub
-    implements ExpressionEvaluator
+    implements TypeAwareExpressionEvaluator
 {
 
     private final Map<String, Object> properties;
@@ -47,6 +48,14 @@ public class ResolverExpressionEvaluatorStub
     /** {@inheritDoc} */
     @Override
     public Object evaluate( String expr )
+            throws ExpressionEvaluationException
+    {
+        return evaluate( expr, null );
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object evaluate( String expr, Class<?> type )
         throws ExpressionEvaluationException
     {
 
