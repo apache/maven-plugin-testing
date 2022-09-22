@@ -19,25 +19,23 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
+import org.apache.maven.api.Type;
+import org.apache.maven.api.Version;
 import org.apache.maven.api.annotations.Nonnull;
 
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.apache.maven.api.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.internal.impl.DefaultVersionParser;
 
 /**
  *
  */
 public class ArtifactStub implements Artifact
 {
-    private static final String SNAPSHOT = "SNAPSHOT";
-
-    private static final Pattern SNAPSHOT_TIMESTAMP = Pattern.compile( "^(.*-)?([0-9]{8}\\.[0-9]{6}-[0-9]+)$" );
-
     private String groupId;
     private String artifactId;
     private String classifier;
@@ -101,9 +99,9 @@ public class ArtifactStub implements Artifact
 
     @Nonnull
     @Override
-    public String getVersion()
+    public Version getVersion()
     {
-        return version;
+        return new DefaultVersionParser().parseVersion( version );
     }
 
     public void setVersion( String version )
@@ -130,6 +128,43 @@ public class ArtifactStub implements Artifact
         return version != null ? ArtifactUtils.toSnapshotVersion( version ) : null;
     }
 
+    @Override
+    public Type getType()
+    {
+        return new Type()
+        {
+            @Override
+            public String getName()
+            {
+                return extension;
+            }
+
+            @Override
+            public String getExtension()
+            {
+                return extension;
+            }
+
+            @Override
+            public String getClassifier()
+            {
+                return null;
+            }
+
+            @Override
+            public boolean isIncludesDependencies()
+            {
+                return false;
+            }
+
+            @Override
+            public boolean isAddedToClasspath()
+            {
+                return false;
+            }
+        };
+    }
+
     @Nonnull
     @Override
     public Optional<Path> getPath()
@@ -140,12 +175,6 @@ public class ArtifactStub implements Artifact
     public void setPath( Path path )
     {
         this.path = path;
-    }
-
-    @Override
-    public boolean isSnapshot()
-    {
-        return version.endsWith( SNAPSHOT ) || SNAPSHOT_TIMESTAMP.matcher( version ).matches();
     }
 
     @Override
