@@ -282,9 +282,9 @@ public class SessionStub
         StringBuilder path = new StringBuilder( 128 );
         path.append( artifact.getGroupId().replace( '.', '/' ) ).append( '/' );
         path.append( artifact.getArtifactId() ).append( '/' );
-        path.append( artifact.getBaseVersion() ).append( '/' );
+        path.append( artifact.getVersion() ).append( '/' );
         path.append( artifact.getArtifactId() ).append( '-' );
-        path.append( local ? artifact.getBaseVersion() : artifact.getVersion() );
+        path.append( artifact.getVersion() );
         if ( artifact.getClassifier().length() > 0 )
         {
             path.append( '-' ).append( artifact.getClassifier() );

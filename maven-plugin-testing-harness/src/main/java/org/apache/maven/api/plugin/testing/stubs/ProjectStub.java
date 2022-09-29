@@ -19,10 +19,12 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
+import org.apache.maven.api.RemoteRepository;
 import org.apache.maven.api.annotations.Nonnull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +136,24 @@ public class ProjectStub
     public boolean isExecutionRoot()
     {
         return executionRoot;
+    }
+
+    @Override
+    public Optional<Project> getParent()
+    {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<RemoteRepository> getRemoteProjectRepositories()
+    {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<RemoteRepository> getRemotePluginRepositories()
+    {
+        return Collections.emptyList();
     }
 
     public void setGroupId( String groupId )

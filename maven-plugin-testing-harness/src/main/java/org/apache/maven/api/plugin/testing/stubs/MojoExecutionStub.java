@@ -19,8 +19,11 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
+import java.util.Optional;
+
 import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.model.Plugin;
+import org.apache.maven.api.xml.Dom;
 
 /**
  * Stub for {@link MojoExecution}.
@@ -30,12 +33,19 @@ public class MojoExecutionStub implements MojoExecution
     private final String artifactId;
     private final String executionId;
     private final String goal;
+    private final Dom dom;
 
     public MojoExecutionStub( String artifactId, String executionId, String goal )
+    {
+        this( artifactId, executionId, goal, null );
+    }
+
+    public MojoExecutionStub( String artifactId, String executionId, String goal, Dom dom )
     {
         this.artifactId = artifactId;
         this.executionId = executionId;
         this.goal = goal;
+        this.dom = dom;
     }
 
     @Override
@@ -56,5 +66,11 @@ public class MojoExecutionStub implements MojoExecution
     public String getGoal()
     {
         return goal;
+    }
+
+    @Override
+    public Optional<Dom> getConfiguration()
+    {
+        return Optional.ofNullable( dom );
     }
 }

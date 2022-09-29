@@ -19,16 +19,14 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
-import org.apache.maven.api.Type;
-import org.apache.maven.api.Version;
-import org.apache.maven.api.annotations.Nonnull;
-
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.maven.api.Artifact;
-import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.api.Type;
+import org.apache.maven.api.Version;
+import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.internal.impl.DefaultVersionParser;
 
 /**
@@ -121,11 +119,10 @@ public class ArtifactStub implements Artifact
         this.extension = extension;
     }
 
-    @Nonnull
     @Override
-    public String getBaseVersion()
+    public boolean isSnapshot()
     {
-        return version != null ? ArtifactUtils.toSnapshotVersion( version ) : null;
+        return false;
     }
 
     @Override
