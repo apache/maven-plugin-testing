@@ -19,9 +19,6 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
-import org.apache.maven.api.RemoteRepository;
-import org.apache.maven.api.annotations.Nonnull;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -29,8 +26,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.maven.api.Artifact;
-import org.apache.maven.api.Dependency;
+import org.apache.maven.api.DependencyCoordinate;
 import org.apache.maven.api.Project;
+import org.apache.maven.api.RemoteRepository;
+import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.model.Model;
 
 /**
@@ -109,14 +108,14 @@ public class ProjectStub
 
     @Nonnull
     @Override
-    public List<Dependency> getDependencies()
+    public List<DependencyCoordinate> getDependencies()
     {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<Dependency> getManagedDependencies()
+    public List<DependencyCoordinate> getManagedDependencies()
     {
         return null;
     }

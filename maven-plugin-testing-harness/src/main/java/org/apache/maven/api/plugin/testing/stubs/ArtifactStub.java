@@ -19,13 +19,12 @@ package org.apache.maven.api.plugin.testing.stubs;
  * under the License.
  */
 
-import java.nio.file.Path;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.apache.maven.api.Artifact;
-import org.apache.maven.api.Type;
+import org.apache.maven.api.ArtifactCoordinate;
 import org.apache.maven.api.Version;
+import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.internal.impl.DefaultVersionParser;
 
@@ -39,7 +38,6 @@ public class ArtifactStub implements Artifact
     private String classifier;
     private String version;
     private String extension;
-    private Path path;
 
     public ArtifactStub()
     {
@@ -126,14 +124,32 @@ public class ArtifactStub implements Artifact
     }
 
     @Override
-    public Type getType()
+    public ArtifactCoordinate toCoordinate()
     {
-        return new Type()
+        return new ArtifactCoordinate()
         {
             @Override
-            public String getName()
+            public String getGroupId()
             {
-                return extension;
+                return groupId;
+            }
+
+            @Override
+            public String getArtifactId()
+            {
+                return artifactId;
+            }
+
+            @Override
+            public String getClassifier()
+            {
+                return classifier;
+            }
+
+            @Override
+            public VersionRange getVersion()
+            {
+                return new DefaultVersionParser().parseVersionRange( version );
             }
 
             @Override
@@ -141,37 +157,7 @@ public class ArtifactStub implements Artifact
             {
                 return extension;
             }
-
-            @Override
-            public String getClassifier()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean isIncludesDependencies()
-            {
-                return false;
-            }
-
-            @Override
-            public boolean isAddedToClasspath()
-            {
-                return false;
-            }
         };
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Path> getPath()
-    {
-        return Optional.ofNullable( path );
-    }
-
-    public void setPath( Path path )
-    {
-        this.path = path;
     }
 
     @Override
@@ -183,7 +169,6 @@ public class ArtifactStub implements Artifact
                 + ", classifier='" + classifier + '\''
                 + ", version='" + version + '\''
                 + ", extension='" + extension + '\''
-                + ", path=" + path
                 + ']';
     }
 
@@ -203,13 +188,13 @@ public class ArtifactStub implements Artifact
                 && Objects.equals( artifactId, that.artifactId )
                 && Objects.equals( classifier, that.classifier )
                 && Objects.equals( version, that.version )
-                && Objects.equals( extension, that.extension )
-                && Objects.equals( path, that.path );
+                && Objects.equals( extension, that.extension );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( groupId, artifactId, classifier, version, extension, path );
+        return Objects.hash( groupId, artifactId, classifier, version, extension );
     }
+
 }
