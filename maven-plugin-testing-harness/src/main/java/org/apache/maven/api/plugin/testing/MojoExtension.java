@@ -288,7 +288,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver
         List<Dom> children = new ArrayList<>();
         if ( mojoDescriptor != null && mojoDescriptor.getParameters() != null )
         {
-            Dom defaultConfiguration = MojoDescriptorCreator.convert( mojoDescriptor );
+            Dom defaultConfiguration = MojoDescriptorCreator.convert( mojoDescriptor ).getDom();
             for ( Parameter parameter : mojoDescriptor.getParameters() )
             {
                 Dom parameterConfiguration = config.getChild( parameter.getName() );
