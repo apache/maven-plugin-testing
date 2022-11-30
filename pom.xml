@@ -31,7 +31,7 @@ under the License.
 
   <groupId>org.apache.maven.plugin-testing</groupId>
   <artifactId>maven-plugin-testing</artifactId>
-  <version>3.4.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Testing</name>
@@ -67,7 +67,7 @@ under the License.
 
   <properties>
     <surefire.version>3.0.0-M7</surefire.version>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>4.0.0-alpha-2</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>8</javaVersion>
     <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
