@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.inject.internal.ProviderMethodsModule;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.plugin.Mojo;
@@ -76,7 +77,12 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.slf4j.LoggerFactory;
 
 /**
+ * JUnit extension to help testing Mojos. The extension should be automatically registered
+ * by adding the {@link org.apache.maven.api.plugin.testing.MojoTest} annotation on the test class.
  *
+ * @see MojoTest
+ * @see org.apache.maven.api.plugin.testing.InjectMojo
+ * @see org.apache.maven.api.plugin.testing.MojoParameter
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
 
@@ -132,15 +138,6 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 InterpolationFilterReader interpolationReader = new InterpolationFilterReader(reader, map, "${", "}")) {
 
             PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build(interpolationReader);
-
-            //            Artifact artifact =
-            //                    lookup( RepositorySystem.class ).createArtifact( pluginDescriptor.getGroupId(),
-            //                            pluginDescriptor.getArtifactId(),
-            //                            pluginDescriptor.getVersion(), ".jar" );
-            //
-            //            artifact.setFile( getPluginArtifactFile() );
-            //            pluginDescriptor.setPluginArtifact( artifact );
-            //            pluginDescriptor.setArtifacts( Collections.singletonList( artifact ) );
 
             context.getStore(ExtensionContext.Namespace.GLOBAL).put(PluginDescriptor.class, pluginDescriptor);
 
@@ -207,7 +204,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * lookup the mojo while we have all of the relavent information
+     * lookup the mojo while we have all the relevent information
      */
     protected Mojo lookupMojo(String[] coord, Xpp3Dom pluginConfiguration, PluginDescriptor descriptor)
             throws Exception {
@@ -314,13 +311,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
     /**
      * Convenience method to obtain the value of a variable on a mojo that might not have a getter.
-     *
-     * NOTE: the caller is responsible for casting to to what the desired type is.
-     *
-     * @param object
-     * @param variable
-     * @return object value of variable
-     * @throws IllegalArgumentException
+     * <br>
+     * Note: the caller is responsible for casting to what the desired type is.
      */
     public static Object getVariableValueFromObject(Object object, String variable) throws IllegalAccessException {
         Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
@@ -330,11 +322,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
     /**
      * Convenience method to obtain all variables and values from the mojo (including its superclasses)
-     *
+     * <br>
      * Note: the values in the map are of type Object so the caller is responsible for casting to desired types.
-     *
-     * @param object
-     * @return map of variable names and values
      */
     public static Map<String, Object> getVariablesAndValuesFromObject(Object object) throws IllegalAccessException {
         return getVariablesAndValuesFromObject(object.getClass(), object);
@@ -342,11 +331,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
     /**
      * Convenience method to obtain all variables and values from the mojo (including its superclasses)
-     *
+     * <br>
      * Note: the values in the map are of type Object so the caller is responsible for casting to desired types.
      *
-     * @param clazz
-     * @param object
      * @return map of variable names and values
      */
     public static Map<String, Object> getVariablesAndValuesFromObject(Class<?> clazz, Object object)
@@ -366,11 +353,6 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
     /**
      * Convenience method to set values to variables in objects that don't have setters
-     *
-     * @param object
-     * @param variable
-     * @param value
-     * @throws IllegalAccessException
      */
     public static void setVariableValueToObject(Object object, String variable, Object value)
             throws IllegalAccessException {
