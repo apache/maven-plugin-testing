@@ -64,7 +64,7 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <surefire.version>3.0.0-M7</surefire.version>
+    <surefire.version>3.2.1</surefire.version>
     <mavenVersion>4.0.0-alpha-4</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>8</javaVersion>
