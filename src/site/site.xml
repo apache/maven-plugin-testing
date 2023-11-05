@@ -19,18 +19,14 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project>
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 https://maven.apache.org/xsd/decoration-1.8.0.xsd">
   <body>
-    <breadcrumbs>
-      <!-- TODO: This breadcrumb should be removed when it has been solved in the parent -->
-      <item name="Maven" href="http://maven.apache.org/index.html" />
-      <item name="Plugin Testing" href="http://maven.apache.org/plugin-testing/index.html" />
-    </breadcrumbs>
 
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <!-- According to http://jira.codehaus.org/browse/MNGSITE-152 -->
-      <item name="License" href="http://www.apache.org/licenses/"/>
+      <item name="License" href="https://www.apache.org/licenses/"/>
       <item name="Download" href="download.html"/>
     </menu>
 
