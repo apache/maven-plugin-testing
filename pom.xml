@@ -29,7 +29,7 @@ under the License.
 
   <groupId>org.apache.maven.plugin-testing</groupId>
   <artifactId>maven-plugin-testing</artifactId>
-  <version>4.0.0-alpha-2</version>
+  <version>4.0.0-alpha-3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Testing</name>
@@ -45,7 +45,7 @@ under the License.
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
-    <tag>maven-plugin-testing-4.0.0-alpha-2</tag>
+    <tag>master</tag>
     <url>https://github.com/apache/maven-plugin-testing/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
@@ -68,7 +68,7 @@ under the License.
     <mavenVersion>4.0.0-alpha-8</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>8</javaVersion>
-    <project.build.outputTimestamp>2023-11-07T21:57:45Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-11-07T21:58:12Z</project.build.outputTimestamp>
   </properties>
 
 </project>
