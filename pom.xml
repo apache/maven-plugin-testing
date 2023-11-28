@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>40</version>
+    <version>42</version>
     <relativePath />
   </parent>
 
@@ -65,9 +65,9 @@ under the License.
 
   <properties>
     <surefire.version>3.2.1</surefire.version>
-    <mavenVersion>4.0.0-alpha-8</mavenVersion>
+    <mavenVersion>4.0.0-beta-3</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
-    <javaVersion>8</javaVersion>
+    <javaVersion>17</javaVersion>
     <project.build.outputTimestamp>2023-11-07T21:58:12Z</project.build.outputTimestamp>
   </properties>
 
