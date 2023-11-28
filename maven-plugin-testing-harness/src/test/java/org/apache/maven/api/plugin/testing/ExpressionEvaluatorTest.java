@@ -20,12 +20,16 @@ package org.apache.maven.api.plugin.testing;
 
 import javax.inject.Named;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
 import com.google.inject.Provides;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.plugin.MojoException;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.testing.stubs.ProjectStub;
 import org.apache.maven.api.plugin.testing.stubs.SessionStub;
 import org.junit.jupiter.api.Test;
 
@@ -42,16 +46,17 @@ import static org.mockito.Mockito.doReturn;
 public class ExpressionEvaluatorTest {
 
     private static final String LOCAL_REPO = "target/local-repo/";
+    private static final String GROUP_ID = "org.apache.maven.plugins";
     private static final String ARTIFACT_ID = "maven-test-mojo";
-    private static final String COORDINATES = "groupId:" + ARTIFACT_ID + ":version:goal";
+    private static final String COORDINATES = GROUP_ID + ":" + ARTIFACT_ID + ":version:goal";
     private static final String CONFIG = "<project>\n"
             + "    <build>\n"
             + "        <plugins>\n"
             + "            <plugin>\n"
             + "                <artifactId>" + ARTIFACT_ID + "</artifactId>\n"
             + "                <configuration>\n"
-            + "                    <basedir>${basedir}</basedir>\n"
-            + "                    <workdir>${basedir}/workDirectory</workdir>\n"
+            + "                    <basedir>${project.basedir}</basedir>\n"
+            + "                    <workdir>${project.basedir}/workDirectory</workdir>\n"
             + "                </configuration>\n"
             + "            </plugin>\n"
             + "        </plugins>\n"
@@ -68,6 +73,7 @@ public class ExpressionEvaluatorTest {
 
     @Test
     @InjectMojo(goal = COORDINATES, pom = CONFIG)
+    @Basedir("${basedir}/target/test-classes")
     @MojoParameter(name = "param", value = "paramValue")
     public void testParam(ExpressionEvaluatorMojo mojo) {
         assertNotNull(mojo.basedir);
@@ -89,10 +95,11 @@ public class ExpressionEvaluatorTest {
     }
 
     @Named(COORDINATES)
+    @Mojo(name = "goal")
     public static class ExpressionEvaluatorMojo implements org.apache.maven.api.plugin.Mojo {
-        private String basedir;
+        private Path basedir;
 
-        private String workdir;
+        private Path workdir;
 
         private String param;
 
@@ -101,11 +108,11 @@ public class ExpressionEvaluatorTest {
         /** {@inheritDoc} */
         @Override
         public void execute() throws MojoException {
-            if (basedir == null || basedir.isEmpty()) {
+            if (basedir == null) {
                 throw new MojoException("basedir was not injected.");
             }
 
-            if (workdir == null || workdir.isEmpty()) {
+            if (workdir == null) {
                 throw new MojoException("workdir was not injected.");
             } else if (!workdir.startsWith(basedir)) {
                 throw new MojoException("workdir does not start with basedir.");
@@ -121,5 +128,12 @@ public class ExpressionEvaluatorTest {
         doReturn(new Properties()).when(session).getUserProperties();
         doAnswer(iom -> Paths.get(MojoExtension.getBasedir())).when(session).getRootDirectory();
         return session;
+    }
+
+    @Provides
+    Project project() {
+        ProjectStub project = new ProjectStub();
+        project.setBasedir(Paths.get(MojoExtension.getBasedir()));
+        return project;
     }
 }
