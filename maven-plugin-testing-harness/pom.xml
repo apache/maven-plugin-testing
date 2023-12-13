@@ -90,7 +90,7 @@ under the License.
       <!-- correct version must be provided by project depends on Maven version -->
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.0.3-SNAPSHOT</version>
+      <version>4.0.2</version>
       <optional>true</optional>
     </dependency>
     <dependency>
