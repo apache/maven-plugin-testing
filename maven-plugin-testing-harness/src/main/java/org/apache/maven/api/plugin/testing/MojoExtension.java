@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.internal.ProviderMethodsModule;
@@ -111,6 +110,7 @@ import org.slf4j.LoggerFactory;
  * @see MojoTest
  * @see InjectMojo
  * @see MojoParameter
+ * @see Basedir
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
 
@@ -167,38 +167,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 if (methodInjectMojo != null) {
                     goal = methodInjectMojo.goal();
                 } else {
-                    Class<?> cl = parameterContext.getParameter().getType();
-                    byte[] data;
-                    try (InputStream is =
-                            cl.getClassLoader().getResourceAsStream(cl.getName().replace('.', '/') + ".class")) {
-                        data = IOUtil.toByteArray(is);
-                    }
-                    List<String> goals = new ArrayList<>();
-                    new ClassReader(data)
-                            .accept(
-                                    new ClassVisitor(Opcodes.ASM9) {
-                                        @Override
-                                        public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                                            return new AnnotationVisitor(Opcodes.ASM9) {
-                                                @Override
-                                                public void visit(String name, Object value) {
-                                                    if ("Lorg/apache/maven/api/plugin/annotations/Mojo;"
-                                                                    .equals(descriptor)
-                                                            && "name".equals(name)) {
-                                                        goals.add((String) value);
-                                                    }
-                                                }
-                                            };
-                                        }
-
-                                        @Override
-                                        public AnnotationVisitor visitTypeAnnotation(
-                                                int typeRef, TypePath typePath, String descriptor, boolean visible) {
-                                            return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
-                                        }
-                                    },
-                                    ClassReader.SKIP_CODE);
-                    goal = goals.iterator().next();
+                    goal = getGoalFromMojoImplementationClass(
+                            parameterContext.getParameter().getType());
                 }
             }
             Set<MojoParameter> mojoParameters = new LinkedHashSet<>();
@@ -249,6 +219,46 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
     }
 
+    /**
+     * The @Mojo annotation is only retained in the class file, not at runtime,
+     * so we need to actually read the class file with ASM to find the annotation and
+     * the goal.
+     */
+    private static String getGoalFromMojoImplementationClass(Class<?> cl) throws IOException {
+        String goal;
+        byte[] data;
+        try (InputStream is =
+                cl.getClassLoader().getResourceAsStream(cl.getName().replace('.', '/') + ".class")) {
+            data = IOUtil.toByteArray(is);
+        }
+        List<String> goals = new ArrayList<>();
+        new ClassReader(data)
+                .accept(
+                        new ClassVisitor(Opcodes.ASM9) {
+                            @Override
+                            public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                                return new AnnotationVisitor(Opcodes.ASM9) {
+                                    @Override
+                                    public void visit(String name, Object value) {
+                                        if ("Lorg/apache/maven/api/plugin/annotations/Mojo;".equals(descriptor)
+                                                && "name".equals(name)) {
+                                            goals.add((String) value);
+                                        }
+                                    }
+                                };
+                            }
+
+                            @Override
+                            public AnnotationVisitor visitTypeAnnotation(
+                                    int typeRef, TypePath typePath, String descriptor, boolean visible) {
+                                return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
+                            }
+                        },
+                        ClassReader.SKIP_CODE);
+        goal = goals.iterator().next();
+        return goal;
+    }
+
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         if (pluginBasedir == null) {
@@ -261,12 +271,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             basedir = basedir.replace("${basedir}", pluginBasedir);
         }
 
-        // TODO provide protected setters in PlexusExtension
-        // super.beforeEach(context);
-
-        Field field = PlexusExtension.class.getDeclaredField("context");
-        field.setAccessible(true);
-        field.set(this, context);
+        setContext(context);
 
         getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
 
@@ -275,6 +280,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             binder.requestInjection(context.getRequiredTestInstance());
             binder.bind(Log.class).toInstance(new DefaultLog(LoggerFactory.getLogger("anonymous")));
             binder.bind(ExtensionContext.class).toInstance(context);
+            // Load maven 4 api Services interfaces and try to bind them to the (possible) mock instances
+            // returned by the (possibly) mock InternalSession
             try {
                 for (ClassPath.ClassInfo clazz :
                         ClassPath.from(getClassLoader()).getAllClasses()) {
@@ -282,7 +289,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                         Class<?> load = clazz.load();
                         if (Service.class.isAssignableFrom(load)) {
                             Class<Service> svc = (Class) load;
-                            binder.bind(svc).toProvider((Provider<Service>) () -> {
+                            binder.bind(svc).toProvider(() -> {
                                 try {
                                     return getContainer()
                                             .lookup(InternalSession.class)
