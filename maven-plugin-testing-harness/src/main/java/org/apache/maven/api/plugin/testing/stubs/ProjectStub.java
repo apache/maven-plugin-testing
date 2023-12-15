@@ -18,7 +18,6 @@
  */
 package org.apache.maven.api.plugin.testing.stubs;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +39,7 @@ public class ProjectStub implements Project {
 
     private Model model = Model.newInstance();
     private Path basedir;
-    private File pomPath;
+    private Path pomPath;
     private boolean topProject;
     private Artifact artifact;
     private Path rootDirectory;
@@ -92,7 +91,7 @@ public class ProjectStub implements Project {
     @Nonnull
     @Override
     public Optional<Path> getPomPath() {
-        return Optional.ofNullable(pomPath).map(File::toPath);
+        return Optional.ofNullable(pomPath);
     }
 
     @Nonnull
@@ -175,7 +174,7 @@ public class ProjectStub implements Project {
         this.artifact = artifact;
     }
 
-    public void setPomPath(File pomPath) {
+    public void setPomPath(Path pomPath) {
         this.pomPath = pomPath;
     }
 

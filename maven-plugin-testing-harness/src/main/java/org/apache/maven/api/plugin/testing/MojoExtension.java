@@ -66,6 +66,8 @@ import org.apache.maven.internal.impl.InternalSession;
 import org.apache.maven.internal.xml.XmlNodeImpl;
 import org.apache.maven.internal.xml.XmlPlexusConfiguration;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
+import org.apache.maven.model.path.DefaultModelPathTranslator;
+import org.apache.maven.model.path.DefaultPathTranslator;
 import org.apache.maven.model.v4.MavenMerger;
 import org.apache.maven.model.v4.MavenStaxReader;
 import org.apache.maven.plugin.PluginParameterExpressionEvaluatorV4;
@@ -154,9 +156,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             if (parameterInjectMojo != null) {
                 String pom = parameterInjectMojo.pom();
                 if (pom != null && !pom.isEmpty()) {
-                    try (Reader r = openPomUrl(holder, pom)) {
+                    try (Reader r = openPomUrl(holder, pom, new Path[1])) {
                         Model localModel = new MavenStaxReader().read(r);
                         model = new MavenMerger().merge(localModel, model, false, null);
+                        org.apache.maven.model.Model modelV3 = new org.apache.maven.model.Model(model);
+                        new DefaultModelPathTranslator(new DefaultPathTranslator())
+                                .alignToBaseDirectory(modelV3, new File(getBasedir()), null);
+                        model = modelV3.getDelegate();
                     }
                 }
                 goal = parameterInjectMojo.goal();
@@ -171,6 +177,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                             parameterContext.getParameter().getType());
                 }
             }
+
             Set<MojoParameter> mojoParameters = new LinkedHashSet<>();
             for (AnnotatedElement ae :
                     Arrays.asList(parameterContext.getDeclaringExecutable(), parameterContext.getAnnotatedElement())) {
@@ -334,20 +341,27 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                         .directory(basedirPath.resolve("target").toString())
                         .outputDirectory(basedirPath.resolve("target/classes").toString())
                         .sourceDirectory(basedirPath.resolve("src/main/java").toString())
+                        .testSourceDirectory(
+                                basedirPath.resolve("src/test/java").toString())
                         .testOutputDirectory(
                                 basedirPath.resolve("target/test-classes").toString())
                         .build())
                 .build();
+        Path[] modelPath = new Path[] {null};
         Model model = null;
         if (mojo != null) {
             String pom = mojo.pom();
             if (pom != null && !pom.isEmpty()) {
-                try (Reader r = openPomUrl(context.getRequiredTestClass(), pom)) {
+                try (Reader r = openPomUrl(context.getRequiredTestClass(), pom, modelPath)) {
                     model = new MavenStaxReader().read(r);
                 }
-            } else if (Files.exists(basedirPath.resolve("pom.xml"))) {
-                try (Reader r = Files.newBufferedReader(basedirPath.resolve("pom.xml"))) {
-                    model = new MavenStaxReader().read(r);
+            } else {
+                Path pomPath = basedirPath.resolve("pom.xml");
+                if (Files.exists(pomPath)) {
+                    try (Reader r = Files.newBufferedReader(pomPath)) {
+                        model = new MavenStaxReader().read(r);
+                        modelPath[0] = pomPath;
+                    }
                 }
             }
         }
@@ -356,6 +370,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         } else {
             model = new MavenMerger().merge(model, defaultModel, false, null);
         }
+        org.apache.maven.model.Model modelV3 = new org.apache.maven.model.Model(model);
+        new DefaultModelPathTranslator(new DefaultPathTranslator())
+                .alignToBaseDirectory(modelV3, new File(getBasedir()), null);
+        model = modelV3.getDelegate();
         context.getStore(ExtensionContext.Namespace.GLOBAL).put(Model.class, model);
 
         // project
@@ -369,6 +387,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             stub.setArtifact(artifact);
             stub.setModel(model);
             stub.setBasedir(Paths.get(MojoExtension.getBasedir()));
+            stub.setPomPath(modelPath[0]);
             p = stub;
             getContainer().addComponent(p, Project.class, Hints.DEFAULT_HINT);
         }
@@ -420,9 +439,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         mojoExecutionScope.seed(MojoExecution.class, me);
     }
 
-    private Reader openPomUrl(Class<?> holder, String pom) throws IOException {
+    private Reader openPomUrl(Class<?> holder, String pom, Path[] modelPath) throws IOException {
         if (pom.startsWith("file:")) {
             Path path = Paths.get(getBasedir()).resolve(pom.substring("file:".length()));
+            modelPath[0] = path;
             return Files.newBufferedReader(path);
         } else if (pom.startsWith("classpath:")) {
             URL url = holder.getResource(pom.substring("classpath:".length()));
@@ -434,6 +454,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             return new StringReader(pom);
         } else {
             Path path = Paths.get(getBasedir()).resolve(pom);
+            modelPath[0] = path;
             return Files.newBufferedReader(path);
         }
     }

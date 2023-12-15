@@ -35,6 +35,7 @@ public class ArtifactStub implements Artifact {
     private String artifactId;
     private String classifier;
     private String version;
+    private String baseVersion;
     private String extension;
 
     public ArtifactStub() {
@@ -91,6 +92,14 @@ public class ArtifactStub implements Artifact {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Version getBaseVersion() {
+        return new DefaultVersionParser().parseVersion(baseVersion != null ? baseVersion : version);
+    }
+
+    public void setBaseVersion(String baseVersion) {
+        this.baseVersion = baseVersion;
     }
 
     @Nonnull

@@ -110,6 +110,11 @@ under the License.
       <version>6.0.0</version>
     </dependency>
     <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.6</version>
+    </dependency>
+    <dependency>
       <!-- newer version is required by plexus-testing -->
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
