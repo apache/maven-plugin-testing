@@ -45,6 +45,8 @@ import org.apache.maven.internal.impl.DefaultModelXmlFactory;
 import org.apache.maven.internal.impl.DefaultVersionParser;
 import org.apache.maven.internal.impl.InternalSession;
 import org.apache.maven.model.v4.MavenStaxReader;
+import org.apache.maven.repository.internal.DefaultModelVersionParser;
+import org.eclipse.aether.util.version.GenericVersionScheme;
 import org.mockito.ArgumentMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -101,7 +103,8 @@ public class SessionStub {
         //
         // VersionParser
         //
-        VersionParser versionParser = new DefaultVersionParser();
+        VersionParser versionParser =
+                new DefaultVersionParser(new DefaultModelVersionParser(new GenericVersionScheme()));
         when(session.parseVersion(any()))
                 .thenAnswer(iom -> versionParser.parseVersion(iom.getArgument(0, String.class)));
         when(session.getService(VersionParser.class)).thenReturn(versionParser);

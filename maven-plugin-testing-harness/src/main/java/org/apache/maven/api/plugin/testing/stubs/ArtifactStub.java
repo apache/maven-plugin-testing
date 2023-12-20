@@ -23,9 +23,11 @@ import java.util.Objects;
 import org.apache.maven.api.Artifact;
 import org.apache.maven.api.ArtifactCoordinate;
 import org.apache.maven.api.Version;
-import org.apache.maven.api.VersionRange;
+import org.apache.maven.api.VersionConstraint;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.internal.impl.DefaultVersionParser;
+import org.apache.maven.repository.internal.DefaultModelVersionParser;
+import org.eclipse.aether.util.version.GenericVersionScheme;
 
 /**
  *
@@ -87,7 +89,7 @@ public class ArtifactStub implements Artifact {
     @Nonnull
     @Override
     public Version getVersion() {
-        return new DefaultVersionParser().parseVersion(version);
+        return getParser().parseVersion(version);
     }
 
     public void setVersion(String version) {
@@ -95,7 +97,7 @@ public class ArtifactStub implements Artifact {
     }
 
     public Version getBaseVersion() {
-        return new DefaultVersionParser().parseVersion(baseVersion != null ? baseVersion : version);
+        return getParser().parseVersion(baseVersion != null ? baseVersion : version);
     }
 
     public void setBaseVersion(String baseVersion) {
@@ -136,8 +138,8 @@ public class ArtifactStub implements Artifact {
             }
 
             @Override
-            public VersionRange getVersion() {
-                return new DefaultVersionParser().parseVersionRange(version);
+            public VersionConstraint getVersion() {
+                return getParser().parseVersionConstraint(version);
             }
 
             @Override
@@ -177,5 +179,9 @@ public class ArtifactStub implements Artifact {
     @Override
     public int hashCode() {
         return Objects.hash(groupId, artifactId, classifier, version, extension);
+    }
+
+    private static DefaultVersionParser getParser() {
+        return new DefaultVersionParser(new DefaultModelVersionParser(new GenericVersionScheme()));
     }
 }

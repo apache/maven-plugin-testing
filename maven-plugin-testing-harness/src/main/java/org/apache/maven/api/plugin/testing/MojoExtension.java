@@ -383,7 +383,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         } catch (ComponentLookupException e) {
             ProjectStub stub = new ProjectStub();
             ArtifactStub artifact = new ArtifactStub(
-                    model.getGroupId(), model.getArtifactId(), null, model.getVersion(), model.getPackaging());
+                    model.getGroupId(), model.getArtifactId(), "", model.getVersion(), model.getPackaging());
             stub.setArtifact(artifact);
             stub.setModel(model);
             stub.setBasedir(Paths.get(MojoExtension.getBasedir()));
