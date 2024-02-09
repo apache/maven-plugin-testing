@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -39,7 +40,20 @@ import org.apache.maven.api.Session;
 import org.apache.maven.api.SessionData;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.Repository;
-import org.apache.maven.api.services.*;
+import org.apache.maven.api.services.ArtifactDeployer;
+import org.apache.maven.api.services.ArtifactDeployerRequest;
+import org.apache.maven.api.services.ArtifactFactory;
+import org.apache.maven.api.services.ArtifactFactoryRequest;
+import org.apache.maven.api.services.ArtifactInstaller;
+import org.apache.maven.api.services.ArtifactInstallerRequest;
+import org.apache.maven.api.services.ArtifactManager;
+import org.apache.maven.api.services.LocalRepositoryManager;
+import org.apache.maven.api.services.ProjectBuilder;
+import org.apache.maven.api.services.ProjectBuilderRequest;
+import org.apache.maven.api.services.ProjectBuilderResult;
+import org.apache.maven.api.services.ProjectManager;
+import org.apache.maven.api.services.RepositoryFactory;
+import org.apache.maven.api.services.VersionParser;
 import org.apache.maven.api.services.xml.ModelXmlFactory;
 import org.apache.maven.internal.impl.DefaultModelXmlFactory;
 import org.apache.maven.internal.impl.DefaultVersionParser;
@@ -234,6 +248,13 @@ public class SessionStub {
         when(projectManager.getAttachedArtifacts(any()))
                 .then(iom ->
                         attachedArtifacts.computeIfAbsent(iom.getArgument(0, Project.class), p -> new ArrayList<>()));
+        when(projectManager.getAllArtifacts(any())).then(iom -> {
+            Project project = iom.getArgument(0, Project.class);
+            List<Artifact> result = new ArrayList<>();
+            result.addAll(project.getArtifacts());
+            result.addAll(attachedArtifacts.computeIfAbsent(project, p -> new ArrayList<>()));
+            return result;
+        });
         when(session.getService(ProjectManager.class)).thenReturn(projectManager);
 
         //
@@ -300,7 +321,9 @@ public class SessionStub {
             projectStub.setModel(model);
             ArtifactStub artifactStub = new ArtifactStub(
                     model.getGroupId(), model.getArtifactId(), "", model.getVersion(), model.getPackaging());
-            projectStub.setArtifact(artifactStub);
+            if (!"pom".equals(model.getPackaging())) {
+                projectStub.setMainArtifact(artifactStub);
+            }
             when(result.getProject()).thenReturn(Optional.of(projectStub));
             return result;
         });
@@ -343,26 +366,28 @@ public class SessionStub {
     }
 
     static class TestSessionData implements SessionData {
-        private final Map<Object, Object> map = new ConcurrentHashMap<>();
+        private final Map<Key<?>, Object> map = new ConcurrentHashMap<>();
 
         @Override
-        public void set(Object key, Object value) {
+        public <T> void set(Key<T> key, T value) {
             map.put(key, value);
         }
 
         @Override
-        public boolean set(Object key, Object oldValue, Object newValue) {
+        public <T> boolean replace(Key<T> key, T oldValue, T newValue) {
             return map.replace(key, oldValue, newValue);
         }
 
         @Override
-        public Object get(Object key) {
-            return map.get(key);
+        @SuppressWarnings("unchecked")
+        public <T> T get(Key<T> key) {
+            return (T) map.get(key);
         }
 
         @Override
-        public Object computeIfAbsent(Object key, Supplier<Object> supplier) {
-            return map.computeIfAbsent(key, k -> supplier.get());
+        @SuppressWarnings("unchecked")
+        public <T> T computeIfAbsent(Key<T> key, Supplier<T> supplier) {
+            return (T) map.computeIfAbsent(key, k -> supplier.get());
         }
     }
 }
