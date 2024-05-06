@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.inject.internal.ProviderMethodsModule;
-import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.plugin.Mojo;
@@ -83,12 +82,12 @@ import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit extension to help testing Mojos. The extension should be automatically registered
- * by adding the {@link org.apache.maven.api.plugin.testing.MojoTest} annotation on the test class.
+ * JUnit's extension to help testing Mojos. The extension should be automatically registered
+ * by adding the {@link MojoTest} annotation on the test class.
  *
  * @see MojoTest
- * @see org.apache.maven.api.plugin.testing.InjectMojo
- * @see org.apache.maven.api.plugin.testing.MojoParameter
+ * @see InjectMojo
+ * @see MojoParameter
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
 

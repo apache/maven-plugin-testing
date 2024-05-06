@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.apache.maven.api.Session;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
@@ -337,7 +336,6 @@ public class MojoRule implements TestRule {
         try {
             sessionScope.enter();
             sessionScope.seed(MavenSession.class, session);
-            sessionScope.seed(Session.class, session.getSession());
 
             MojoExecutionScope executionScope = lookup(MojoExecutionScope.class);
             try {
