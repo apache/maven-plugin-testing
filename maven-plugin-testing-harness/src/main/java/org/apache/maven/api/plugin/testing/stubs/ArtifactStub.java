@@ -21,7 +21,7 @@ package org.apache.maven.api.plugin.testing.stubs;
 import java.util.Objects;
 
 import org.apache.maven.api.Artifact;
-import org.apache.maven.api.ArtifactCoordinate;
+import org.apache.maven.api.ArtifactCoordinates;
 import org.apache.maven.api.Version;
 import org.apache.maven.api.VersionConstraint;
 import org.apache.maven.api.annotations.Nonnull;
@@ -120,8 +120,8 @@ public class ArtifactStub implements Artifact {
     }
 
     @Override
-    public ArtifactCoordinate toCoordinate() {
-        return new ArtifactCoordinate() {
+    public ArtifactCoordinates toCoordinates() {
+        return new ArtifactCoordinates() {
             @Override
             public String getGroupId() {
                 return groupId;
@@ -138,7 +138,7 @@ public class ArtifactStub implements Artifact {
             }
 
             @Override
-            public VersionConstraint getVersion() {
+            public VersionConstraint getVersionConstraint() {
                 return getParser().parseVersionConstraint(version);
             }
 
