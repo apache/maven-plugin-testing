@@ -109,6 +109,7 @@ public class SessionStub implements Session {
     }
 
     @Nonnull
+    @Override
     public Map<String, String> getEffectiveProperties(@Nullable Project project) {
         HashMap<String, String> result = new HashMap<>(getSystemProperties());
         if (project != null) {

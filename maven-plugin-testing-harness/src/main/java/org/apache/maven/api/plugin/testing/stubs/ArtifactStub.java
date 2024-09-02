@@ -96,6 +96,7 @@ public class ArtifactStub implements Artifact {
         this.version = version;
     }
 
+    @Override
     public Version getBaseVersion() {
         return getParser().parseVersion(baseVersion != null ? baseVersion : version);
     }
