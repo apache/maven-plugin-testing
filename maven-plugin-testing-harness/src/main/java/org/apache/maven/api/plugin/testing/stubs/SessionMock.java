@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 
 import org.apache.maven.api.Artifact;
 import org.apache.maven.api.LocalRepository;
+import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.RemoteRepository;
 import org.apache.maven.api.Session;
@@ -223,7 +224,7 @@ public class SessionMock {
                     Project project = iom.getArgument(1, Project.class);
                     String type = iom.getArgument(2, String.class);
                     Path path = iom.getArgument(3, Path.class);
-                    Artifact artifact = session.createArtifact(
+                    ProducedArtifact artifact = session.createProducedArtifact(
                             project.getGroupId(), project.getArtifactId(), project.getVersion(), null, null, type);
                     artifactManager.setPath(artifact, path);
                     attachedArtifacts
@@ -235,7 +236,7 @@ public class SessionMock {
                 .attachArtifact(same(session), any(Project.class), any(), any());
         doAnswer(iom -> {
                     Project project = iom.getArgument(0, Project.class);
-                    Artifact artifact = iom.getArgument(1, Artifact.class);
+                    ProducedArtifact artifact = iom.getArgument(1, ProducedArtifact.class);
                     Path path = iom.getArgument(2, Path.class);
                     artifactManager.setPath(artifact, path);
                     attachedArtifacts
@@ -244,7 +245,7 @@ public class SessionMock {
                     return null;
                 })
                 .when(projectManager)
-                .attachArtifact(any(Project.class), any(Artifact.class), any(Path.class));
+                .attachArtifact(any(Project.class), any(ProducedArtifact.class), any(Path.class));
         when(projectManager.getAttachedArtifacts(any()))
                 .then(iom ->
                         attachedArtifacts.computeIfAbsent(iom.getArgument(0, Project.class), p -> new ArrayList<>()));

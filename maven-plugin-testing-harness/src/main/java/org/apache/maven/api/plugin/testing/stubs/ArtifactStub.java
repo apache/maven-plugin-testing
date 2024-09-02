@@ -20,8 +20,8 @@ package org.apache.maven.api.plugin.testing.stubs;
 
 import java.util.Objects;
 
-import org.apache.maven.api.Artifact;
-import org.apache.maven.api.ArtifactCoordinate;
+import org.apache.maven.api.ArtifactCoordinates;
+import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Version;
 import org.apache.maven.api.VersionConstraint;
 import org.apache.maven.api.annotations.Nonnull;
@@ -32,7 +32,7 @@ import org.eclipse.aether.util.version.GenericVersionScheme;
 /**
  *
  */
-public class ArtifactStub implements Artifact {
+public class ArtifactStub implements ProducedArtifact {
     private String groupId;
     private String artifactId;
     private String classifier;
@@ -96,6 +96,7 @@ public class ArtifactStub implements Artifact {
         this.version = version;
     }
 
+    @Override
     public Version getBaseVersion() {
         return getParser().parseVersion(baseVersion != null ? baseVersion : version);
     }
@@ -120,8 +121,8 @@ public class ArtifactStub implements Artifact {
     }
 
     @Override
-    public ArtifactCoordinate toCoordinate() {
-        return new ArtifactCoordinate() {
+    public ArtifactCoordinates toCoordinates() {
+        return new ArtifactCoordinates() {
             @Override
             public String getGroupId() {
                 return groupId;
@@ -138,7 +139,7 @@ public class ArtifactStub implements Artifact {
             }
 
             @Override
-            public VersionConstraint getVersion() {
+            public VersionConstraint getVersionConstraint() {
                 return getParser().parseVersionConstraint(version);
             }
 
