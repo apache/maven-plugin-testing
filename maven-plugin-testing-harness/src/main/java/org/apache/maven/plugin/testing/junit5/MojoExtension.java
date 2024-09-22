@@ -69,7 +69,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.testing.PlexusExtension;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -203,18 +202,18 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         Xpp3Dom pomDom;
         if (pom.startsWith("file:")) {
             Path path = Paths.get(getBasedir()).resolve(pom.substring("file:".length()));
-            pomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(path.toFile()));
+            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
         } else if (pom.startsWith("classpath:")) {
             URL url = holder.getResource(pom.substring("classpath:".length()));
             if (url == null) {
                 throw new IllegalStateException("Unable to find pom on classpath: " + pom);
             }
-            pomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(url.openStream()));
+            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(url.openStream()));
         } else if (pom.contains("<project>")) {
             pomDom = Xpp3DomBuilder.build(new StringReader(pom));
         } else {
             Path path = Paths.get(getBasedir()).resolve(pom);
-            pomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(path.toFile()));
+            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
         }
         Xpp3Dom pluginConfiguration = extractPluginConfiguration(coord[1], pomDom);
         if (!mojoParameters.isEmpty()) {
@@ -238,7 +237,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             return goal.split(":");
         } else {
             Path pluginPom = Paths.get(getBasedir(), "pom.xml");
-            Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(pluginPom.toFile()));
+            Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(new XmlStreamReader(pluginPom.toFile()));
             String artifactId = pluginPomDom.getChild("artifactId").getValue();
             String groupId = resolveFromRootThenParent(pluginPomDom, "groupId");
             String version = resolveFromRootThenParent(pluginPomDom, "version");
@@ -263,11 +262,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
         if (pluginConfiguration != null) {
             MavenSession session = getContainer().lookup(MavenSession.class);
-            MavenProject project;
             try {
-                project = getContainer().lookup(MavenProject.class);
-            } catch (ComponentLookupException e) {
-                project = null;
+                getContainer().lookup(MavenProject.class);
+            } catch (ComponentLookupException ignore) {
+                // nothing
             }
             MojoExecution mojoExecution;
             try {

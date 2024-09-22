@@ -58,7 +58,7 @@ import org.apache.maven.model.Scm;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
@@ -186,7 +186,7 @@ public class MavenProjectStub extends MavenProject {
             pomFile = new File(getBasedir(), pomFile.getPath());
         }
         try {
-            setModel(new MavenXpp3Reader().read(ReaderFactory.newXmlReader(pomFile)));
+            setModel(new MavenXpp3Reader().read(new XmlStreamReader(pomFile)));
         } catch (IOException e) {
             throw new RuntimeException("Failed to read POM file: " + pomFile, e);
         } catch (XmlPullParserException e) {
