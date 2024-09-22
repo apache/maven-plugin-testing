@@ -72,7 +72,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
@@ -297,7 +296,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     protected <T extends Mojo> T lookupMojo(String goal, File pom) throws Exception {
         File pluginPom = new File(getBasedir(), "pom.xml");
 
-        Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(pluginPom));
+        Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(new XmlStreamReader(pluginPom));
 
         String artifactId = pluginPomDom.getChild("artifactId").getValue();
 
@@ -321,7 +320,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     protected <T extends Mojo> T lookupEmptyMojo(String goal, File pom) throws Exception {
         File pluginPom = new File(getBasedir(), "pom.xml");
 
-        Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(pluginPom));
+        Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(new XmlStreamReader(pluginPom));
 
         String artifactId = pluginPomDom.getChild("artifactId").getValue();
 
@@ -507,7 +506,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
      */
     protected PlexusConfiguration extractPluginConfiguration(String artifactId, File pom) throws Exception {
 
-        try (Reader reader = ReaderFactory.newXmlReader(pom)) {
+        try (Reader reader = new XmlStreamReader(pom)) {
             Xpp3Dom pomDom = Xpp3DomBuilder.build(reader);
             return extractPluginConfiguration(artifactId, pomDom);
         }
