@@ -275,6 +275,16 @@ public class SessionStub implements Session {
     }
 
     @Override
+    public DownloadedArtifact resolveArtifact(ArtifactCoordinates coordinates, List<RemoteRepository> repositories) {
+        return null;
+    }
+
+    @Override
+    public DownloadedArtifact resolveArtifact(Artifact artifact, List<RemoteRepository> repositories) {
+        return null;
+    }
+
+    @Override
     public Collection<DownloadedArtifact> resolveArtifacts(ArtifactCoordinates... artifactCoordinates) {
         return null;
     }
@@ -286,6 +296,12 @@ public class SessionStub implements Session {
 
     @Override
     public Collection<DownloadedArtifact> resolveArtifacts(Artifact... artifacts) {
+        return null;
+    }
+
+    @Override
+    public Collection<DownloadedArtifact> resolveArtifacts(
+            Collection<? extends ArtifactCoordinates> coordinates, List<RemoteRepository> repositories) {
         return null;
     }
 
@@ -320,6 +336,11 @@ public class SessionStub implements Session {
     }
 
     @Override
+    public List<Version> resolveVersionRange(ArtifactCoordinates artifact, List<RemoteRepository> repositories) {
+        return null;
+    }
+
+    @Override
     public void installArtifacts(Artifact... artifacts) {}
 
     @Override
@@ -342,17 +363,17 @@ public class SessionStub implements Session {
     }
 
     @Override
-    public Node collectDependencies(Artifact artifact) {
+    public Node collectDependencies(Artifact artifact, PathScope scope) {
         return null;
     }
 
     @Override
-    public Node collectDependencies(Project project) {
+    public Node collectDependencies(Project project, PathScope scope) {
         return null;
     }
 
     @Override
-    public Node collectDependencies(DependencyCoordinates dependencyCoordinates) {
+    public Node collectDependencies(DependencyCoordinates dependencyCoordinates, PathScope scope) {
         return null;
     }
 

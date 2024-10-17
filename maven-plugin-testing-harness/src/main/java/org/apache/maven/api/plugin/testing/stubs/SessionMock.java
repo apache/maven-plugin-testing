@@ -56,11 +56,11 @@ import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.api.services.RepositoryFactory;
 import org.apache.maven.api.services.VersionParser;
 import org.apache.maven.api.services.xml.ModelXmlFactory;
+import org.apache.maven.internal.impl.DefaultModelVersionParser;
 import org.apache.maven.internal.impl.DefaultModelXmlFactory;
 import org.apache.maven.internal.impl.DefaultVersionParser;
 import org.apache.maven.internal.impl.InternalSession;
 import org.apache.maven.model.v4.MavenStaxReader;
-import org.apache.maven.repository.internal.DefaultModelVersionParser;
 import org.eclipse.aether.util.version.GenericVersionScheme;
 import org.mockito.ArgumentMatchers;
 
