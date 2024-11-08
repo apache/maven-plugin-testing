@@ -29,7 +29,7 @@ under the License.
 
   <groupId>org.apache.maven.plugin-testing</groupId>
   <artifactId>maven-plugin-testing</artifactId>
-  <version>4.0.0-beta-2-SNAPSHOT</version>
+  <version>4.0.0-beta-2</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Testing</name>
@@ -45,7 +45,7 @@ under the License.
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-testing.git</developerConnection>
-    <tag>master</tag>
+    <tag>maven-plugin-testing-4.0.0-beta-2</tag>
     <url>https://github.com/apache/maven-plugin-testing/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
@@ -68,7 +68,7 @@ under the License.
     <mavenVersion>4.0.0-beta-5</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>17</javaVersion>
-    <project.build.outputTimestamp>2024-06-26T07:42:15Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-11-08T07:30:17Z</project.build.outputTimestamp>
     <version.maven-site-plugin>4.0.0-M16</version.maven-site-plugin>
     <version.maven-fluido-skin>2.0.0-M10</version.maven-fluido-skin>
   </properties>
