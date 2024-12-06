@@ -40,5 +40,4 @@ public class PluginArtifactFileTest extends AbstractMojoTestCase {
         assertEquals("0.0.1-SNAPSHOT", artifact.getBaseVersion());
         assertTrue(artifact.getFile().getAbsolutePath().endsWith(FS + "target" + FS + "test-classes"));
     }
-
 }

@@ -323,6 +323,5 @@ public class SilentLog implements Log, Logger {
     }
 
     @Override
-    public void setThreshold(int threshold) {
-    }
+    public void setThreshold(int threshold) {}
 }
