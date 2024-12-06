@@ -109,12 +109,6 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
 
     private Map<String, MojoDescriptor> mojoDescriptors;
 
-    /*
-     * for the harness I think we have decided against going the route of using the maven project builder.
-     * instead I think we are going to try and make an instance of the localrespository and assign that
-     * to either the project stub or into the mojo directly with injection...not sure yet though.
-     */
-    // private MavenProjectBuilder projectBuilder;
     @Override
     protected void setUp() throws Exception {
         assertTrue(
