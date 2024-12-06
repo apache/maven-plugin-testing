@@ -27,7 +27,7 @@ public class PluginArtifactFileTest extends AbstractMojoTestCase {
     private static final String FS = System.getProperty("file.separator");
 
     public void testArtifact() throws Exception {
-        MojoExecution execution = newMojoExecution("parameters"); // TODO dedicated test mojo
+        MojoExecution execution = newMojoExecution("parameters");
 
         List<Artifact> artifacts =
                 execution.getMojoDescriptor().getPluginDescriptor().getArtifacts();
@@ -41,5 +41,4 @@ public class PluginArtifactFileTest extends AbstractMojoTestCase {
         assertTrue(artifact.getFile().getAbsolutePath().endsWith(FS + "target" + FS + "test-classes"));
     }
 
-    // TODO find a way to automate testing of jar:file:/ test plugin URLs
 }
