@@ -79,15 +79,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
- * TODO: add a way to use the plugin POM for the lookup so that the user doesn't have to provide the a:g:v:goal
- * as the role hint for the mojo lookup.
- * TODO: standardize the execution of the mojo and looking at the results, but could simply have a template method
- * for verifying the state of the mojo post execution
- * TODO: need a way to look at the state of the mojo without adding getters, this could be where we finally specify
- * the expressions which extract values from the mojo.
- * TODO: create a standard directory structure for picking up POMs to make this even easier, we really just need a testing
- * descriptor and make this entirely declarative!
- *
  * @author jesse
  */
 public abstract class AbstractMojoTestCase extends PlexusTestCase {
@@ -118,12 +109,6 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
 
     private Map<String, MojoDescriptor> mojoDescriptors;
 
-    /*
-     * for the harness I think we have decided against going the route of using the maven project builder.
-     * instead I think we are going to try and make an instance of the localrespository and assign that
-     * to either the project stub or into the mojo directly with injection...not sure yet though.
-     */
-    // private MavenProjectBuilder projectBuilder;
     @Override
     protected void setUp() throws Exception {
         assertTrue(

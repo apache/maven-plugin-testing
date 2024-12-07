@@ -323,8 +323,5 @@ public class SilentLog implements Log, Logger {
     }
 
     @Override
-    public void setThreshold(int threshold) {
-        // TODO Auto-generated method stub
-
-    }
+    public void setThreshold(int threshold) {}
 }
