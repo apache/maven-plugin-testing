@@ -54,7 +54,6 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.testing.ConfigurationException;
 import org.apache.maven.plugin.testing.MojoLogWrapper;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -333,9 +332,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 .filter(e -> e.getChild("artifactId").getValue().equals(artifactId))
                 .findFirst()
                 .flatMap(buildElement -> child(buildElement, "configuration"))
-                .orElseThrow(
-                        () -> new ConfigurationException("Cannot find a configuration element for a plugin with an "
-                                + "artifactId of " + artifactId + "."));
+                .orElse(Xpp3DomBuilder.build(new StringReader("<configuration/>")));
         return pluginConfigurationElement;
     }
 
