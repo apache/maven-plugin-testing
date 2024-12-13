@@ -34,8 +34,13 @@ import org.junit.runner.Description;
 /**
  * Junit4 test {@link Rule} to extract and assert test resources.
  *
+ * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * use rules but extensions {@link org.apache.maven.plugin.testing.junit5.MojoExtension}
+ * instead.
+ *
  * @since 3.1.0
  */
+@Deprecated
 public class TestResources extends TestWatcher {
 
     private final String projectsDir;

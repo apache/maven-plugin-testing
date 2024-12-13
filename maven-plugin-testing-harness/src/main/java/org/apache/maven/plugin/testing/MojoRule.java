@@ -52,9 +52,14 @@ import org.junit.runners.model.Statement;
  * exhibited as {@code public} in the rule. You may annotate single tests methods with
  * {@link WithoutMojo} to prevent the rule from firing.
  *
+ * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * use rules but extensions {@link org.apache.maven.plugin.testing.junit5.MojoExtension}
+ * instead.
+ *
  * @author Mirko Friedenhagen
  * @since 2.2
  */
+@Deprecated
 public class MojoRule implements TestRule {
     private final AbstractMojoTestCase testCase;
 
