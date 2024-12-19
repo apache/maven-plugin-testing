@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.Assert;
@@ -35,7 +36,7 @@ import org.junit.runner.Description;
  * Junit4 test {@link Rule} to extract and assert test resources.
  *
  * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use rules but extensions {@link org.apache.maven.plugin.testing.junit5.MojoExtension}
+ * use rules but extensions {@link MojoExtension}
  * instead.
  *
  * @since 3.1.0

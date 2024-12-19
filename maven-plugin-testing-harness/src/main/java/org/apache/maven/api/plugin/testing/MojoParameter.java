@@ -16,19 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing.junit5;
+package org.apache.maven.api.plugin.testing;
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- *
+ * Mojo parameter
  */
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(MojoExtension.class)
-@Target(ElementType.TYPE)
-public @interface MojoTest {}
+@Repeatable(MojoParameters.class)
+public @interface MojoParameter {
+    String name();
+
+    String value();
+}

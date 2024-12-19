@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
@@ -53,7 +54,7 @@ import org.junit.runners.model.Statement;
  * {@link WithoutMojo} to prevent the rule from firing.
  *
  * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use rules but extensions {@link org.apache.maven.plugin.testing.junit5.MojoExtension}
+ * use rules but extensions {@link MojoExtension}
  * instead.
  *
  * @author Mirko Friedenhagen

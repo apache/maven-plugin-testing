@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.google.inject.Module;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
@@ -89,7 +90,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
  * descriptor and make this entirely declarative!
  *
  * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use this class but {@link org.apache.maven.plugin.testing.junit5.MojoTest}
+ * use this class but {@link MojoTest}
  * instead.
  *
  * @author jesse

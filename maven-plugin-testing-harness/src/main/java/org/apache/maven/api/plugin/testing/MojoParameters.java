@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing.junit5;
+package org.apache.maven.api.plugin.testing;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

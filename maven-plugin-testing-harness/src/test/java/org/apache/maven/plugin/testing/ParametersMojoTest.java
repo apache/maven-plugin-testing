@@ -20,11 +20,11 @@ package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
 
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoParameters;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.testing.junit5.InjectMojo;
-import org.apache.maven.plugin.testing.junit5.MojoParameter;
-import org.apache.maven.plugin.testing.junit5.MojoParameters;
-import org.apache.maven.plugin.testing.junit5.MojoTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
