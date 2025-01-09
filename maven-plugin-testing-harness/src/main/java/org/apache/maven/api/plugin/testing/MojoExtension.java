@@ -76,6 +76,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.platform.commons.support.AnnotationSupport;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +131,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         // TODO provide protected setters in PlexusExtension
         Field field = PlexusExtension.class.getDeclaredField("basedir");
         field.setAccessible(true);
-        field.set(null, getBasedir());
+        String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
+                .map(Basedir::value)
+                .orElse(getBasedir());
+        field.set(null, basedir);
         field = PlexusExtension.class.getDeclaredField("context");
         field.setAccessible(true);
         field.set(this, context);
@@ -162,6 +166,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 getContainer().addComponentDescriptor(desc);
             }
         }
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) throws Exception {
+        Field field = PlexusExtension.class.getDeclaredField("basedir");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     /**

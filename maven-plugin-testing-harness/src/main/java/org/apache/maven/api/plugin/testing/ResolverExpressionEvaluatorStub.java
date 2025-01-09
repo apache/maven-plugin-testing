@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
 import java.io.File;
 
 import org.apache.maven.artifact.repository.MavenArtifactRepository;
 import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 
@@ -30,10 +29,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
  * Stub for {@link ExpressionEvaluator}
  *
  * @author jesse
- * @deprected This stub is for deprecated JUnit 4 style tests.
- * For JUnit Jupiter tests you have to use {@link org.apache.maven.api.plugin.testing.ResolverExpressionEvaluatorStub}.
  */
-@Deprecated
 public class ResolverExpressionEvaluatorStub implements ExpressionEvaluator {
     /** {@inheritDoc} */
     @Override
@@ -72,18 +68,18 @@ public class ResolverExpressionEvaluatorStub implements ExpressionEvaluator {
         }
 
         if ("basedir".equals(expression) || "project.basedir".equals(expression)) {
-            return PlexusTestCase.getBasedir();
+            return MojoExtension.getBasedir();
         } else if (expression.startsWith("basedir") || expression.startsWith("project.basedir")) {
             int pathSeparator = expression.indexOf("/");
 
             if (pathSeparator > 0) {
-                value = PlexusTestCase.getBasedir() + expression.substring(pathSeparator);
+                value = MojoExtension.getBasedir() + expression.substring(pathSeparator);
             } else {
                 System.out.println("Got expression '" + expression + "' that was not recognised");
             }
             return value;
         } else if ("localRepository".equals(expression)) {
-            File localRepo = new File(PlexusTestCase.getBasedir(), "target/local-repo");
+            File localRepo = new File(MojoExtension.getBasedir(), "target/local-repo");
             return new MavenArtifactRepository(
                     "localRepository",
                     "file://" + localRepo.getAbsolutePath(),
@@ -106,12 +102,12 @@ public class ResolverExpressionEvaluatorStub implements ExpressionEvaluator {
     /** {@inheritDoc} */
     @Override
     public File alignToBaseDirectory(File file) {
-        if (file.getAbsolutePath().startsWith(PlexusTestCase.getBasedir())) {
+        if (file.getAbsolutePath().startsWith(MojoExtension.getBasedir())) {
             return file;
         } else if (file.isAbsolute()) {
             return file;
         } else {
-            return new File(PlexusTestCase.getBasedir(), file.getPath());
+            return new File(MojoExtension.getBasedir(), file.getPath());
         }
     }
 }

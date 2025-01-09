@@ -20,10 +20,8 @@ package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
 
-import org.apache.maven.api.plugin.testing.InjectMojo;
-import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.*;
 import org.apache.maven.api.plugin.testing.MojoParameters;
-import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -36,43 +34,45 @@ public class ParametersMojoTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ParametersMojoTest.class);
 
-    private static final String DEFAULT_POM = "src/test/projects/default/pom.xml";
+    private static final String POM_DOT_XML_FILE = "pom.xml";
 
-    private static final String EXPLICIT_POM = "src/test/projects/explicit/pom.xml";
+    private static final String DEFAULT_POM_DIR = "src/test/projects/default/";
 
-    private static final String PROPERTY_POM = "src/test/projects/property/pom.xml";
+    private static final String EXPLICIT_POM_DIR = "src/test/projects/explicit/";
+
+    private static final String PROPERTY_POM_DIR = "src/test/projects/property/";
 
     @Inject
     private Log log;
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     void testDefaultPom(ParametersMojo mojo) {
         assertDoesNotThrow(mojo::execute);
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM_DIR + POM_DOT_XML_FILE)
     void testExplicitPom(ParametersMojo mojo) {
         assertEquals("explicitValue", mojo.plain);
         assertDoesNotThrow(mojo::execute);
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM_DIR + POM_DOT_XML_FILE)
     void testPropertyPom(ParametersMojo mojo) {
         assertDoesNotThrow(mojo::execute);
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     void simpleMojo(ParametersMojo mojo) {
         assertEquals(log, mojo.getLog());
         assertDoesNotThrow(mojo::execute);
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     @MojoParameter(name = "plain", value = "plainValue")
     @MojoParameter(name = "withDefault", value = "withDefaultValue")
     void simpleMojoWithParameters(ParametersMojo mojo) {
@@ -82,7 +82,7 @@ public class ParametersMojoTest {
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     @MojoParameters({
         @MojoParameter(name = "plain", value = "plainValue"),
         @MojoParameter(name = "withDefault", value = "withDefaultValue")
@@ -94,7 +94,7 @@ public class ParametersMojoTest {
     }
 
     @Test
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     @MojoParameter(name = "plain", value = "plainValue")
     void simpleMojoWithParameter(ParametersMojo mojo) {
         assertEquals("plainValue", mojo.plain);
@@ -103,9 +103,17 @@ public class ParametersMojoTest {
 
     @Test
     @MojoParameter(name = "plain", value = "plainValue")
-    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM)
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM_DIR + POM_DOT_XML_FILE)
     void simpleMojoWithParameterInjectionWinsOverConfig(ParametersMojo mojo) {
         assertEquals("plainValue", mojo.plain);
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @Basedir("src/test/projects/basedir-set-by-annotation")
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = POM_DOT_XML_FILE)
+    void basedirInjectedWithBasedirAnnotation(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation", mojo.plain);
         assertDoesNotThrow(mojo::execute);
     }
 }

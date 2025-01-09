@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * Static helpers to create and manipulate mojo execution configuration parameters
  *
  * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use this class but {@link org.apache.maven.plugin.testing.junit5.MojoParameters}
+ * use this class but {@link org.apache.maven.api.plugin.testing.MojoParameters}
  * instead.
  *
  * @since 3.2.0
