@@ -56,10 +56,10 @@ import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.api.services.RepositoryFactory;
 import org.apache.maven.api.services.VersionParser;
 import org.apache.maven.api.services.xml.ModelXmlFactory;
-import org.apache.maven.internal.impl.DefaultModelVersionParser;
-import org.apache.maven.internal.impl.DefaultModelXmlFactory;
-import org.apache.maven.internal.impl.DefaultVersionParser;
-import org.apache.maven.internal.impl.InternalSession;
+import org.apache.maven.impl.DefaultModelVersionParser;
+import org.apache.maven.impl.DefaultModelXmlFactory;
+import org.apache.maven.impl.DefaultVersionParser;
+import org.apache.maven.impl.InternalSession;
 import org.apache.maven.model.v4.MavenStaxReader;
 import org.eclipse.aether.util.version.GenericVersionScheme;
 import org.mockito.ArgumentMatchers;
@@ -158,18 +158,18 @@ public class SessionMock {
                 .installArtifacts(any(Collection.class));
         doAnswer(iom -> {
                     artifactInstaller.install(ArtifactInstallerRequest.build(
-                            session, Arrays.asList(iom.getArgument(0, Artifact[].class))));
+                            session, Arrays.asList(iom.getArgument(0, ProducedArtifact[].class))));
                     return null;
                 })
                 .when(session)
-                .installArtifacts(any(Artifact[].class));
+                .installArtifacts(any(ProducedArtifact[].class));
         doAnswer(iom -> {
                     artifactInstaller.install(ArtifactInstallerRequest.build(
                             iom.getArgument(0, Session.class), iom.getArgument(1, Collection.class)));
                     return null;
                 })
                 .when(artifactInstaller)
-                .install(any(Session.class), ArgumentMatchers.<Collection<Artifact>>any());
+                .install(any(Session.class), ArgumentMatchers.<Collection<ProducedArtifact>>any());
         when(session.getService(ArtifactInstaller.class)).thenReturn(artifactInstaller);
 
         //
@@ -180,7 +180,7 @@ public class SessionMock {
                     artifactDeployer.deploy(ArtifactDeployerRequest.build(
                             iom.getArgument(0, Session.class),
                             iom.getArgument(1, RemoteRepository.class),
-                            Arrays.asList(iom.getArgument(2, Artifact[].class))));
+                            Arrays.asList(iom.getArgument(2, ProducedArtifact[].class))));
                     return null;
                 })
                 .when(session)

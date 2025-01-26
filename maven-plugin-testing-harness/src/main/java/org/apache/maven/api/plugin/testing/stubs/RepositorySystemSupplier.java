@@ -26,39 +26,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import org.apache.maven.api.services.ModelBuilder;
-import org.apache.maven.internal.impl.DefaultModelUrlNormalizer;
-import org.apache.maven.internal.impl.DefaultModelVersionParser;
-import org.apache.maven.internal.impl.DefaultModelXmlFactory;
-import org.apache.maven.internal.impl.DefaultPluginConfigurationExpander;
-import org.apache.maven.internal.impl.DefaultSuperPomProvider;
-import org.apache.maven.internal.impl.DefaultUrlNormalizer;
-import org.apache.maven.internal.impl.model.DefaultDependencyManagementImporter;
-import org.apache.maven.internal.impl.model.DefaultDependencyManagementInjector;
-import org.apache.maven.internal.impl.model.DefaultInheritanceAssembler;
-import org.apache.maven.internal.impl.model.DefaultInterpolator;
-import org.apache.maven.internal.impl.model.DefaultModelBuilder;
-import org.apache.maven.internal.impl.model.DefaultModelCacheFactory;
-import org.apache.maven.internal.impl.model.DefaultModelInterpolator;
-import org.apache.maven.internal.impl.model.DefaultModelNormalizer;
-import org.apache.maven.internal.impl.model.DefaultModelPathTranslator;
-import org.apache.maven.internal.impl.model.DefaultModelProcessor;
-import org.apache.maven.internal.impl.model.DefaultModelValidator;
-import org.apache.maven.internal.impl.model.DefaultPathTranslator;
-import org.apache.maven.internal.impl.model.DefaultPluginManagementInjector;
-import org.apache.maven.internal.impl.model.DefaultProfileInjector;
-import org.apache.maven.internal.impl.model.DefaultProfileSelector;
-import org.apache.maven.internal.impl.model.ProfileActivationFilePathInterpolator;
-import org.apache.maven.internal.impl.model.rootlocator.DefaultRootLocator;
-import org.apache.maven.internal.impl.resolver.DefaultArtifactDescriptorReader;
-import org.apache.maven.internal.impl.resolver.DefaultModelResolver;
-import org.apache.maven.internal.impl.resolver.DefaultVersionRangeResolver;
-import org.apache.maven.internal.impl.resolver.DefaultVersionResolver;
-import org.apache.maven.internal.impl.resolver.MavenArtifactRelocationSource;
-import org.apache.maven.internal.impl.resolver.PluginsMetadataGeneratorFactory;
-import org.apache.maven.internal.impl.resolver.SnapshotMetadataGeneratorFactory;
-import org.apache.maven.internal.impl.resolver.VersionsMetadataGeneratorFactory;
-import org.apache.maven.internal.impl.resolver.relocation.DistributionManagementArtifactRelocationSource;
-import org.apache.maven.internal.impl.resolver.relocation.UserPropertiesArtifactRelocationSource;
+import org.apache.maven.impl.DefaultModelUrlNormalizer;
+import org.apache.maven.impl.DefaultModelVersionParser;
+import org.apache.maven.impl.DefaultModelXmlFactory;
+import org.apache.maven.impl.DefaultPluginConfigurationExpander;
+import org.apache.maven.impl.DefaultSuperPomProvider;
+import org.apache.maven.impl.DefaultUrlNormalizer;
+import org.apache.maven.impl.model.DefaultDependencyManagementImporter;
+import org.apache.maven.impl.model.DefaultDependencyManagementInjector;
+import org.apache.maven.impl.model.DefaultInheritanceAssembler;
+import org.apache.maven.impl.model.DefaultInterpolator;
+import org.apache.maven.impl.model.DefaultModelBuilder;
+import org.apache.maven.impl.model.DefaultModelCacheFactory;
+import org.apache.maven.impl.model.DefaultModelInterpolator;
+import org.apache.maven.impl.model.DefaultModelNormalizer;
+import org.apache.maven.impl.model.DefaultModelPathTranslator;
+import org.apache.maven.impl.model.DefaultModelProcessor;
+import org.apache.maven.impl.model.DefaultModelValidator;
+import org.apache.maven.impl.model.DefaultPathTranslator;
+import org.apache.maven.impl.model.DefaultPluginManagementInjector;
+import org.apache.maven.impl.model.DefaultProfileInjector;
+import org.apache.maven.impl.model.DefaultProfileSelector;
+import org.apache.maven.impl.model.rootlocator.DefaultRootLocator;
+import org.apache.maven.impl.resolver.DefaultArtifactDescriptorReader;
+import org.apache.maven.impl.resolver.DefaultModelResolver;
+import org.apache.maven.impl.resolver.DefaultVersionRangeResolver;
+import org.apache.maven.impl.resolver.DefaultVersionResolver;
+import org.apache.maven.impl.resolver.MavenArtifactRelocationSource;
+import org.apache.maven.impl.resolver.PluginsMetadataGeneratorFactory;
+import org.apache.maven.impl.resolver.SnapshotMetadataGeneratorFactory;
+import org.apache.maven.impl.resolver.VersionsMetadataGeneratorFactory;
+import org.apache.maven.impl.resolver.relocation.DistributionManagementArtifactRelocationSource;
+import org.apache.maven.impl.resolver.relocation.UserPropertiesArtifactRelocationSource;
 import org.eclipse.aether.RepositoryListener;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
@@ -140,6 +139,7 @@ import org.eclipse.aether.named.providers.NoopNamedLockFactory;
 import org.eclipse.aether.spi.artifact.ArtifactPredicateFactory;
 import org.eclipse.aether.spi.artifact.decorator.ArtifactDecoratorFactory;
 import org.eclipse.aether.spi.artifact.generator.ArtifactGeneratorFactory;
+import org.eclipse.aether.spi.artifact.transformer.ArtifactTransformer;
 import org.eclipse.aether.spi.checksums.ProvidedChecksumsSource;
 import org.eclipse.aether.spi.checksums.TrustedChecksumsSource;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
@@ -752,6 +752,7 @@ public class RepositorySystemSupplier implements Supplier<RepositorySystem> {
                 getRepositoryEventDispatcher(),
                 getArtifactGeneratorFactories(),
                 getMetadataGeneratorFactories(),
+                getArtifactTransformers(),
                 getSyncContextFactory());
     }
 
@@ -774,6 +775,7 @@ public class RepositorySystemSupplier implements Supplier<RepositorySystem> {
                 getUpdateCheckManager(),
                 getArtifactGeneratorFactories(),
                 getMetadataGeneratorFactories(),
+                getArtifactTransformers(),
                 getSyncContextFactory(),
                 getOfflineController());
     }
@@ -933,6 +935,20 @@ public class RepositorySystemSupplier implements Supplier<RepositorySystem> {
         return new HashMap<>();
     }
 
+    protected Map<String, ArtifactTransformer> artifactTransformers;
+
+    public final Map<String, ArtifactTransformer> getArtifactTransformers() {
+        checkClosed();
+        if (artifactTransformers == null) {
+            artifactTransformers = createArtifactTransformers();
+        }
+        return artifactTransformers;
+    }
+
+    protected Map<String, ArtifactTransformer> createArtifactTransformers() {
+        return new HashMap<>();
+    }
+
     // Maven provided
 
     private Map<String, MetadataGeneratorFactory> metadataGeneratorFactories;
@@ -1058,13 +1074,13 @@ public class RepositorySystemSupplier implements Supplier<RepositorySystem> {
                 new DefaultDependencyManagementInjector(),
                 new DefaultDependencyManagementImporter(),
                 new DefaultPluginConfigurationExpander(),
-                new ProfileActivationFilePathInterpolator(
-                        new DefaultPathTranslator(), new DefaultRootLocator(), new DefaultInterpolator()),
                 new DefaultModelVersionParser(getVersionScheme()),
                 List.of(),
                 new DefaultModelCacheFactory(),
                 new DefaultModelResolver(),
-                new DefaultInterpolator());
+                new DefaultInterpolator(),
+                new DefaultPathTranslator(),
+                new DefaultRootLocator());
     }
 
     private RepositorySystem repositorySystem;
