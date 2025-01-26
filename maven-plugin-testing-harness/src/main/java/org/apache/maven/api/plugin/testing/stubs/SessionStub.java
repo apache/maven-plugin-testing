@@ -53,6 +53,7 @@ import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.model.Repository;
+import org.apache.maven.api.services.VersionResolverException;
 import org.apache.maven.api.settings.Settings;
 
 /**
@@ -328,6 +329,12 @@ public class SessionStub implements Session {
     @Override
     public Version resolveVersion(ArtifactCoordinates artifact) {
         return null;
+    }
+
+    @Override
+    public Optional<Version> resolveHighestVersion(ArtifactCoordinates artifactCoordinates, List<RemoteRepository> list)
+            throws VersionResolverException {
+        return Optional.empty();
     }
 
     @Override
