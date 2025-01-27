@@ -65,7 +65,7 @@ under the License.
 
   <properties>
     <surefire.version>3.5.1</surefire.version>
-    <mavenVersion>4.0.0-beta-5</mavenVersion>
+    <mavenVersion>4.0.0-rc-2</mavenVersion>
     <maven.site.path>plugin-testing-archives/LATEST</maven.site.path>
     <javaVersion>17</javaVersion>
     <project.build.outputTimestamp>2024-11-08T07:31:16Z</project.build.outputTimestamp>
