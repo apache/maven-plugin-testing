@@ -36,6 +36,7 @@ import org.apache.maven.api.Type;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.model.PluginContainer;
+import org.apache.maven.api.model.Profile;
 
 /**
  * @author Olivier Lamy
@@ -253,5 +254,25 @@ public class ProjectStub implements Project {
         props.put(key, value);
         model = model.withProperties(props);
         return this;
+    }
+
+    @Override
+    public List<Profile> getDeclaredProfiles() {
+        return List.of();
+    }
+
+    @Override
+    public List<Profile> getEffectiveProfiles() {
+        return List.of();
+    }
+
+    @Override
+    public List<Profile> getDeclaredActiveProfiles() {
+        return List.of();
+    }
+
+    @Override
+    public List<Profile> getEffectiveActiveProfiles() {
+        return List.of();
     }
 }
