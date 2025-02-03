@@ -22,3 +22,7 @@ tag-template: maven-plugin-testing-$RESOLVED_VERSION
 
 include-pre-releases: true
 prerelease: true
+
+header: |  
+  > [!WARNING]
+  > This plugin is a Maven 4 plugin and requires Maven 4.0.0-rc-2 to run.
