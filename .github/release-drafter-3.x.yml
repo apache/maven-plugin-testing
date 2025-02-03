@@ -19,6 +19,3 @@
 
 _extends: maven-gh-actions-shared
 tag-template: maven-plugin-testing-$RESOLVED_VERSION
-
-include-pre-releases: true
-prerelease: true
