@@ -21,7 +21,7 @@ name: Release Drafter
 on:
   push:
     branches:
-      - master
+      - maven-plugin-testing-3.x
   workflow_dispatch:
 
 jobs:
