@@ -21,7 +21,7 @@ package org.apache.maven.plugin.testing;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.apache.maven.plugin.testing.junit5.MojoTest;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
