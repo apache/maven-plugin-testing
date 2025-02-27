@@ -53,7 +53,9 @@ import org.apache.maven.api.VersionRange;
 import org.apache.maven.api.annotations.Nonnull;
 import org.apache.maven.api.annotations.Nullable;
 import org.apache.maven.api.model.Repository;
+import org.apache.maven.api.services.VersionResolverException;
 import org.apache.maven.api.settings.Settings;
+import org.apache.maven.api.toolchain.ToolchainModel;
 
 /**
  */
@@ -442,5 +444,16 @@ public class SessionStub implements Session {
     @Override
     public PathScope requirePathScope(String id) {
         return null;
+    }
+
+    @Override
+    public Collection<ToolchainModel> getToolchains() {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Version> resolveHighestVersion(ArtifactCoordinates artifactCoordinates, List<RemoteRepository> list)
+            throws VersionResolverException {
+        return Optional.empty();
     }
 }
