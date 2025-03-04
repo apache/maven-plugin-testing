@@ -16,24 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Static helpers to create and manipulate mojo execution configuration parameters
  *
- * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use this class but {@link org.apache.maven.api.plugin.testing.MojoParameters}
- * instead.
- *
- * @since 3.2.0
  */
-@Deprecated
-public class MojoParameters {
-    public static Xpp3Dom newParameter(String name, String value) {
-        Xpp3Dom child = new Xpp3Dom(name);
-        child.setValue(value);
-        return child;
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(MojoExtension.class)
+@Target(ElementType.TYPE)
+public @interface MojoTest {}
