@@ -49,6 +49,7 @@ import org.apache.maven.api.services.ArtifactInstaller;
 import org.apache.maven.api.services.ArtifactInstallerRequest;
 import org.apache.maven.api.services.ArtifactManager;
 import org.apache.maven.api.services.LocalRepositoryManager;
+import org.apache.maven.api.services.Lookup;
 import org.apache.maven.api.services.ProjectBuilder;
 import org.apache.maven.api.services.ProjectBuilderRequest;
 import org.apache.maven.api.services.ProjectBuilderResult;
@@ -382,6 +383,11 @@ public class SessionMock {
         // ModelXmlFactory
         //
         when(session.getService(ModelXmlFactory.class)).thenReturn(new DefaultModelXmlFactory());
+
+        //
+        // Lookup
+        //
+        when(session.getService(Lookup.class)).thenReturn(LookupStub.EMPTY);
 
         //
         // Other
