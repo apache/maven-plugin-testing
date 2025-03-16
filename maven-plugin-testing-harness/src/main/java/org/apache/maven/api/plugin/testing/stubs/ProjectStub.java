@@ -50,8 +50,11 @@ public class ProjectStub implements Project {
     private Path pomPath;
     private boolean topProject;
     private Path rootDirectory;
-    private Map<String, String> properties = new HashMap<>();
     private ProducedArtifact mainArtifact;
+    private List<Profile> declaredProfiles = List.of();
+    private List<Profile> effectiveProfiles = List.of();
+    private List<Profile> declaredActiveProfiles = List.of();
+    private List<Profile> effectiveActiveProfiles = List.of();
 
     public void setModel(Model model) {
         this.model = model;
@@ -257,22 +260,42 @@ public class ProjectStub implements Project {
     }
 
     @Override
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // Safe because list is unmodifiable.
     public List<Profile> getDeclaredProfiles() {
-        return List.of();
+        return declaredProfiles;
+    }
+
+    public void setDeclaredProfiles(List<Profile> values) {
+        declaredProfiles = List.copyOf(values);
     }
 
     @Override
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // Safe because list is unmodifiable.
     public List<Profile> getEffectiveProfiles() {
-        return List.of();
+        return effectiveProfiles;
+    }
+
+    public void setEffectiveProfiles(List<Profile> values) {
+        effectiveProfiles = List.copyOf(values);
     }
 
     @Override
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // Safe because list is unmodifiable.
     public List<Profile> getDeclaredActiveProfiles() {
-        return List.of();
+        return declaredActiveProfiles;
+    }
+
+    public void setDeclaredActiveProfiles(List<Profile> values) {
+        declaredActiveProfiles = List.copyOf(values);
     }
 
     @Override
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // Safe because list is unmodifiable.
     public List<Profile> getEffectiveActiveProfiles() {
-        return List.of();
+        return effectiveActiveProfiles;
+    }
+
+    public void setEffectiveActiveProfiles(List<Profile> values) {
+        effectiveActiveProfiles = List.copyOf(values);
     }
 }
