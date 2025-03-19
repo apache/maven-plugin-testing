@@ -22,6 +22,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.apache.maven.api.plugin.testing.MojoExtension;
+
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -29,8 +31,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * An annotation for test methods that do not require the {@link MojoRule} to create and tear down the instance.
  *
+ * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * use rules but extensions {@link MojoExtension}
+ * instead.
+ *
  * @author Mirko Friedenhagen
  */
+@Deprecated
 @Retention(RUNTIME)
 @Documented
 @Target(METHOD)
