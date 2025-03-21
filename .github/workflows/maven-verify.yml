@@ -28,3 +28,5 @@ jobs:
     with:
       jdk-matrix: '[ "17", "21" ]'
       maven4-enabled: true
+      ff-goal: "verify"
+      verify-goal: "verify"
