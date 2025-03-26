@@ -144,7 +144,7 @@ under the License.
       <!-- newer version is required by plexus-testing -->
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.4.5-jre</version>
+      <version>33.4.6-jre</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
