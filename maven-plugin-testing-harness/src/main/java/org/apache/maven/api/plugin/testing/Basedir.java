@@ -16,20 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing.junit5;
+package org.apache.maven.api.plugin.testing;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
+ * Mojo parameters container
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InjectMojo {
-
-    String goal();
-
-    String pom();
-
-    boolean empty() default false;
+@Inherited
+public @interface Basedir {
+    String value() default "";
 }
