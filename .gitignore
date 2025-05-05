@@ -1,4 +1,6 @@
 target
+#mac
+.DS_Store
 #eclipse
 .classpath
 .project
