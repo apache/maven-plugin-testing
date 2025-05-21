@@ -81,6 +81,7 @@ Additional Resources
 + [GitHub pull request documentation](https://docs.github.com/pull-requests)
 + [Apache Maven Twitter Account](https://twitter.com/ASFMavenProject)
 
+
 [license]: https://www.apache.org/licenses/LICENSE-2.0
 [ml-list]: https://maven.apache.org/mailing-lists.html
 [code-style]: https://maven.apache.org/developers/conventions/code.html
