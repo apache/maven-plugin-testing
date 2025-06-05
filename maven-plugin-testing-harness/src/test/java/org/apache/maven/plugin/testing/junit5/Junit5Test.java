@@ -56,8 +56,8 @@ class Junit5Test {
     @MojoParameter(name = "plain", value = "plainValue")
     @MojoParameter(name = "withDefault", value = "withDefaultValue")
     void simpleMojoWithParameters(ParametersMojo mojo) {
-        assertEquals("plainValue", mojo.plain);
-        assertEquals("withDefaultValue", mojo.withDefault);
+        assertEquals("plainValue", mojo.getPlain());
+        assertEquals("withDefaultValue", mojo.getWithDefault());
         assertDoesNotThrow(mojo::execute);
     }
 
@@ -65,7 +65,7 @@ class Junit5Test {
     @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = POM)
     @MojoParameter(name = "plain", value = "plainValue")
     void simpleMojoWithParameter(ParametersMojo mojo) {
-        assertEquals("plainValue", mojo.plain);
+        assertEquals("plainValue", mojo.getPlain());
         assertDoesNotThrow(mojo::execute);
     }
 }
