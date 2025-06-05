@@ -31,20 +31,9 @@ under the License.
   <description>The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojo.</description>
 
   <properties>
+    <versions.junit5>5.13.0</versions.junit5>
     <wagonVersion>3.5.3</wagonVersion>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>5.13.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- maven -->

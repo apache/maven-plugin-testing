@@ -49,8 +49,8 @@ under the License.
     <url>https://github.com/apache/maven-plugin-testing/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.apache.org/jira/browse/MPLUGINTESTING</url>
+    <system>GitHub</system>
+    <url>https://github.com/apache/maven-plugin-testing/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>

@@ -21,7 +21,8 @@ package org.apache.maven.plugin.testing.resources;
 import org.junit.Test;
 
 public class TestResourcesTest {
-    public TestResources resources = new TestResources();
+
+    private final TestResources resources = new TestResources();
 
     @Test(expected = IllegalStateException.class)
     public void testNoRuleAnnotation() throws Exception {

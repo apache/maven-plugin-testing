@@ -19,20 +19,51 @@
 package org.apache.maven.plugin.testing;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 
 public class ParametersMojo extends AbstractMojo {
-    public String plain;
 
-    public String withProperty;
+    private String plain;
 
-    public String withDefault;
+    private String withProperty;
 
-    public String withPropertyAndDefault;
+    private String withDefault;
+
+    private String withPropertyAndDefault;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
         getLog().info("Plain value = " + plain);
+    }
+
+    public String getPlain() {
+        return plain;
+    }
+
+    public void setPlain(String plain) {
+        this.plain = plain;
+    }
+
+    public String getWithProperty() {
+        return withProperty;
+    }
+
+    public void setWithProperty(String withProperty) {
+        this.withProperty = withProperty;
+    }
+
+    public String getWithDefault() {
+        return withDefault;
+    }
+
+    public void setWithDefault(String withDefault) {
+        this.withDefault = withDefault;
+    }
+
+    public String getWithPropertyAndDefault() {
+        return withPropertyAndDefault;
+    }
+
+    public void setWithPropertyAndDefault(String withPropertyAndDefault) {
+        this.withPropertyAndDefault = withPropertyAndDefault;
     }
 }
