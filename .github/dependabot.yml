@@ -17,15 +17,11 @@
 version: 2
 updates:
 
-  - package-ecosystem: "maven"
-    directory: "/"
-    schedule:
-      interval: "daily"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "maven-plugin-testing-3.x"
 
   - package-ecosystem: "maven"
     directory: "/"
