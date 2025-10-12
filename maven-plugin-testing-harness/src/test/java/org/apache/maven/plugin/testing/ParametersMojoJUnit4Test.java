@@ -36,10 +36,10 @@ public class ParametersMojoJUnit4Test extends AbstractMojoTestCase {
 
         ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(project, "parameters");
 
-        assertNull(mojo.plain);
-        assertNull(mojo.withProperty);
-        assertEquals("default", mojo.withDefault);
-        assertEquals("default", mojo.withPropertyAndDefault);
+        assertNull(mojo.getPlain());
+        assertNull(mojo.getWithProperty());
+        assertEquals("default", mojo.getWithDefault());
+        assertEquals("default", mojo.getWithPropertyAndDefault());
     }
 
     public void testExplicit() throws Exception {
@@ -47,10 +47,10 @@ public class ParametersMojoJUnit4Test extends AbstractMojoTestCase {
 
         ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(project, "parameters");
 
-        assertEquals("explicitValue", mojo.plain);
-        assertEquals("explicitWithPropertyValue", mojo.withProperty);
-        assertEquals("explicitWithDefaultValue", mojo.withDefault);
-        assertEquals("explicitWithPropertyAndDefaultValue", mojo.withPropertyAndDefault);
+        assertEquals("explicitValue", mojo.getPlain());
+        assertEquals("explicitWithPropertyValue", mojo.getWithProperty());
+        assertEquals("explicitWithDefaultValue", mojo.getWithDefault());
+        assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
     }
 
     public void testDefaultWithProperty() throws Exception {
@@ -61,10 +61,10 @@ public class ParametersMojoJUnit4Test extends AbstractMojoTestCase {
         session.getUserProperties().put("property", "propertyValue");
         ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(session, execution);
 
-        assertNull(mojo.plain);
-        assertEquals("propertyValue", mojo.withProperty);
-        assertEquals("default", mojo.withDefault);
-        assertEquals("propertyValue", mojo.withPropertyAndDefault);
+        assertNull(mojo.getPlain());
+        assertEquals("propertyValue", mojo.getWithProperty());
+        assertEquals("default", mojo.getWithDefault());
+        assertEquals("propertyValue", mojo.getWithPropertyAndDefault());
     }
 
     public void testExplicitWithProperty() throws Exception {
@@ -75,10 +75,10 @@ public class ParametersMojoJUnit4Test extends AbstractMojoTestCase {
         session.getUserProperties().put("property", "propertyValue");
         ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(session, execution);
 
-        assertEquals("explicitValue", mojo.plain);
-        assertEquals("explicitWithPropertyValue", mojo.withProperty);
-        assertEquals("explicitWithDefaultValue", mojo.withDefault);
-        assertEquals("explicitWithPropertyAndDefaultValue", mojo.withPropertyAndDefault);
+        assertEquals("explicitValue", mojo.getPlain());
+        assertEquals("explicitWithPropertyValue", mojo.getWithProperty());
+        assertEquals("explicitWithDefaultValue", mojo.getWithDefault());
+        assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
     }
 
     protected MavenProject readMavenProject(File basedir) throws ProjectBuildingException, Exception {
