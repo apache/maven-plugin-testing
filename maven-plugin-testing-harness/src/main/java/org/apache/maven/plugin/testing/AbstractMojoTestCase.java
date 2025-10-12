@@ -89,7 +89,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
  * TODO: create a standard directory structure for picking up POMs to make this even easier, we really just need a testing
  * descriptor and make this entirely declarative!
  *
- * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use this class but {@link MojoTest}
  * instead.
  *

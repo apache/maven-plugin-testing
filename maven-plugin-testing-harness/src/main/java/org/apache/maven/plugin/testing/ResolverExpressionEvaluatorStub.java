@@ -30,7 +30,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
  * Stub for {@link ExpressionEvaluator}
  *
  * @author jesse
- * @deprected This stub is for deprecated JUnit 4 style tests.
+ * @deprecated This stub is for deprecated JUnit 4 style tests.
  * For JUnit Jupiter tests you have to use {@link org.apache.maven.api.plugin.testing.ResolverExpressionEvaluatorStub}.
  */
 @Deprecated

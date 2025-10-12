@@ -35,7 +35,7 @@ import org.junit.runner.Description;
 /**
  * Junit4 test {@link Rule} to extract and assert test resources.
  *
- * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use rules but extensions {@link MojoExtension}
  * instead.
  *

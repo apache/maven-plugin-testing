@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author jdcasey
  *
- * @deprected As of version 3.4.0, it is advised to work with JUnit5 tests which do not
+ * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use this class but {@link  javax.inject.Inject} to inject a Log instance
  * instead.
  *
