@@ -135,9 +135,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 .map(Basedir::value)
                 .orElse(getBasedir());
         field.set(null, basedir);
-        field = PlexusExtension.class.getDeclaredField("context");
-        field.setAccessible(true);
-        field.set(this, context);
+
+        setContext(context);
 
         getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
 
