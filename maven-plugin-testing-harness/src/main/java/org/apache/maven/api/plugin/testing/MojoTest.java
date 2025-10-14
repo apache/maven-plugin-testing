@@ -16,29 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing;
+package org.apache.maven.api.plugin.testing;
 
-import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.maven.api.plugin.testing.MojoExtension;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  *
- * An annotation for test methods that do not require the {@link MojoRule} to create and tear down the instance.
- *
- * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
- * use rules but extensions {@link MojoExtension}
- * instead.
- *
- * @author Mirko Friedenhagen
  */
-@Deprecated
-@Retention(RUNTIME)
-@Documented
-@Target(METHOD)
-public @interface WithoutMojo {}
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(MojoExtension.class)
+@Target(ElementType.TYPE)
+public @interface MojoTest {}

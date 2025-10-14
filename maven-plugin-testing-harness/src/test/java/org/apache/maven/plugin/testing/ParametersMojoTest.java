@@ -18,78 +18,102 @@
  */
 package org.apache.maven.plugin.testing;
 
-import java.io.File;
+import javax.inject.Inject;
 
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.ProjectBuildingRequest;
-import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.apache.maven.api.plugin.testing.Basedir;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoParameters;
+import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.plugin.logging.Log;
+import org.junit.jupiter.api.Test;
 
-public class ParametersMojoTest extends AbstractMojoTestCase {
-    public void testDefault() throws Exception {
-        MavenProject project = readMavenProject(new File("src/test/projects/default"));
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-        ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(project, "parameters");
+@MojoTest
+public class ParametersMojoTest {
 
-        assertNull(mojo.getPlain());
-        assertNull(mojo.getWithProperty());
-        assertEquals("default", mojo.getWithDefault());
-        assertEquals("default", mojo.getWithPropertyAndDefault());
+    private static final String POM_DOT_XML_FILE = "pom.xml";
+
+    private static final String DEFAULT_POM_DIR = "src/test/projects/default/";
+
+    private static final String EXPLICIT_POM_DIR = "src/test/projects/explicit/";
+
+    private static final String PROPERTY_POM_DIR = "src/test/projects/property/";
+
+    @Inject
+    private Log log;
+
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
+    void testDefaultPom(ParametersMojo mojo) {
+        assertDoesNotThrow(mojo::execute);
     }
 
-    public void testExplicit() throws Exception {
-        MavenProject project = readMavenProject(new File("src/test/projects/explicit"));
-
-        ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(project, "parameters");
-
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM_DIR + POM_DOT_XML_FILE)
+    void testExplicitPom(ParametersMojo mojo) {
         assertEquals("explicitValue", mojo.getPlain());
-        assertEquals("explicitWithPropertyValue", mojo.getWithProperty());
-        assertEquals("explicitWithDefaultValue", mojo.getWithDefault());
-        assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
+        assertDoesNotThrow(mojo::execute);
     }
 
-    public void testDefaultWithProperty() throws Exception {
-        MavenProject project = readMavenProject(new File("src/test/projects/default"));
-        MavenSession session = newMavenSession(project);
-        MojoExecution execution = newMojoExecution("parameters");
-
-        session.getUserProperties().put("property", "propertyValue");
-        ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(session, execution);
-
-        assertNull(mojo.getPlain());
-        assertEquals("propertyValue", mojo.getWithProperty());
-        assertEquals("default", mojo.getWithDefault());
-        assertEquals("propertyValue", mojo.getWithPropertyAndDefault());
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM_DIR + POM_DOT_XML_FILE)
+    void testPropertyPom(ParametersMojo mojo) {
+        assertDoesNotThrow(mojo::execute);
     }
 
-    public void testExplicitWithProperty() throws Exception {
-        MavenProject project = readMavenProject(new File("src/test/projects/explicit"));
-        MavenSession session = newMavenSession(project);
-        MojoExecution execution = newMojoExecution("parameters");
-
-        session.getUserProperties().put("property", "propertyValue");
-        ParametersMojo mojo = (ParametersMojo) lookupConfiguredMojo(session, execution);
-
-        assertEquals("explicitValue", mojo.getPlain());
-        assertEquals("explicitWithPropertyValue", mojo.getWithProperty());
-        assertEquals("explicitWithDefaultValue", mojo.getWithDefault());
-        assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
+    void simpleMojo(ParametersMojo mojo) {
+        assertEquals(log, mojo.getLog());
+        assertDoesNotThrow(mojo::execute);
     }
 
-    protected MavenProject readMavenProject(File basedir) throws ProjectBuildingException, Exception {
-        File pom = new File(basedir, "pom.xml");
-        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-        request.setBaseDirectory(basedir);
-        ProjectBuildingRequest configuration = request.getProjectBuildingRequest();
-        configuration.setRepositorySession(new DefaultRepositorySystemSession());
-        MavenProject project =
-                lookup(ProjectBuilder.class).build(pom, configuration).getProject();
-        assertNotNull(project);
-        return project;
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
+    @MojoParameter(name = "plain", value = "plainValue")
+    @MojoParameter(name = "withDefault", value = "withDefaultValue")
+    void simpleMojoWithParameters(ParametersMojo mojo) {
+        assertEquals("plainValue", mojo.getPlain());
+        assertEquals("withDefaultValue", mojo.getWithDefault());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
+    @MojoParameters({
+        @MojoParameter(name = "plain", value = "plainValue"),
+        @MojoParameter(name = "withDefault", value = "withDefaultValue")
+    })
+    void simpleMojoWithParametersGroupingAnnotation(ParametersMojo mojo) {
+        assertEquals("plainValue", mojo.getPlain());
+        assertEquals("withDefaultValue", mojo.getWithDefault());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
+    @MojoParameter(name = "plain", value = "plainValue")
+    void simpleMojoWithParameter(ParametersMojo mojo) {
+        assertEquals("plainValue", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @MojoParameter(name = "plain", value = "plainValue")
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM_DIR + POM_DOT_XML_FILE)
+    void simpleMojoWithParameterInjectionWinsOverConfig(ParametersMojo mojo) {
+        assertEquals("plainValue", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @Basedir("src/test/projects/basedir-set-by-annotation")
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = POM_DOT_XML_FILE)
+    void basedirInjectedWithBasedirAnnotation(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
     }
 }

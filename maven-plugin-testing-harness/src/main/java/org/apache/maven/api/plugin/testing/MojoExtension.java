@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.testing.junit5;
+package org.apache.maven.api.plugin.testing;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,7 +54,6 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.testing.ConfigurationException;
 import org.apache.maven.plugin.testing.MojoLogWrapper;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -77,6 +76,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.platform.commons.support.AnnotationSupport;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
@@ -131,10 +131,12 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         // TODO provide protected setters in PlexusExtension
         Field field = PlexusExtension.class.getDeclaredField("basedir");
         field.setAccessible(true);
-        field.set(null, getBasedir());
-        field = PlexusExtension.class.getDeclaredField("context");
-        field.setAccessible(true);
-        field.set(this, context);
+        String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
+                .map(Basedir::value)
+                .orElse(getBasedir());
+        field.set(null, basedir);
+
+        setContext(context);
 
         getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
 
@@ -163,6 +165,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 getContainer().addComponentDescriptor(desc);
             }
         }
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) throws Exception {
+        Field field = PlexusExtension.class.getDeclaredField("basedir");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     /**
@@ -333,9 +342,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 .filter(e -> e.getChild("artifactId").getValue().equals(artifactId))
                 .findFirst()
                 .flatMap(buildElement -> child(buildElement, "configuration"))
-                .orElseThrow(
-                        () -> new ConfigurationException("Cannot find a configuration element for a plugin with an "
-                                + "artifactId of " + artifactId + "."));
+                .orElse(Xpp3DomBuilder.build(new StringReader("<configuration/>")));
         return pluginConfigurationElement;
     }
 
