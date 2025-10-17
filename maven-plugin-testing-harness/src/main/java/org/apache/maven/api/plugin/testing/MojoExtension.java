@@ -128,13 +128,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        // TODO provide protected setters in PlexusExtension
-        Field field = PlexusExtension.class.getDeclaredField("basedir");
-        field.setAccessible(true);
         String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
                 .map(Basedir::value)
-                .orElse(getBasedir());
-        field.set(null, basedir);
+                .orElse(null);
+
+        setTestBasedir(basedir);
 
         setContext(context);
 
@@ -165,13 +163,6 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 getContainer().addComponentDescriptor(desc);
             }
         }
-    }
-
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        Field field = PlexusExtension.class.getDeclaredField("basedir");
-        field.setAccessible(true);
-        field.set(null, null);
     }
 
     /**
@@ -210,7 +201,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         String[] coord = mojoCoordinates(goal);
         Xpp3Dom pomDom;
         if (pom.startsWith("file:")) {
-            Path path = Paths.get(getBasedir()).resolve(pom.substring("file:".length()));
+            Path path = Paths.get(getTestBasedir()).resolve(pom.substring("file:".length()));
             pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
         } else if (pom.startsWith("classpath:")) {
             URL url = holder.getResource(pom.substring("classpath:".length()));
@@ -221,7 +212,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         } else if (pom.contains("<project>")) {
             pomDom = Xpp3DomBuilder.build(new StringReader(pom));
         } else {
-            Path path = Paths.get(getBasedir()).resolve(pom);
+            Path path = Paths.get(getTestBasedir()).resolve(pom);
             pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
         }
         Xpp3Dom pluginConfiguration = extractPluginConfiguration(coord[1], pomDom);
@@ -245,7 +236,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         if (goal.matches(".*:.*:.*:.*")) {
             return goal.split(":");
         } else {
-            Path pluginPom = Paths.get(getBasedir(), "pom.xml");
+            Path pluginPom = Paths.get(getTestBasedir(), "pom.xml");
             Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(new XmlStreamReader(pluginPom.toFile()));
             String artifactId = pluginPomDom.getChild("artifactId").getValue();
             String groupId = resolveFromRootThenParent(pluginPomDom, "groupId");
