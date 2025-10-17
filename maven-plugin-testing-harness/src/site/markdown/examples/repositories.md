@@ -1,36 +1,34 @@
- ------
- Testing Using Repositories
- ------
- Vincent Siveton
- ------
- February 2008
- ------
+title: Testing Using Repositories
+author: Vincent Siveton
+date: February 2008
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+<!--  Licensed to the Apache Software Foundation (ASF) under one -->
+<!--  or more contributor license agreements.  See the NOTICE file -->
+<!--  distributed with this work for additional information -->
+<!--  regarding copyright ownership.  The ASF licenses this file -->
+<!--  to you under the Apache License, Version 2.0 (the -->
+<!--  "License"); you may not use this file except in compliance -->
+<!--  with the License.  You may obtain a copy of the License at -->
+<!--  -->
+<!--    http://www.apache.org/licenses/LICENSE-2.0 -->
+<!--  -->
+<!--  Unless required by applicable law or agreed to in writing, -->
+<!--  software distributed under the License is distributed on an -->
+<!--  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY -->
+<!--  KIND, either express or implied.  See the License for the -->
+<!--  specific language governing permissions and limitations -->
+<!--  under the License. -->
+## Testing Using Repositories
 
-Testing Using Repositories
 
- <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for testing repositories.
+ **Note**: This example improves the [cookbook](../getting-started/index.html) for testing repositories.
 
- When developing a Maven plugin you often need to play with repositories. Suppose that the MyMojo needs
- to download artifacts into your local repository, i.e.:
 
-+----+
+ When developing a Maven plugin you often need to play with repositories. Suppose that the MyMojo needs to download artifacts into your local repository, i.e.:
+
+
+
+```
 public class MyMojo
     extends AbstractMojo
 {
@@ -74,13 +72,16 @@ public class MyMojo
         ...
      }
 }
-+----+
+```
 
-* Create Stubs
+### Create Stubs
+
 
  Stub for the test project:
 
-+----+
+
+
+```
 public class MyProjectStub
     extends MavenProjectStub
 {
@@ -101,11 +102,14 @@ public class MyProjectStub
         return Collections.singletonList( repository );
     }
 }
-+----+
+```
 
-* Configure <<<project-to-test>>> pom
 
-+----+
+### Configure `project-to-test` pom
+
+
+
+```
 <project>
   ...
   <build>
@@ -126,8 +130,13 @@ public class MyProjectStub
     </plugins>
   </build>
 </project>
-+----+
+```
 
-** Execute test
+#### Execute test
 
- Calling <<<mvn test>>> will create <<<$\{basedir\}/target/local-repo/junitjunit/3.8.1/junit-3.8.1.jar>>> file.
+
+ Calling `mvn test` will create `$\{basedir\}/target/local-repo/junitjunit/3.8.1/junit-3.8.1.jar` file.
+
+
+
+
