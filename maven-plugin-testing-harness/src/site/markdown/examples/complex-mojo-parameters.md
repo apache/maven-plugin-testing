@@ -1,38 +1,37 @@
- ------
- Testing Complex Mojo Parameters
- ------
- Vincent Siveton
- ------
- February 2008
- ------
+title: Testing Complex Mojo Parameters
+author: Vincent Siveton
+date: February 2008
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+<!--  Licensed to the Apache Software Foundation (ASF) under one -->
+<!--  or more contributor license agreements.  See the NOTICE file -->
+<!--  distributed with this work for additional information -->
+<!--  regarding copyright ownership.  The ASF licenses this file -->
+<!--  to you under the Apache License, Version 2.0 (the -->
+<!--  "License"); you may not use this file except in compliance -->
+<!--  with the License.  You may obtain a copy of the License at -->
+<!--  -->
+<!--    http://www.apache.org/licenses/LICENSE-2.0 -->
+<!--  -->
+<!--  Unless required by applicable law or agreed to in writing, -->
+<!--  software distributed under the License is distributed on an -->
+<!--  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY -->
+<!--  KIND, either express or implied.  See the License for the -->
+<!--  specific language governing permissions and limitations -->
+<!--  under the License. -->
+## Testing Complex Mojo Parameters
 
-Testing Complex Mojo Parameters
 
- <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for testing complex Mojo parameters.
+ **Note**: This example improves the [cookbook](../getting-started/index.html) for testing complex Mojo parameters.
 
- In real plugin development, you will use specific Maven objects like <<<MavenProject>>>, <<<ArtifactRepository>>> or
- <<<MavenSettings>>>. You could use them by defining stubs.
+
+ In real plugin development, you will use specific Maven objects like `MavenProject`, `ArtifactRepository` or `MavenSettings`. You could use them by defining stubs.
+
 
  Suppose that you have the following dependencies in the maven-my-plugin pom:
 
-+---+
+
+
+```
 <project>
   ...
   <dependencies>
@@ -49,11 +48,13 @@ Testing Complex Mojo Parameters
     ...
   </dependencies>
 </project>
-+---+
+```
 
- You will add the following in the <<<MyMojo>>>:
+ You will add the following in the `MyMojo`:
 
-+---+
+
+
+```
 public class MyMojo
     extends AbstractMojo
 {
@@ -77,14 +78,16 @@ public class MyMojo
 
     ...
 }
-+---+
+```
 
-* Create Stubs
+### Create Stubs
 
-  You need to create stub objects to run <<<MyMojoTest#testSomething()>>>. By convention, the package name should
-  reflect the stubs, i.e. in our case <<<org.apache.maven.plugin.my.stubs>>>.
 
-+---+
+ You need to create stub objects to run `MyMojoTest#testSomething()`. By convention, the package name should reflect the stubs, i.e. in our case `org.apache.maven.plugin.my.stubs`.
+
+
+
+```
 public class MyProjectStub
     extends MavenProjectStub
 {
@@ -136,9 +139,10 @@ public class MyProjectStub
         return new File( super.getBasedir() + "/src/test/resources/unit/project-to-test/" );
     }
 }
-+---+
+```
 
-+---+
+
+```
 public class SettingsStub
     extends Settings
 {
@@ -148,11 +152,14 @@ public class SettingsStub
         return Collections.EMPTY_LIST;
     }
 }
-+---+
+```
 
-* Configure <<<project-to-test>>> pom
 
-+---+
+### Configure `project-to-test` pom
+
+
+
+```
 <project>
   ...
   <build>
@@ -174,4 +181,6 @@ public class SettingsStub
     </plugins>
   </build>
 </project>
-+---+
+```
+
+

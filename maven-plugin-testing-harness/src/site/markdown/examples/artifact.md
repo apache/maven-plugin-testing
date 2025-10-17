@@ -1,36 +1,34 @@
- ------
- Testing Project Artifact
- ------
- Vincent Siveton
- ------
- February 2008
- ------
+title: Testing Project Artifact
+author: Vincent Siveton
+date: February 2008
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+<!--  Licensed to the Apache Software Foundation (ASF) under one -->
+<!--  or more contributor license agreements.  See the NOTICE file -->
+<!--  distributed with this work for additional information -->
+<!--  regarding copyright ownership.  The ASF licenses this file -->
+<!--  to you under the Apache License, Version 2.0 (the -->
+<!--  "License"); you may not use this file except in compliance -->
+<!--  with the License.  You may obtain a copy of the License at -->
+<!--  -->
+<!--    http://www.apache.org/licenses/LICENSE-2.0 -->
+<!--  -->
+<!--  Unless required by applicable law or agreed to in writing, -->
+<!--  software distributed under the License is distributed on an -->
+<!--  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY -->
+<!--  KIND, either express or implied.  See the License for the -->
+<!--  specific language governing permissions and limitations -->
+<!--  under the License. -->
+## Testing Project Artifact
 
-Testing Project Artifact
 
- <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} to play with artifact handler.
+ **Note**: This example improves the [cookbook](../getting-started/index.html) to play with artifact handler.
 
- Sometimes, your Mojo uses project artifact and ArtifactHandler mechanisms. For instance, you could need to
- filter on Java projects, i.e.:
 
-+---+
+ Sometimes, your Mojo uses project artifact and ArtifactHandler mechanisms. For instance, you could need to filter on Java projects, i.e.:
+
+
+
+```
 public class MyMojo
     extends AbstractMojo
 {
@@ -54,11 +52,13 @@ public class MyMojo
         ...
      }
 }
-+---+
+```
 
-* Create Stubs
+### Create Stubs
 
-+---+
+
+
+```
 public class MyArtifactHandlerStub
     extends DefaultArtifactHandler
 {
@@ -79,9 +79,10 @@ public class MyArtifactHandlerStub
         this.language = language;
     }
 }
-+---+
+```
 
-+---+
+
+```
 public class MyArtifactStub
     extends ArtifactStub
 {
@@ -189,9 +190,10 @@ public class MyArtifactStub
         this.handler = handler;
     }
 }
-+---+
+```
 
-+---+
+
+```
 public class MyProjectStub
     extends MavenProjectStub
 {
@@ -212,4 +214,6 @@ public class MyProjectStub
 
     ...
 }
-+---+
+```
+
+
