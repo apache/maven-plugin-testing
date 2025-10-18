@@ -25,6 +25,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,7 +45,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
 import com.google.inject.internal.ProviderMethodsModule;
+import org.apache.maven.api.di.Provides;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.plugin.Mojo;
@@ -77,6 +82,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +148,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
         ((DefaultPlexusContainer) getContainer()).addPlexusInjector(Collections.emptyList(), binder -> {
             binder.install(ProviderMethodsModule.forObject(context.getRequiredTestInstance()));
+            binder.install(new MavenProvidesModule(context.getRequiredTestInstance()));
             binder.requestInjection(context.getRequiredTestInstance());
             binder.bind(Log.class).toInstance(new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
             binder.bind(MavenSession.class).toInstance(mockMavenSession());
@@ -190,8 +197,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     private MavenSession mockMavenSession() {
         MavenSession session = Mockito.mock(MavenSession.class);
-        Mockito.when(session.getUserProperties()).thenReturn(new Properties());
-        Mockito.when(session.getSystemProperties()).thenReturn(new Properties());
+        Mockito.lenient().when(session.getUserProperties()).thenReturn(new Properties());
+        Mockito.lenient().when(session.getSystemProperties()).thenReturn(new Properties());
         return session;
     }
 
@@ -453,6 +460,34 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         @Override
         public File alignToBaseDirectory(File path) {
             return evaluator.alignToBaseDirectory(path);
+        }
+    }
+
+    private static class MavenProvidesModule implements Module {
+        private final Object testInstance;
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void configure(Binder binder) {
+            List<Method> providesMethods = AnnotationSupport.findAnnotatedMethods(
+                    testInstance.getClass(), Provides.class, HierarchyTraversalMode.BOTTOM_UP);
+
+            for (Method method : providesMethods) {
+                if (method.getParameterCount() > 0) {
+                    throw new IllegalArgumentException("Parameterized method are not supported " + method);
+                }
+                try {
+                    method.setAccessible(true);
+                    Object value = method.invoke(testInstance);
+                    binder.bind((Class<Object>) method.getReturnType()).toInstance(value);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+
+        MavenProvidesModule(Object testInstance) {
+            this.testInstance = testInstance;
         }
     }
 }
