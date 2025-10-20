@@ -86,6 +86,8 @@ import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
+import static org.mockito.Mockito.lenient;
+
 /**
  * JUnit's extension to help testing Mojos. The extension should be automatically registered
  * by adding the {@link MojoTest} annotation on the test class.
@@ -95,6 +97,9 @@ import org.slf4j.LoggerFactory;
  * @see MojoParameter
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
+
+    // Namespace for storing/retrieving data related to MojoExtension
+    private static final ExtensionContext.Namespace MOJO_EXTENSION = ExtensionContext.Namespace.create("MojoExtension");
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
@@ -123,10 +128,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                     .ifPresent(mojoParameters::addAll);
 
             Class<?> holder = parameterContext.getTarget().get().getClass();
-            PluginDescriptor descriptor = extensionContext
-                    .getStore(ExtensionContext.Namespace.GLOBAL)
-                    .get(PluginDescriptor.class, PluginDescriptor.class);
-            return lookupMojo(holder, injectMojo, mojoParameters, descriptor);
+            PluginDescriptor descriptor =
+                    extensionContext.getStore(MOJO_EXTENSION).get(PluginDescriptor.class, PluginDescriptor.class);
+            return lookupMojo(extensionContext, holder, injectMojo, mojoParameters, descriptor);
         } catch (Exception e) {
             throw new ParameterResolutionException("Unable to resolve parameter", e);
         }
@@ -136,15 +140,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     public void beforeEach(ExtensionContext context) throws Exception {
         String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
                 .map(Basedir::value)
-                .orElse(null);
+                .orElseGet(PlexusExtension::getBasedir);
 
-        setTestBasedir(basedir);
+        setTestBasedir(basedir, context);
 
-        setContext(context);
+        PlexusContainer plexusContainer = getContainer(context);
 
-        getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
-
-        ((DefaultPlexusContainer) getContainer()).addPlexusInjector(Collections.emptyList(), binder -> {
+        ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
             binder.install(ProviderMethodsModule.forObject(context.getRequiredTestInstance()));
             binder.install(new MavenProvidesModule(context.getRequiredTestInstance()));
             binder.requestInjection(context.getRequiredTestInstance());
@@ -153,7 +155,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             binder.bind(MojoExecution.class).toInstance(mockMojoExecution());
         });
 
-        Map<Object, Object> map = getContainer().getContext().getContextData();
+        Map<Object, Object> map = plexusContainer.getContext().getContextData();
 
         ClassLoader classLoader = context.getRequiredTestClass().getClassLoader();
         try (InputStream is = Objects.requireNonNull(
@@ -164,10 +166,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
             PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build(interpolationReader);
 
-            context.getStore(ExtensionContext.Namespace.GLOBAL).put(PluginDescriptor.class, pluginDescriptor);
+            context.getStore(MOJO_EXTENSION).put(PluginDescriptor.class, pluginDescriptor);
 
             for (ComponentDescriptor<?> desc : pluginDescriptor.getComponents()) {
-                getContainer().addComponentDescriptor(desc);
+                plexusContainer.addComponentDescriptor(desc);
             }
         }
     }
@@ -178,7 +180,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * @return a MojoExecution mock
      */
     private MojoExecution mockMojoExecution() {
-        return Mockito.mock(MojoExecution.class);
+        MojoExecution mockExecution = Mockito.mock(MojoExecution.class);
+        lenient().when(mockExecution.getMojoDescriptor()).thenReturn(new MojoDescriptor());
+        return mockExecution;
     }
 
     /**
@@ -188,8 +192,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     private MavenSession mockMavenSession() {
         MavenSession session = Mockito.mock(MavenSession.class);
-        Mockito.lenient().when(session.getUserProperties()).thenReturn(new Properties());
-        Mockito.lenient().when(session.getSystemProperties()).thenReturn(new Properties());
+        lenient().when(session.getUserProperties()).thenReturn(new Properties());
+        lenient().when(session.getSystemProperties()).thenReturn(new Properties());
         return session;
     }
 
@@ -198,6 +202,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     private Mojo lookupMojo(
+            ExtensionContext extensionContext,
             Class<?> holder,
             InjectMojo injectMojo,
             Collection<MojoParameter> mojoParameters,
@@ -205,10 +210,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             throws Exception {
         String goal = injectMojo.goal();
         String pom = injectMojo.pom();
-        String[] coord = mojoCoordinates(goal);
+        Path basedir = Paths.get(getTestBasedir(extensionContext));
+        String[] coord = mojoCoordinates(goal, descriptor);
         Xpp3Dom pomDom;
         if (pom.startsWith("file:")) {
-            Path path = Paths.get(getTestBasedir()).resolve(pom.substring("file:".length()));
+            Path path = basedir.resolve(pom.substring("file:".length()));
             pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
         } else if (pom.startsWith("classpath:")) {
             URL url = holder.getResource(pom.substring("classpath:".length()));
@@ -218,9 +224,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             pomDom = Xpp3DomBuilder.build(new XmlStreamReader(url.openStream()));
         } else if (pom.contains("<project>")) {
             pomDom = Xpp3DomBuilder.build(new StringReader(pom));
-        } else {
-            Path path = Paths.get(getTestBasedir()).resolve(pom);
+        } else if (!pom.isEmpty()) {
+            Path path = basedir.resolve(pom);
             pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
+        } else {
+            pomDom = new Xpp3Dom("");
         }
         Xpp3Dom pluginConfiguration = extractPluginConfiguration(coord[1], pomDom);
         if (!mojoParameters.isEmpty()) {
@@ -235,19 +243,16 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             children.forEach(config::addChild);
             pluginConfiguration = Xpp3Dom.mergeXpp3Dom(config, pluginConfiguration);
         }
-        Mojo mojo = lookupMojo(coord, pluginConfiguration, descriptor);
-        return mojo;
+        return lookupMojo(extensionContext, coord, pluginConfiguration, descriptor);
     }
 
-    protected String[] mojoCoordinates(String goal) throws Exception {
+    protected String[] mojoCoordinates(String goal, PluginDescriptor pluginDescriptor) throws Exception {
         if (goal.matches(".*:.*:.*:.*")) {
             return goal.split(":");
         } else {
-            Path pluginPom = Paths.get(getTestBasedir(), "pom.xml");
-            Xpp3Dom pluginPomDom = Xpp3DomBuilder.build(new XmlStreamReader(pluginPom.toFile()));
-            String artifactId = pluginPomDom.getChild("artifactId").getValue();
-            String groupId = resolveFromRootThenParent(pluginPomDom, "groupId");
-            String version = resolveFromRootThenParent(pluginPomDom, "version");
+            String artifactId = pluginDescriptor.getArtifactId();
+            String groupId = pluginDescriptor.getGroupId();
+            String version = pluginDescriptor.getVersion();
             return new String[] {groupId, artifactId, version, goal};
         }
     }
@@ -255,10 +260,12 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     /**
      * lookup the mojo while we have all the relevent information
      */
-    protected Mojo lookupMojo(String[] coord, Xpp3Dom pluginConfiguration, PluginDescriptor descriptor)
+    protected Mojo lookupMojo(
+            ExtensionContext extensionContext, String[] coord, Xpp3Dom pluginConfiguration, PluginDescriptor descriptor)
             throws Exception {
+        PlexusContainer plexusContainer = getContainer(extensionContext);
         // pluginkey = groupId : artifactId : version : goal
-        Mojo mojo = lookup(Mojo.class, coord[0] + ":" + coord[1] + ":" + coord[2] + ":" + coord[3]);
+        Mojo mojo = plexusContainer.lookup(Mojo.class, coord[0] + ":" + coord[1] + ":" + coord[2] + ":" + coord[3]);
         for (MojoDescriptor mojoDescriptor : descriptor.getMojos()) {
             if (Objects.equals(
                     mojoDescriptor.getImplementation(), mojo.getClass().getName())) {
@@ -268,29 +275,29 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             }
         }
         if (pluginConfiguration != null) {
-            MavenSession session = getContainer().lookup(MavenSession.class);
+            MavenSession session = plexusContainer.lookup(MavenSession.class);
             try {
-                getContainer().lookup(MavenProject.class);
+                plexusContainer.lookup(MavenProject.class);
             } catch (ComponentLookupException ignore) {
                 // nothing
             }
             MojoExecution mojoExecution;
             try {
-                mojoExecution = getContainer().lookup(MojoExecution.class);
+                mojoExecution = plexusContainer.lookup(MojoExecution.class);
             } catch (ComponentLookupException e) {
                 mojoExecution = null;
             }
             ExpressionEvaluator evaluator =
-                    new WrapEvaluator(getContainer(), new PluginParameterExpressionEvaluator(session, mojoExecution));
+                    new WrapEvaluator(plexusContainer, new PluginParameterExpressionEvaluator(session, mojoExecution));
             ComponentConfigurator configurator = new BasicComponentConfigurator();
             configurator.configureComponent(
                     mojo,
                     new XmlPlexusConfiguration(pluginConfiguration),
                     evaluator,
-                    getContainer().getContainerRealm());
+                    plexusContainer.getContainerRealm());
         }
 
-        mojo.setLog(getContainer().lookup(Log.class));
+        mojo.setLog(plexusContainer.lookup(Log.class));
 
         return mojo;
     }
@@ -400,6 +407,14 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
+     * Gets the base directory for test resources.
+     * If not explicitly set via {@link Basedir}, returns the plugin base directory.
+     */
+    public static String getBasedir() {
+        return PlexusExtension.getBasedir();
+    }
+
+    /**
      * Convenience method to set values to variables in objects that don't have setters
      */
     public static void setVariableValueToObject(Object object, String variable, Object value)
@@ -413,6 +428,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     static class WrapEvaluator implements TypeAwareExpressionEvaluator {
 
         private final PlexusContainer container;
+
         private final TypeAwareExpressionEvaluator evaluator;
 
         WrapEvaluator(PlexusContainer container, TypeAwareExpressionEvaluator evaluator) {
