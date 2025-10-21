@@ -86,7 +86,9 @@ import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mockingDetails;
 
 /**
  * JUnit's extension to help testing Mojos. The extension should be automatically registered
@@ -151,6 +153,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             binder.install(new MavenProvidesModule(context.getRequiredTestInstance()));
             binder.requestInjection(context.getRequiredTestInstance());
             binder.bind(Log.class).toInstance(new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
+            binder.bind(MavenProject.class).toInstance(mockMavenProject());
             binder.bind(MavenSession.class).toInstance(mockMavenSession());
             binder.bind(MojoExecution.class).toInstance(mockMojoExecution());
         });
@@ -180,9 +183,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * @return a MojoExecution mock
      */
     private MojoExecution mockMojoExecution() {
-        MojoExecution mockExecution = Mockito.mock(MojoExecution.class);
-        lenient().when(mockExecution.getMojoDescriptor()).thenReturn(new MojoDescriptor());
-        return mockExecution;
+        return Mockito.mock(MojoExecution.class);
     }
 
     /**
@@ -195,6 +196,17 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         lenient().when(session.getUserProperties()).thenReturn(new Properties());
         lenient().when(session.getSystemProperties()).thenReturn(new Properties());
         return session;
+    }
+
+    /**
+     * Default MavenProject mock
+     *
+     * @return a MavenProject mock
+     */
+    private MavenProject mockMavenProject() {
+        MavenProject mavenProject = Mockito.mock(MavenProject.class);
+        lenient().when(mavenProject.getProperties()).thenReturn(new Properties());
+        return mavenProject;
     }
 
     protected String getPluginDescriptorLocation() {
@@ -266,27 +278,33 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         PlexusContainer plexusContainer = getContainer(extensionContext);
         // pluginkey = groupId : artifactId : version : goal
         Mojo mojo = plexusContainer.lookup(Mojo.class, coord[0] + ":" + coord[1] + ":" + coord[2] + ":" + coord[3]);
-        for (MojoDescriptor mojoDescriptor : descriptor.getMojos()) {
-            if (Objects.equals(
-                    mojoDescriptor.getImplementation(), mojo.getClass().getName())) {
-                if (pluginConfiguration != null) {
-                    pluginConfiguration = finalizeConfig(pluginConfiguration, mojoDescriptor);
-                }
-            }
+
+        Optional<MojoDescriptor> mojoDescriptor = descriptor.getMojos().stream()
+                .filter(md ->
+                        Objects.equals(md.getImplementation(), mojo.getClass().getName()))
+                .findFirst();
+
+        if (mojoDescriptor.isPresent()) {
+            pluginConfiguration = finalizeConfig(pluginConfiguration, mojoDescriptor.get());
         }
+
+        MavenSession session = plexusContainer.lookup(MavenSession.class);
+        MavenProject mavenProject = plexusContainer.lookup(MavenProject.class);
+        MojoExecution mojoExecution = plexusContainer.lookup(MojoExecution.class);
+
+        if (mockingDetails(session).isMock()) {
+            lenient().when(session.getCurrentProject()).thenReturn(mavenProject);
+        }
+
+        if (mockingDetails(mavenProject).isMock()) {
+            lenient().when(mavenProject.getBasedir()).thenReturn(new File(getTestBasedir(extensionContext)));
+        }
+
+        if (mojoDescriptor.isPresent() && mockingDetails(mojoExecution).isMock()) {
+            lenient().when(mojoExecution.getMojoDescriptor()).thenReturn(mojoDescriptor.get());
+        }
+
         if (pluginConfiguration != null) {
-            MavenSession session = plexusContainer.lookup(MavenSession.class);
-            try {
-                plexusContainer.lookup(MavenProject.class);
-            } catch (ComponentLookupException ignore) {
-                // nothing
-            }
-            MojoExecution mojoExecution;
-            try {
-                mojoExecution = plexusContainer.lookup(MojoExecution.class);
-            } catch (ComponentLookupException e) {
-                mojoExecution = null;
-            }
             ExpressionEvaluator evaluator =
                     new WrapEvaluator(plexusContainer, new PluginParameterExpressionEvaluator(session, mojoExecution));
             ComponentConfigurator configurator = new BasicComponentConfigurator();
@@ -298,6 +316,19 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
 
         mojo.setLog(plexusContainer.lookup(Log.class));
+
+        // clear invocations on mocks to avoid test interference
+        if (mockingDetails(session).isMock()) {
+            clearInvocations(session);
+        }
+
+        if (mockingDetails(mavenProject).isMock()) {
+            clearInvocations(mavenProject);
+        }
+
+        if (mockingDetails(mojoExecution).isMock()) {
+            clearInvocations(mojoExecution);
+        }
 
         return mojo;
     }
@@ -349,19 +380,6 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 .flatMap(buildElement -> child(buildElement, "configuration"))
                 .orElse(Xpp3DomBuilder.build(new StringReader("<configuration/>")));
         return pluginConfigurationElement;
-    }
-
-    /**
-     * sometimes the parent element might contain the correct value so generalize that access
-     *
-     * TODO find out where this is probably done elsewhere
-     */
-    private static String resolveFromRootThenParent(Xpp3Dom pluginPomDom, String element) throws Exception {
-        return Optional.ofNullable(child(pluginPomDom, element).orElseGet(() -> child(pluginPomDom, "parent")
-                        .flatMap(e -> child(e, element))
-                        .orElse(null)))
-                .map(Xpp3Dom::getValue)
-                .orElseThrow(() -> new Exception("unable to determine " + element));
     }
 
     /**
@@ -425,7 +443,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         field.set(object, value);
     }
 
-    static class WrapEvaluator implements TypeAwareExpressionEvaluator {
+    private static class WrapEvaluator implements TypeAwareExpressionEvaluator {
 
         private final PlexusContainer container;
 
@@ -473,6 +491,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     private static class MavenProvidesModule implements Module {
         private final Object testInstance;
 
+        MavenProvidesModule(Object testInstance) {
+            this.testInstance = testInstance;
+        }
+
         @Override
         @SuppressWarnings("unchecked")
         public void configure(Binder binder) {
@@ -486,15 +508,14 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 try {
                     method.setAccessible(true);
                     Object value = method.invoke(testInstance);
+                    if (value == null) {
+                        throw new IllegalArgumentException("Provides method returned null: " + method);
+                    }
                     binder.bind((Class<Object>) method.getReturnType()).toInstance(value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new IllegalStateException(e);
+                    throw new IllegalArgumentException(e);
                 }
             }
-        }
-
-        MavenProvidesModule(Object testInstance) {
-            this.testInstance = testInstance;
         }
     }
 }
