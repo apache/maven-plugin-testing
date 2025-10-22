@@ -62,6 +62,13 @@ under the License.
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-resolver-provider</artifactId>
       <version>${mavenVersion}</version>
@@ -70,18 +77,6 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
-      <version>${wagonVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.wagon</groupId>
-      <artifactId>wagon-file</artifactId>
-      <version>${wagonVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.wagon</groupId>
-      <artifactId>wagon-http</artifactId>
       <version>${wagonVersion}</version>
       <scope>provided</scope>
     </dependency>
@@ -94,6 +89,7 @@ under the License.
       <artifactId>maven-compat</artifactId>
       <version>${mavenVersion}</version>
       <scope>runtime</scope>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -111,11 +107,7 @@ under the License.
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
       <version>4.10.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.28.0</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -129,12 +121,6 @@ under the License.
           <artifactId>junit-jupiter-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <!-- newer version is required by plexus-testing -->
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>33.5.0-jre</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
