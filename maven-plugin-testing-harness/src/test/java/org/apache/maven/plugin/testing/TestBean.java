@@ -19,36 +19,23 @@
 package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.project.MavenProject;
 
-public class ProvidesInjectMojo extends AbstractMojo {
-
-    private final MavenSession session;
-    private final MavenProject project;
-    private final TestBean testBean;
+@Named
+@Singleton
+public class TestBean {
+    private final Provider<MavenSession> sessionProvider;
 
     @Inject
-    public ProvidesInjectMojo(MavenSession session, MavenProject project, TestBean testBean) {
-        this.session = session;
-        this.project = project;
-        this.testBean = testBean;
+    public TestBean(Provider<MavenSession> sessionProvider) {
+        this.sessionProvider = sessionProvider;
     }
-
-    @Override
-    public void execute() {}
 
     public MavenSession getSession() {
-        return session;
-    }
-
-    public MavenSession getSessionFromBean() {
-        return testBean.getSession();
-    }
-
-    public MavenProject getProject() {
-        return project;
+        return sessionProvider.get();
     }
 }
