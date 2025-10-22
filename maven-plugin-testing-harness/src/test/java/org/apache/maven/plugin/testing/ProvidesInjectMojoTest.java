@@ -18,9 +18,12 @@
  */
 package org.apache.maven.plugin.testing;
 
+import javax.inject.Inject;
+
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +39,9 @@ public class ProvidesInjectMojoTest {
 
     private static final String POM = "<project>" + "</project>";
 
+    @Inject
+    private MavenSession session;
+
     @Mock
     private MavenProject project;
 
@@ -48,7 +54,8 @@ public class ProvidesInjectMojoTest {
     @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
     public void bennShouldBeInjected(ProvidesInjectMojo mojo) {
         assertNotNull(mojo);
-        assertNotNull(mojo.getSession());
+        assertSame(session, mojo.getSession());
+        assertSame(session, mojo.getSessionFromBean());
         assertSame(project, mojo.getProject());
     }
 }

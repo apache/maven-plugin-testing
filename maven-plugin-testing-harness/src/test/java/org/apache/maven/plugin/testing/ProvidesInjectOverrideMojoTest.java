@@ -69,6 +69,7 @@ class ProvidesInjectOverrideMojoTest {
         assertNotNull(mojo);
         // session provided by the @Provides method should be used
         assertSame(session, mojo.getSession());
+        assertSame(session, mojo.getSessionFromBean());
         assertSame(project, mojo.getProject());
     }
 }

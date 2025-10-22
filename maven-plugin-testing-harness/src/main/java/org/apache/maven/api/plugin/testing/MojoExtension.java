@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +62,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.testing.MojoLogWrapper;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.session.scope.internal.SessionScope;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
@@ -151,11 +153,19 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
             binder.install(ProviderMethodsModule.forObject(context.getRequiredTestInstance()));
             binder.install(new MavenProvidesModule(context.getRequiredTestInstance()));
+        });
+
+        addMock(plexusContainer, Log.class, () -> new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
+        addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
+        addMock(plexusContainer, MojoExecution.class, this::mockMojoExecution);
+
+        MavenSession mavenSession = addMock(plexusContainer, MavenSession.class, this::mockMavenSession);
+        SessionScope sessionScope = plexusContainer.lookup(SessionScope.class);
+        sessionScope.enter();
+        sessionScope.seed(MavenSession.class, mavenSession);
+
+        ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
             binder.requestInjection(context.getRequiredTestInstance());
-            binder.bind(Log.class).toInstance(new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
-            binder.bind(MavenProject.class).toInstance(mockMavenProject());
-            binder.bind(MavenSession.class).toInstance(mockMavenSession());
-            binder.bind(MojoExecution.class).toInstance(mockMojoExecution());
         });
 
         Map<Object, Object> map = plexusContainer.getContext().getContextData();
@@ -175,6 +185,25 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 plexusContainer.addComponentDescriptor(desc);
             }
         }
+    }
+
+    private <T> T addMock(PlexusContainer container, Class<T> role, Supplier<T> supplier)
+            throws ComponentLookupException {
+        if (!container.hasComponent(role)) {
+            T mock = supplier.get();
+            container.addComponent(mock, role, "default");
+            return mock;
+        } else {
+            return container.lookup(role);
+        }
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) throws Exception {
+        SessionScope sessionScope = getContainer(context).lookup(SessionScope.class);
+        sessionScope.exit();
+
+        super.afterEach(context);
     }
 
     /**
