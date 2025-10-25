@@ -20,6 +20,11 @@ date: February 2008
 <!--  under the License. -->
 ## Testing Complex Mojo Parameters
 
+### NOTE
+
+`JUnit 3` based tests are deprecated since `3.4.0`.
+
+Use JUnit 5 annotations, consult [javadocs](../apidocs/org/apache/maven/api/plugin/testing/package-summary.html) for examples.
 
  **Note**: This example improves the [cookbook](../getting-started/index.html) for testing complex Mojo parameters.
 

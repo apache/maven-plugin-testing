@@ -30,7 +30,7 @@ date: February 2008
 ### Examples
 
 
- The following examples shows how to use the Testing Harness in more advanced usecases:
+ The following examples shows how to use the Testing Harness in more advanced use cases:
 
 
 

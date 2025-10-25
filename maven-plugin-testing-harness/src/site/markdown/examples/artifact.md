@@ -21,6 +21,12 @@ date: February 2008
 ## Testing Project Artifact
 
 
+### NOTE
+
+`JUnit 3` based tests are deprecated since `3.4.0`.
+
+Use JUnit 5 annotations, consult [javadocs](../apidocs/org/apache/maven/api/plugin/testing/package-summary.html) for examples.
+
  **Note**: This example improves the [cookbook](../getting-started/index.html) to play with artifact handler.
 
 

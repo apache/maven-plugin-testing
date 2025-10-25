@@ -18,15 +18,67 @@
  */
 package org.apache.maven.api.plugin.testing;
 
+import javax.inject.Inject;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.maven.api.di.Provides;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
+ * Annotation that enables Maven plugin (Mojo) testing support in JUnit tests.
+ * When applied to a test class, it automatically sets up the testing environment
+ * for Maven plugins, including dependency injection and parameter resolution.
  *
+ * <p>This annotation works in conjunction with {@link InjectMojo} and {@link MojoParameter}
+ * to provide a comprehensive testing framework for Maven plugins. It automatically registers
+ * the {@link MojoExtension} which handles the plugin lifecycle and dependency injection.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>
+ * {@code
+ * @MojoTest
+ * class MyMojoTest {
+ *     @Inject
+ *     private SomeComponent component;
+ *
+ *     @Test
+ *     @InjectMojo(goal = "my-goal")
+ *     @MojoParameter(name = "parameter", value = "value")
+ *     void testMojoExecution(MyMojo mojo) {
+ *         // mojo is instantiated with the specified parameters
+ *         // component is automatically injected
+ *         mojo.execute();
+ *         // verify execution results
+ *     }
+ *
+ *     @Provides
+ *     SomeComponent provideMockedComponent() {
+ *         return mock(SomeComponent.class);
+ *     }
+ * }
+ * }
+ * </pre>
+ *
+ * <p>The annotation supports:</p>
+ * <ul>
+ *   <li>Automatic Mojo instantiation and configuration</li>
+ *   <li>Parameter injection via {@link MojoParameter}</li>
+ *   <li>Component injection via {@link Inject}</li>
+ *   <li>Mock component injection via {@link Provides}</li>
+ *   <li>Custom POM configuration via {@link InjectMojo#pom()}</li>
+ *   <li>Base directory configuration for test resources via {@link Basedir}</li>
+ * </ul>
+ *
+ *
+ * @see MojoExtension
+ * @see InjectMojo
+ * @see MojoParameter
+ * @see Provides
+ * @since 4.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MojoExtension.class)

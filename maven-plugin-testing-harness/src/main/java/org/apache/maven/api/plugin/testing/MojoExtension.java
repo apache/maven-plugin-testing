@@ -93,12 +93,45 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mockingDetails;
 
 /**
- * JUnit's extension to help testing Mojos. The extension should be automatically registered
- * by adding the {@link MojoTest} annotation on the test class.
+ * JUnit Jupiter extension that provides support for testing Maven plugins (Mojos).
+ * This extension handles the lifecycle of Mojo instances in tests, including instantiation,
+ * configuration, and dependency injection.
+ *
+ * <p>The extension is automatically registered when using the {@link MojoTest} annotation
+ * on a test class. It provides the following features:</p>
+ * <ul>
+ *   <li>Automatic Mojo instantiation based on {@link InjectMojo} annotations</li>
+ *   <li>Parameter injection using {@link MojoParameter} annotations</li>
+ *   <li>POM configuration handling</li>
+ *   <li>Project stub creation and configuration</li>
+ *   <li>Maven session and build context setup</li>
+ *   <li>Component dependency injection</li>
+ * </ul>
+ *
+ * <p>Example usage in a test class:</p>
+ * <pre>
+ * {@code
+ * @MojoTest
+ * class MyMojoTest {
+ *     @Test
+ *     @InjectMojo(goal = "my-goal")
+ *     @MojoParameter(name = "outputDirectory", value = "${project.build.directory}/generated")
+ *     void testMojoExecution(MyMojo mojo) throws Exception {
+ *         mojo.execute();
+ *         // verify execution results
+ *     }
+ * }
+ * }
+ * </pre>
+ **
+ * <p>For custom POM configurations, you can specify a POM file using the {@link InjectMojo#pom()}
+ * attribute. The extension will merge this configuration with default test project settings.</p>*
  *
  * @see MojoTest
  * @see InjectMojo
  * @see MojoParameter
+ * @see Basedir
+ * @since 3.4.0
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
 
