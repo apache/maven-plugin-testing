@@ -18,15 +18,39 @@
  */
 package org.apache.maven.api.plugin.testing;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Mojo parameters container
+ * Specifies the base directory for test resources in Maven plugin tests.
+ * This annotation can be applied to test methods to define where test resources are located.
+ *
+ ** <p>Example usage:</p>
+ * <pre>
+ * {@code
+ * @MojoTest
+ * class MyMojoTest {
+ *     @Test
+ *     @Basedir("src/test/resources/specific-test-case")
+ *     @InjectMojo(goal = "compile")
+ *     void testSpecificCase(MyMojo mojo) {
+ *         // Test resources will be loaded from src/test/resources/specific-test-case
+ *         mojo.execute();
+ *     }
+ * }
+ * }
+ * </pre>
+ *
+ * @see MojoTest
+ * @see MojoExtension
+ * @since 3.4.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+@Target(ElementType.METHOD)
 public @interface Basedir {
     String value() default "";
 }
