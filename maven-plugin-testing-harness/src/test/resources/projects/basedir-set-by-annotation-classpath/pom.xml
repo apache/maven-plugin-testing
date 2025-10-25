@@ -34,7 +34,7 @@ under the License.
         <artifactId>test-plugin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <configuration>
-          <plain>i-have-a-basedir-set-by-annotation</plain>
+          <plain>i-have-a-basedir-set-by-annotation-classpath</plain>
         </configuration>
       </plugin>
     </plugins>

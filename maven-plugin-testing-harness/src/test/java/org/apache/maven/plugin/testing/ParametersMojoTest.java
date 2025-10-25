@@ -116,4 +116,12 @@ public class ParametersMojoTest {
         assertEquals("i-have-a-basedir-set-by-annotation", mojo.getPlain());
         assertDoesNotThrow(mojo::execute);
     }
+
+    @Test
+    @Basedir("/projects/basedir-set-by-annotation-classpath")
+    @InjectMojo(goal = "parameters", pom = POM_DOT_XML_FILE)
+    void basedirInjectedWithBasedirFromClasspathAnnotation(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation-classpath", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
+    }
 }
