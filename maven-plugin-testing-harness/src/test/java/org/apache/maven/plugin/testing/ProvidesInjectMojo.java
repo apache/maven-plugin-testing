@@ -22,18 +22,22 @@ import javax.inject.Inject;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 
 public class ProvidesInjectMojo extends AbstractMojo {
 
     private final MavenSession session;
     private final MavenProject project;
+    private final MojoExecution mojoExecution;
     private final TestBean testBean;
 
     @Inject
-    public ProvidesInjectMojo(MavenSession session, MavenProject project, TestBean testBean) {
+    public ProvidesInjectMojo(
+            MavenSession session, MavenProject project, MojoExecution mojoExecution, TestBean testBean) {
         this.session = session;
         this.project = project;
+        this.mojoExecution = mojoExecution;
         this.testBean = testBean;
     }
 
@@ -50,5 +54,17 @@ public class ProvidesInjectMojo extends AbstractMojo {
 
     public MavenProject getProject() {
         return project;
+    }
+
+    public MavenProject getProjectFromBean() {
+        return testBean.getProject();
+    }
+
+    public MojoExecution getMojoExecution() {
+        return mojoExecution;
+    }
+
+    public MojoExecution getMojoExecutionFromBean() {
+        return testBean.getMojoExecution();
     }
 }

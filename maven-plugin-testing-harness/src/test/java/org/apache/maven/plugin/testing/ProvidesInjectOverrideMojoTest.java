@@ -24,6 +24,7 @@ import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,9 @@ class ProvidesInjectOverrideMojoTest {
     @Mock
     private MavenSession session;
 
+    @Mock
+    private MojoExecution mojoExecution;
+
     @BeforeEach
     void setup() {
         when(session.getUserProperties()).thenReturn(new Properties());
@@ -63,6 +67,11 @@ class ProvidesInjectOverrideMojoTest {
         return session;
     }
 
+    @Provides
+    MojoExecution mockMojoExecution() {
+        return mojoExecution;
+    }
+
     @Test
     @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
     public void bennShouldBeInjected(ProvidesInjectMojo mojo) {
@@ -70,6 +79,11 @@ class ProvidesInjectOverrideMojoTest {
         // session provided by the @Provides method should be used
         assertSame(session, mojo.getSession());
         assertSame(session, mojo.getSessionFromBean());
+
         assertSame(project, mojo.getProject());
+        assertSame(project, mojo.getProjectFromBean());
+
+        assertSame(mojoExecution, mojo.getMojoExecution());
+        assertSame(mojoExecution, mojo.getMojoExecutionFromBean());
     }
 }

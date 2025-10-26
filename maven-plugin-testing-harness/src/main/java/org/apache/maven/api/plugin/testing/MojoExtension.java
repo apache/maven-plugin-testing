@@ -51,6 +51,7 @@ import com.google.inject.Module;
 import com.google.inject.internal.ProviderMethodsModule;
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.execution.scope.internal.MojoExecutionScope;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
@@ -194,13 +195,18 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         });
 
         addMock(plexusContainer, Log.class, () -> new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
-        addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
-        addMock(plexusContainer, MojoExecution.class, this::mockMojoExecution);
-
+        MavenProject mavenProject = addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
+        MojoExecution mojoExecution = addMock(plexusContainer, MojoExecution.class, this::mockMojoExecution);
         MavenSession mavenSession = addMock(plexusContainer, MavenSession.class, this::mockMavenSession);
+
         SessionScope sessionScope = plexusContainer.lookup(SessionScope.class);
         sessionScope.enter();
         sessionScope.seed(MavenSession.class, mavenSession);
+
+        MojoExecutionScope executionScope = plexusContainer.lookup(MojoExecutionScope.class);
+        executionScope.enter();
+        executionScope.seed(MavenProject.class, mavenProject);
+        executionScope.seed(MojoExecution.class, mojoExecution);
 
         ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
             binder.requestInjection(context.getRequiredTestInstance());
@@ -240,6 +246,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     public void afterEach(ExtensionContext context) throws Exception {
         SessionScope sessionScope = getContainer(context).lookup(SessionScope.class);
         sessionScope.exit();
+
+        MojoExecutionScope executionScope = getContainer(context).lookup(MojoExecutionScope.class);
+        executionScope.exit();
 
         super.afterEach(context);
     }
