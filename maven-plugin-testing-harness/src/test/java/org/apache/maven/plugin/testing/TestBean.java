@@ -24,18 +24,37 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.project.MavenProject;
 
 @Named
 @Singleton
 public class TestBean {
     private final Provider<MavenSession> sessionProvider;
 
+    private final Provider<MavenProject> projectProvider;
+
+    private final Provider<MojoExecution> mojoExecutionProvider;
+
     @Inject
-    public TestBean(Provider<MavenSession> sessionProvider) {
+    public TestBean(
+            Provider<MavenSession> sessionProvider,
+            Provider<MavenProject> projectProvider,
+            Provider<MojoExecution> mojoExecutionProvider) {
         this.sessionProvider = sessionProvider;
+        this.projectProvider = projectProvider;
+        this.mojoExecutionProvider = mojoExecutionProvider;
     }
 
     public MavenSession getSession() {
         return sessionProvider.get();
+    }
+
+    public MavenProject getProject() {
+        return projectProvider.get();
+    }
+
+    public MojoExecution getMojoExecution() {
+        return mojoExecutionProvider.get();
     }
 }

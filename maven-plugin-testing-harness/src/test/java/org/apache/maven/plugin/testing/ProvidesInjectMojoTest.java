@@ -20,14 +20,13 @@ package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
 
-import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,13 +41,11 @@ public class ProvidesInjectMojoTest {
     @Inject
     private MavenSession session;
 
-    @Mock
+    @Inject
     private MavenProject project;
 
-    @Provides
-    public MavenProject mockMavenProject() {
-        return project;
-    }
+    @Inject
+    private MojoExecution mojoExecution;
 
     @Test
     @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
@@ -56,6 +53,11 @@ public class ProvidesInjectMojoTest {
         assertNotNull(mojo);
         assertSame(session, mojo.getSession());
         assertSame(session, mojo.getSessionFromBean());
+
         assertSame(project, mojo.getProject());
+        assertSame(project, mojo.getProjectFromBean());
+
+        assertSame(mojoExecution, mojo.getMojoExecution());
+        assertSame(mojoExecution, mojo.getMojoExecutionFromBean());
     }
 }
