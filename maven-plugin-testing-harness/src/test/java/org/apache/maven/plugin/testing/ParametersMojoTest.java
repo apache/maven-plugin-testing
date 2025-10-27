@@ -218,4 +218,20 @@ public class ParametersMojoTest {
             assertDoesNotThrow(mojo::execute);
         }
     }
+
+    @Test
+    @Basedir("src/test/projects/basedir-set-by-annotation")
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters")
+    void basedirInjectedWithBasedirAnnotationDefaultPom(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @Basedir("/projects/basedir-set-by-annotation-classpath")
+    @InjectMojo(goal = "parameters")
+    void basedirInjectedWithBasedirFromClasspathAnnotationDefaultPom(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation-classpath", mojo.getPlain());
+        assertDoesNotThrow(mojo::execute);
+    }
 }
