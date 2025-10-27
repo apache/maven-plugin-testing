@@ -20,16 +20,23 @@ package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
 
+import java.io.File;
+
 import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoParameters;
 import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MojoTest
 public class ParametersMojoTest {
@@ -48,6 +55,9 @@ public class ParametersMojoTest {
     @Test
     @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = DEFAULT_POM_DIR + POM_DOT_XML_FILE)
     void testDefaultPom(ParametersMojo mojo) {
+        assertEquals("default", mojo.getWithDefault());
+        assertEquals("default", mojo.getWithPropertyAndDefault());
+
         assertDoesNotThrow(mojo::execute);
     }
 
@@ -55,6 +65,10 @@ public class ParametersMojoTest {
     @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = EXPLICIT_POM_DIR + POM_DOT_XML_FILE)
     void testExplicitPom(ParametersMojo mojo) {
         assertEquals("explicitValue", mojo.getPlain());
+        assertEquals("explicitWithPropertyValue", mojo.getWithProperty());
+        assertEquals("explicitWithDefaultValue", mojo.getWithDefault());
+        assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
+
         assertDoesNotThrow(mojo::execute);
     }
 
@@ -62,6 +76,30 @@ public class ParametersMojoTest {
     @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM_DIR + POM_DOT_XML_FILE)
     void testPropertyPom(ParametersMojo mojo) {
         assertDoesNotThrow(mojo::execute);
+    }
+
+    @Nested
+    class TestPropertyPom {
+
+        @Inject
+        private MavenSession mavenSession;
+
+        @BeforeEach
+        void setup() {
+            mavenSession.getUserProperties().setProperty("property", "testPropertyValue");
+        }
+
+        @Test
+        @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM_DIR + POM_DOT_XML_FILE)
+        @MojoParameter(name = "plain", value = "test-${property}")
+        void testPropertyPom(ParametersMojo mojo) {
+            assertEquals("test-testPropertyValue", mojo.getPlain());
+            assertEquals("testPropertyValue", mojo.getWithProperty());
+            assertEquals("default", mojo.getWithDefault());
+            assertEquals("testPropertyValue", mojo.getWithPropertyAndDefault());
+
+            assertDoesNotThrow(mojo::execute);
+        }
     }
 
     @Test
@@ -118,10 +156,66 @@ public class ParametersMojoTest {
     }
 
     @Test
+    @Basedir("src/test/projects/basedir-set-by-annotation")
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = POM_DOT_XML_FILE)
+    @MojoParameter(name = "withDefault", value = "${basedir}/test-default-value.txt")
+    @MojoParameter(name = "withProperty", value = "${project.basedir}/test-default-value.txt")
+    void basedirInjectedWithBasedirAnnotationAndParams(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation", mojo.getPlain());
+        assertEquals(MojoExtension.getBasedir() + "/test-default-value.txt", mojo.getWithDefault());
+        assertEquals(MojoExtension.getBasedir() + "/test-default-value.txt", mojo.getWithProperty());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
     @Basedir("/projects/basedir-set-by-annotation-classpath")
     @InjectMojo(goal = "parameters", pom = POM_DOT_XML_FILE)
     void basedirInjectedWithBasedirFromClasspathAnnotation(ParametersMojo mojo) {
         assertEquals("i-have-a-basedir-set-by-annotation-classpath", mojo.getPlain());
         assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @Basedir("/projects/basedir-set-by-annotation-classpath")
+    @InjectMojo(goal = "parameters", pom = POM_DOT_XML_FILE)
+    @MojoParameter(name = "withDefault", value = "${basedir}/test-default-value.txt")
+    @MojoParameter(name = "withProperty", value = "${project.basedir}/test-default-value.txt")
+    void basedirInjectedWithBasedirFromClasspathAnnotationAndParams(ParametersMojo mojo) {
+        assertEquals("i-have-a-basedir-set-by-annotation-classpath", mojo.getPlain());
+        assertEquals(MojoExtension.getBasedir() + "/test-default-value.txt", mojo.getWithDefault());
+        assertEquals(MojoExtension.getBasedir() + "/test-default-value.txt", mojo.getWithProperty());
+        assertDoesNotThrow(mojo::execute);
+    }
+
+    @Nested
+    class BaseDirInBeforeEach {
+
+        @BeforeEach
+        void setup() {
+            // basedir defined for test should be already visible here
+            String fs = File.separator;
+            String endWith1 = fs + "src" + fs + "test" + fs + "projects" + fs + "basedir-set-by-annotation";
+            String endWith2 = fs + "projects" + fs + "basedir-set-by-annotation-classpath";
+
+            assertTrue(
+                    MojoExtension.getBasedir().endsWith(endWith1)
+                            || MojoExtension.getBasedir().endsWith(endWith2),
+                    "Basedir: " + MojoExtension.getBasedir() + " is not ends with expected value '" + endWith1
+                            + "' or '" + endWith2 + "'");
+        }
+
+        @Test
+        @Basedir("src/test/projects/basedir-set-by-annotation")
+        @InjectMojo(goal = "parameters", pom = POM_DOT_XML_FILE)
+        void basedirInjectedWithBasedirAnnotation(ParametersMojo mojo) {
+            assertDoesNotThrow(mojo::execute);
+        }
+
+        @Test
+        @Basedir("/projects/basedir-set-by-annotation-classpath")
+        @InjectMojo(goal = "parameters", pom = POM_DOT_XML_FILE)
+        void basedirInjectedWithBasedirFromClasspathAnnotation(ParametersMojo mojo) {
+            assertDoesNotThrow(mojo::execute);
+        }
     }
 }
