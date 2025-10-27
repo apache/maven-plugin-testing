@@ -185,6 +185,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             basedir = Paths.get(resource.toURI()).toString();
         }
 
+        // as PluginParameterExpressionEvaluator changes the basedir to absolute path, we need to normalize it here too
+        basedir = new File(basedir).getAbsolutePath();
+
         setTestBasedir(basedir, context);
 
         PlexusContainer plexusContainer = getContainer(context);
