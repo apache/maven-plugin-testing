@@ -23,6 +23,7 @@ github:
     - build-management
     - maven-plugins
     - maven
+    - hacktoberfest
   protected_branches:
     master: { }
     maven-plugin-testing-3.x: { }
