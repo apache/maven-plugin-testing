@@ -33,7 +33,6 @@ date: February 2008
  The following examples shows how to use the Testing Harness in more advanced use cases:
 
 
-
  - [Testing Complex Mojo Parameters](./examples/complex-mojo-parameters.html)
 
  - [Testing Multiproject](./examples/multiproject.html)
@@ -42,5 +41,6 @@ date: February 2008
 
  - [Testing Project Artifact](./examples/artifact.html)
 
+ - [Plugins testing summary](https://maven.apache.org/plugin-developers/plugin-testing.html) 
 
 

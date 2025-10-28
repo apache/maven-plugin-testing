@@ -32,7 +32,7 @@ under the License.
         <p>
           This testing library is <b>NOT</b> designed for integration or functional testing:
           <a href="/plugins/maven-invoker-plugin/"><code>maven-invoker-plugin</code></a> is the way to go if you need it,
-          which gives you a complete Maven environment at the cost of more resources and time consuptions.
+          which gives you a complete Maven environment at the cost of more resources and time consumption.
         </p>
       </answer>
     </faq>
@@ -41,30 +41,26 @@ under the License.
       <answer>
         <p>
           <dl>
-            <dt>TestCase from JUnit</dt>
+            <dt>Junit 5 Extension - <i>@MojoTest</i> annotation</dt>
+            <dd>The preferred way to test Mojos is to use the JUnit 5 extension provided by the
+              <i>maven-plugin-testing-harness</i>. You can annotate your test class with <code>@MojoTest</code>
+              to have the extension set up the necessary Maven components for you. You can then inject your Mojo
+              and any required Maven components directly into your test class.
+              See <a href="./apidocs/org/apache/maven/api/plugin/testing/package-summary.html">javadocs</a> for examples.
+            </dd>
+            <dt>TestCase from JUnit - deprecated</dt>
             <dd>You could use the <a href="http://junit.org/">JUnit framework</a> to test your plugin in
               the same way you'd write any other JUnit test cases, i.e. by writing a test class which extends
               <i>TestCase</i>.</dd>
-            <dt>TestCase from Plexus</dt>
-            <dd>Mojos are written to take specific advantage of the <a href="http://plexus.codehaus.org/plexus-containers/">Plexus
-              container</a>. If you need Plexus container services, you could write your class which extends <i>PlexusTestCase</i>,
+            <dt>TestCase from Plexus - deprecated</dt>
+            <dd>Mojos are written to take specific advantage of the <i>Plexus container</i>.
+              If you need Plexus container services, you could write your class which extends <i>PlexusTestCase</i>,
               instead of <i>TestCase</i>.</dd>
-            <dt>TestCase from Testing Harness</dt>
+            <dt>TestCase from Testing Harness - deprecated</dt>
             <dd>If you need to inject Maven objects into your mojo, you could use the <i>maven-plugin-testing-harness</i>.
               The <i>maven-plugin-testing-harness</i> is explicitly intended to test the
               <i>org.apache.maven.reporting.AbstractMavenReport#execute()</i> implementation.</dd>
           </dl>
-        </p>
-      </answer>
-    </faq>
-    <faq id="Maven 2.x compatibility">
-      <question>Is Mojo Testing Harness 2.x compatible with Maven 2.x?</question>
-      <answer>
-        <p>
-          Mojo Testing Harness 2.0+ requires Maven 3.0. This does not necessary mean that your mojos will be 
-          incompatible with Maven 2.x, it only means that mojo unit tests use Maven 3.x libraries to mock Maven
-          environment. Still, if you want to be absolutely sure your mojo is compatible with Maven 2.x, then you probably want
-          to use Mojo Testing Harness 1.x.
         </p>
       </answer>
     </faq>
