@@ -30,11 +30,11 @@ date: February 2008
 Since version `3.4.0`, the Maven Plugin Testing Harness has been migrated to use JUnit 5 as the testing framework. 
 This change allows for more modern testing practices and improved integration with other tools.
 
-JUit 5 extension `MojoExtension` and annotation `@MojoTest` have similar functionalities 
+JUnit 5 extension `MojoExtension` and annotation `@MojoTest` have similar functionalities 
 as in [Maven 4](https://maven.apache.org/ref/4-LATEST/maven-impl-modules/maven-testing/apidocs/index.html)
 for easier migration of tests for Maven 4.
 
-Project still support Junit 3/4 `AbstractMojoTestCase` and Junit 4 `MojoRule` tests for backward compatibility 
+Project still supports JUnit 3/4 `AbstractMojoTestCase` and JUnit 4 `MojoRule` tests for backward compatibility 
 but new tests should be written using JUnit 5.
 
 Therefore, some project dependencies have been set as optional to avoid conflicts with existing JUnit 3/4 and JUnit 5 tests.
