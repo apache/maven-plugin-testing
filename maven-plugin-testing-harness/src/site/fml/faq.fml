@@ -41,7 +41,7 @@ under the License.
       <answer>
         <p>
           <dl>
-            <dt>Junit 5 Extension - <i>@MojoTest</i> annotation</dt>
+            <dt>JUnit 5 Extension - <i>@MojoTest</i> annotation</dt>
             <dd>The preferred way to test Mojos is to use the JUnit 5 extension provided by the
               <i>maven-plugin-testing-harness</i>. You can annotate your test class with <code>@MojoTest</code>
               to have the extension set up the necessary Maven components for you. You can then inject your Mojo
