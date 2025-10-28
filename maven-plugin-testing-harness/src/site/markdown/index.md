@@ -41,6 +41,6 @@ date: February 2008
 
  - [Testing Project Artifact](./examples/artifact.html)
 
- - [Plugins testing summary](https://maven.apache.org/plugin-developers/plugin-testing.html) 
+ - [Plugins testing summary](https://maven.apache.org/plugin-developers/plugin-testing.html)
 
 
