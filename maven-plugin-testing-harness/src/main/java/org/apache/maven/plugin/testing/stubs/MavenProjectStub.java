@@ -57,7 +57,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.testing.PlexusExtension;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -288,7 +288,7 @@ public class MavenProjectStub extends MavenProject {
     /** {@inheritDoc} */
     @Override
     public File getBasedir() {
-        return new File(PlexusTestCase.getBasedir());
+        return new File(PlexusExtension.getBasedir());
     }
 
     /**
