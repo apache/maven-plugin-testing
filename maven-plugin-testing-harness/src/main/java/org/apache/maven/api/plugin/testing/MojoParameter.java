@@ -31,9 +31,9 @@ import java.lang.annotation.Target;
  * without requiring a full POM file.
  *
  * <p>The annotation is repeatable, allowing multiple parameters to be set
- * on a single test method or parameter. For multiple parameters, you can
- * either use multiple {@code @MojoParameter} annotations or a single
- * {@link MojoParameters} annotation.</p>
+ * on a single test method, parameter, or on the whole test class. For
+ * multiple parameters, you can either use multiple {@code @MojoParameter}
+ * annotations or a single {@link MojoParameters} annotation.</p>
  *
  * <p>Example usage with a single parameter:</p>
  * <pre>
@@ -69,7 +69,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(MojoParameters.class)
 @Inherited
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 public @interface MojoParameter {
     String name();
 

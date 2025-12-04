@@ -70,7 +70,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 public @interface MojoParameters {
     MojoParameter[] value();
 }

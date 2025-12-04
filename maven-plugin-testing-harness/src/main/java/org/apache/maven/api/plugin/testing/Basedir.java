@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies the base directory for test resources in Maven plugin tests.
- * This annotation can be applied to test methods to define where test resources are located.
+ * This annotation can be applied to test methods, or test class, to define where test resources are located.
  *
  ** <p>Example usage:</p>
  * <pre>
@@ -50,7 +50,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Basedir {
     String value() default "";
 }
