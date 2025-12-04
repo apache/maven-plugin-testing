@@ -145,8 +145,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return parameterContext.isAnnotated(InjectMojo.class)
-                || parameterContext.getDeclaringExecutable().isAnnotationPresent(InjectMojo.class);
+        return Mojo.class.isAssignableFrom(parameterContext.getParameter().getType())
+                && (parameterContext.isAnnotated(InjectMojo.class)
+                        || parameterContext.getDeclaringExecutable().isAnnotationPresent(InjectMojo.class));
     }
 
     @Override
