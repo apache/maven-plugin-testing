@@ -499,10 +499,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * <br>
      * Note: the caller is responsible for casting to what the desired type is.
      */
-    public static Object getVariableValueFromObject(Object object, String variable) throws IllegalAccessException {
+    @SuppressWarnings("unchecked")
+    public static <T> T getVariableValueFromObject(Object object, String variable) throws IllegalAccessException {
         Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
         field.setAccessible(true);
-        return field.get(object);
+        return (T) field.get(object);
     }
 
     /**
