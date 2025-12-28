@@ -33,9 +33,11 @@ import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MojoTest
@@ -233,5 +235,12 @@ public class ParametersMojoTest {
     void basedirInjectedWithBasedirFromClasspathAnnotationDefaultPom(ParametersMojo mojo) {
         assertEquals("i-have-a-basedir-set-by-annotation-classpath", mojo.getPlain());
         assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters")
+    void testMultipleResolvedParameters(ParametersMojo mojo, TestInfo testInfo) {
+        assertNotNull(mojo);
+        assertNotNull(testInfo);
     }
 }

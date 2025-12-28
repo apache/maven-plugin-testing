@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -145,8 +145,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return parameterContext.isAnnotated(InjectMojo.class)
-                || parameterContext.getDeclaringExecutable().isAnnotationPresent(InjectMojo.class);
+        return Mojo.class.isAssignableFrom(parameterContext.getParameter().getType())
+                && (parameterContext.isAnnotated(InjectMojo.class)
+                        || parameterContext.getDeclaringExecutable().isAnnotationPresent(InjectMojo.class));
     }
 
     @Override
@@ -157,8 +158,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                     .findAnnotation(InjectMojo.class)
                     .orElseGet(() -> parameterContext.getDeclaringExecutable().getAnnotation(InjectMojo.class));
 
-            Set<MojoParameter> mojoParameters =
-                    new HashSet<>(parameterContext.findRepeatableAnnotations(MojoParameter.class));
+            Set<MojoParameter> mojoParameters = new LinkedHashSet<>();
+
+            extensionContext
+                    .getTestClass()
+                    .map(c -> c.getAnnotationsByType(MojoParameter.class))
+                    .map(Arrays::asList)
+                    .ifPresent(mojoParameters::addAll);
 
             Optional.ofNullable(parameterContext.getDeclaringExecutable().getAnnotation(MojoParameter.class))
                     .ifPresent(mojoParameters::add);
@@ -167,6 +173,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                     .map(MojoParameters::value)
                     .map(Arrays::asList)
                     .ifPresent(mojoParameters::addAll);
+
+            mojoParameters.addAll(parameterContext.findRepeatableAnnotations(MojoParameter.class));
 
             Class<?> holder = parameterContext.getTarget().get().getClass();
             PluginDescriptor descriptor =
@@ -181,7 +189,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     public void beforeEach(ExtensionContext context) throws Exception {
         String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
                 .map(Basedir::value)
-                .orElse(null);
+                .orElseGet(() -> {
+                    return AnnotationSupport.findAnnotation(context.getTestClass(), Basedir.class)
+                            .map(Basedir::value)
+                            .orElse(null);
+                });
 
         if (basedir == null) {
             basedir = getBasedir();
