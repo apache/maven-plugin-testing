@@ -31,7 +31,8 @@ under the License.
   <description>The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojo.</description>
 
   <properties>
-    <versions.junit5>5.13.0</versions.junit5>
+    <mavenVersion>3.9.12</mavenVersion>
+    <resloverVersion>1.9.25</resloverVersion>
     <wagonVersion>3.5.3</wagonVersion>
   </properties>
 
@@ -60,6 +61,12 @@ under the License.
       <artifactId>maven-plugin-api</artifactId>
       <version>${mavenVersion}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>${version.maven-plugin-tools}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -109,6 +116,27 @@ under the License.
       <version>4.10.4</version>
       <optional>true</optional>
     </dependency>
+
+    <!-- START SNIPPET: resolver-transport -->
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-connector-basic</artifactId>
+      <version>${resloverVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-transport-file</artifactId>
+      <version>${resloverVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-transport-http</artifactId>
+      <version>${resloverVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- END SNIPPET: resolver-transport -->
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

@@ -83,4 +83,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MojoExtension.class)
 @Target(ElementType.TYPE)
-public @interface MojoTest {}
+public @interface MojoTest {
+    /**
+     * Indicates whether to use a real repository session for the test.
+     * <br>
+     * When set to {@code true}, the test will utilize a real repository session,
+     * allowing for artifact resolution and repository interactions.
+     */
+    boolean realRepositorySession() default false;
+}

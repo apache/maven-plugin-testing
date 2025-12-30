@@ -93,6 +93,28 @@ under the License.
       <executionStrategy>once-per-session</executionStrategy>
       <threadSafe>false</threadSafe>
     </mojo>
+    <mojo>
+      <goal>simple-resolve</goal>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>true</requiresOnline>
+      <inheritedByDefault>true</inheritedByDefault>
+      <implementation>org.apache.maven.plugin.testing.SimpleResolveMojo</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <threadSafe>false</threadSafe>
+      <parameters>
+        <parameter>
+          <name>artifact</name>
+          <type>java.lang.String</type>
+          <required>true</required>
+          <editable>true</editable>
+        </parameter>
+      </parameters>
+    </mojo>
   </mojos>
   <dependencies/>
 </plugin>
