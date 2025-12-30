@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,9 +51,14 @@ import java.util.stream.Stream;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.internal.ProviderMethodsModule;
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.api.di.Provides;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequestPopulator;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.scope.internal.MojoExecutionScope;
+import org.apache.maven.internal.aether.DefaultRepositorySystemSessionFactory;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
@@ -81,6 +87,7 @@ import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.eclipse.aether.RepositorySystemSession;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -93,6 +100,7 @@ import org.slf4j.LoggerFactory;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.spy;
 
 /**
  * JUnit Jupiter extension that provides support for testing Maven plugins (Mojos).
@@ -222,6 +230,9 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         MavenProject mavenProject = addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
         MojoExecution mojoExecution = addMock(plexusContainer, MojoExecution.class, this::mockMojoExecution);
         MavenSession mavenSession = addMock(plexusContainer, MavenSession.class, this::mockMavenSession);
+
+        // prepare MavenExecutionRequest to be available in BeforeEach methods in test classes
+        createMavenExecutionRequest(context);
 
         SessionScope sessionScope = plexusContainer.lookup(SessionScope.class);
         sessionScope.enter();
@@ -388,6 +399,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             ExtensionContext extensionContext, String[] coord, Xpp3Dom pluginConfiguration, PluginDescriptor descriptor)
             throws Exception {
         PlexusContainer plexusContainer = getContainer(extensionContext);
+
+        MavenExecutionRequest request = setupMavenExecutionRequest(extensionContext);
+        plexusContainer.lookup(MavenExecutionRequestPopulator.class).populateDefaults(request);
+        setupRepositorySession(extensionContext, request);
+
         // pluginkey = groupId : artifactId : version : goal
         Mojo mojo = plexusContainer.lookup(Mojo.class, coord[0] + ":" + coord[1] + ":" + coord[2] + ":" + coord[3]);
 
@@ -405,15 +421,18 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         MojoExecution mojoExecution = plexusContainer.lookup(MojoExecution.class);
 
         if (mockingDetails(session).isMock()) {
-            lenient().when(session.getCurrentProject()).thenReturn(mavenProject);
+            lenient().doReturn(mavenProject).when(session).getCurrentProject();
         }
 
         if (mockingDetails(mavenProject).isMock()) {
-            lenient().when(mavenProject.getBasedir()).thenReturn(new File(getTestBasedir(extensionContext)));
+            lenient()
+                    .doReturn(new File(getTestBasedir(extensionContext)))
+                    .when(mavenProject)
+                    .getBasedir();
         }
 
         if (mojoDescriptor.isPresent() && mockingDetails(mojoExecution).isMock()) {
-            lenient().when(mojoExecution.getMojoDescriptor()).thenReturn(mojoDescriptor.get());
+            lenient().doReturn(mojoDescriptor.get()).when(mojoExecution).getMojoDescriptor();
         }
 
         if (pluginConfiguration != null) {
@@ -443,6 +462,100 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
 
         return mojo;
+    }
+
+    private boolean isRealRepositorySessionNotRequired(ExtensionContext context) {
+        return !AnnotationSupport.findAnnotation(context.getTestClass(), MojoTest.class)
+                .map(MojoTest::realRepositorySession)
+                .orElse(false);
+    }
+
+    /**
+     * Create a MavenExecutionRequest if not already present in the MavenSession
+     */
+    private void createMavenExecutionRequest(ExtensionContext context) throws ComponentLookupException {
+        PlexusContainer container = getContainer(context);
+        MavenSession session = container.lookup(MavenSession.class);
+        MavenExecutionRequest request = session.getRequest();
+
+        if (request == null && mockingDetails(session).isMock()) {
+            lenient()
+                    .doReturn(spy(new DefaultMavenExecutionRequest()))
+                    .when(session)
+                    .getRequest();
+        }
+    }
+
+    private MavenExecutionRequest setupMavenExecutionRequest(ExtensionContext context) throws ComponentLookupException {
+        PlexusContainer container = getContainer(context);
+        MavenSession session = container.lookup(MavenSession.class);
+        MavenExecutionRequest request = session.getRequest();
+
+        if (request == null) {
+            // user can provide own MavenSession instance without a request
+            request = new DefaultMavenExecutionRequest();
+        }
+
+        if (request.getStartTime() == null) {
+            request.setStartTime(new Date());
+        }
+
+        if (request.getUserProperties().isEmpty()) {
+            request.setUserProperties(session.getUserProperties());
+        }
+
+        if (request.getSystemProperties().isEmpty()) {
+            request.setSystemProperties(session.getSystemProperties());
+        }
+
+        // set a default local repository path if none is set
+        if (request.getLocalRepositoryPath() == null && request.getLocalRepository() == null) {
+            request.setLocalRepositoryPath(getTestBasedir(context) + "/target/local-repo");
+        }
+
+        if (request.getBaseDirectory() == null) {
+            request.setBaseDirectory(new File(getTestBasedir(context)));
+        }
+
+        return request;
+    }
+
+    private void setupRepositorySession(ExtensionContext context, MavenExecutionRequest request)
+            throws ComponentLookupException {
+
+        if (isRealRepositorySessionNotRequired(context)) {
+            return;
+        }
+
+        PlexusContainer container = getContainer(context);
+
+        MavenProject mavenProject = container.lookup(MavenProject.class);
+        if (mockingDetails(mavenProject).isMock()) {
+            lenient()
+                    .doReturn(request.getRemoteRepositories())
+                    .when(mavenProject)
+                    .getRemoteArtifactRepositories();
+            lenient()
+                    .doReturn(request.getPluginArtifactRepositories())
+                    .when(mavenProject)
+                    .getPluginArtifactRepositories();
+            lenient()
+                    .doReturn(RepositoryUtils.toRepos(request.getRemoteRepositories()))
+                    .when(mavenProject)
+                    .getRemoteProjectRepositories();
+            lenient()
+                    .doReturn(RepositoryUtils.toRepos(request.getPluginArtifactRepositories()))
+                    .when(mavenProject)
+                    .getRemotePluginRepositories();
+        }
+
+        RepositorySystemSession repositorySystemSession =
+                container.lookup(DefaultRepositorySystemSessionFactory.class).newRepositorySession(request);
+
+        MavenSession session = container.lookup(MavenSession.class);
+        if (mockingDetails(session).isMock()) {
+            lenient().doReturn(repositorySystemSession).when(session).getRepositorySession();
+        }
     }
 
     private Xpp3Dom finalizeConfig(Xpp3Dom config, MojoDescriptor mojoDescriptor) {

@@ -18,129 +18,38 @@ date: February 2008
 <!--  KIND, either express or implied.  See the License for the -->
 <!--  specific language governing permissions and limitations -->
 <!--  under the License. -->
+
 ## Testing Using Repositories
 
-### NOTE
+**Note**: This example improves the [cookbook](../getting-started/index.html) for testing repositories.
+ 
+When developing a Maven plugin you often need to play with repositories. 
+Suppose that the Mojo needs to download artifacts into your local repository.
 
-`JUnit 3` based tests are deprecated since `3.4.0`.
+You need annotate unit test with `@MojoTest(realRepositorySession = true)` to enable real repository session.
 
-Use JUnit 5 annotations, consult [javadocs](../apidocs/org/apache/maven/api/plugin/testing/package-summary.html) for examples.
+Then provided mock for `MavenSession` will have a real repository session with local repository configured.
 
- **Note**: This example improves the [cookbook](../getting-started/index.html) for testing repositories.
+Mock for `MavenProject` will also have mocked methods `getRemote*Repositories`.
 
+### Project dependencies for test
 
- When developing a Maven plugin you often need to play with repositories. Suppose that the MyMojo needs to download artifacts into your local repository, i.e.:
+For real repository session you need to add resolver transport dependency in test scope to your `pom.xml`:
 
+<!-- MACRO{snippet|id=resolver-transport|file=maven-plugin-testing-harness/pom.xml} -->
 
+### Example Mojo to test
 
-```
-public class MyMojo
-    extends AbstractMojo
-{
-    /**
-     * Used for resolving artifacts
-     */
-    @Component
-    private ArtifactResolver resolver;
+<!-- MACRO{snippet|id=resolve-mojo|file=maven-plugin-testing-harness/src/test/java/org/apache/maven/plugin/testing/SimpleResolveMojo.java} -->
 
-    /**
-     * Factory for creating artifact objects
-     */
-    @Component
-    private ArtifactFactory factory;
+### Unit test
 
-    /**
-     * Local Repository.
-     */
-    @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
-    private ArtifactRepository localRepository;
+<!-- MACRO{snippet|id=resolve-mojo-test|file=maven-plugin-testing-harness/src/test/java/org/apache/maven/plugin/testing/SimpleResolveMojoTest.java} -->
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        ...
-
-        Artifact artifact = factory.createArtifact( "junit", "junit", "3.8.1", "compile", "jar" );
-        try
-        {
-            resolver.resolve( artifact, project.getRemoteArtifactRepositories(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new MojoExecutionException( "Unable to resolve artifact:" + artifact, e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( "Unable to find artifact:" + artifact, e );
-        }
-
-        ...
-     }
-}
-```
-
-### Create Stubs
-
-
- Stub for the test project:
-
-
-
-```
-public class MyProjectStub
-    extends MavenProjectStub
-{
-    /**
-     * Default constructor
-     */
-    public MyProjectStub()
-    {
-        ...
-    }
-
-    /** {@inheritDoc} */
-    public List getRemoteArtifactRepositories()
-    {
-        ArtifactRepository repository = new DefaultArtifactRepository( "central", "http://repo.maven.apache.org/maven2",
-                                                                       new DefaultRepositoryLayout() );
-
-        return Collections.singletonList( repository );
-    }
-}
-```
-
-
-### Configure `project-to-test` pom
-
-
-
-```
-<project>
-  ...
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-my-plugin</artifactId>
-        <configuration>
-          <!-- Specify where this pom will output files -->
-          <outputDirectory>${basedir}/target/test-harness/project-to-test</outputDirectory>
-
-          <!-- By default <<<${basedir}/target/local-repo", where basedir refers
-               to the basedir of maven-my-plugin. -->
-          <localRepository>${localRepository}</localRepository>
-          <!-- The defined stub -->
-          <project implementation="org.apache.maven.plugin.my.stubs.MyProjectStub"/>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-</project>
-```
 
 #### Execute test
 
-
- Calling `mvn test` will create `$\{basedir\}/target/local-repo/junitjunit/3.8.1/junit-3.8.1.jar` file.
+ Calling `mvn test` will create `<temp-directory>/org/apache/commons/commons-lang3/3.20.0/commons-lang3-3.20.0.jar` file.
 
 
 
