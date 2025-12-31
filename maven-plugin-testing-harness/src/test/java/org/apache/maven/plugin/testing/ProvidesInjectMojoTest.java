@@ -26,13 +26,11 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-@ExtendWith(MockitoExtension.class)
 @MojoTest
 public class ProvidesInjectMojoTest {
 
@@ -59,5 +57,20 @@ public class ProvidesInjectMojoTest {
 
         assertSame(mojoExecution, mojo.getMojoExecution());
         assertSame(mojoExecution, mojo.getMojoExecutionFromBean());
+    }
+
+    @Test
+    @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
+    public void defaultValuesShouldBeProvided(ProvidesInjectMojo mojo) {
+        assertNotNull(mojo);
+        assertNotNull(mojo.getProject().getBasedir());
+        assertNotNull(mojo.getProject().getBuild().getOutputDirectory());
+        assertNotNull(mojo.getProject().getBuild().getTestOutputDirectory());
+        assertFalse(mojo.getProject().getBuild().getResources().isEmpty());
+        assertFalse(mojo.getProject().getBuild().getTestResources().isEmpty());
+        assertFalse(mojo.getProject().getCompileSourceRoots().isEmpty());
+        assertFalse(mojo.getProject().getTestCompileSourceRoots().isEmpty());
+        assertFalse(mojo.getProject().getResources().isEmpty());
+        assertFalse(mojo.getProject().getTestResources().isEmpty());
     }
 }
