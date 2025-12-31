@@ -21,6 +21,7 @@ package org.apache.maven.plugin.testing;
 import javax.inject.Inject;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
@@ -245,5 +246,15 @@ public class ParametersMojoTest {
     void testMultipleResolvedParameters(ParametersMojo mojo, TestInfo testInfo) {
         assertNotNull(mojo);
         assertNotNull(testInfo);
+    }
+
+    @Test
+    @InjectMojo(goal = "parameters")
+    @MojoParameter(name = "plain", value = "${project.build.directory}/generated")
+    void projectBuildDirectoryShouldBeResolved(ParametersMojo mojo) {
+        assertEquals(
+                Paths.get(MojoExtension.getBasedir(), "target", "generated").normalize(),
+                Paths.get(mojo.getPlain()).normalize());
+        assertDoesNotThrow(mojo::execute);
     }
 }

@@ -60,6 +60,9 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.scope.internal.MojoExecutionScope;
 import org.apache.maven.internal.aether.DefaultRepositorySystemSessionFactory;
 import org.apache.maven.lifecycle.internal.MojoDescriptorCreator;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.PluginParameterExpressionEvaluator;
@@ -228,7 +231,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                     binder.install(new MavenProvidesModule(testInstance));
                 }));
 
-        addMock(plexusContainer, Log.class, () -> new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
+        addMock(plexusContainer, Log.class, () -> spy(new MojoLogWrapper(LoggerFactory.getLogger("anonymous"))));
         MavenProject mavenProject = addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
         MojoExecution mojoExecution = addMock(plexusContainer, MojoExecution.class, this::mockMojoExecution);
         MavenSession mavenSession = addMock(plexusContainer, MavenSession.class, this::mockMavenSession);
@@ -261,7 +264,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
                 InterpolationFilterReader interpolationReader = new InterpolationFilterReader(reader, map, "${", "}")) {
 
             PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build(interpolationReader);
-
+            Plugin plugin = new Plugin();
+            plugin.setGroupId(pluginDescriptor.getGroupId());
+            plugin.setArtifactId(pluginDescriptor.getArtifactId());
+            plugin.setVersion(pluginDescriptor.getVersion());
+            pluginDescriptor.setPlugin(plugin);
             context.getStore(MOJO_EXTENSION).put(PluginDescriptor.class, pluginDescriptor);
 
             for (ComponentDescriptor<?> desc : pluginDescriptor.getComponents()) {
@@ -298,7 +305,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * @return a MojoExecution mock
      */
     private MojoExecution mockMojoExecution() {
-        return Mockito.mock(MojoExecution.class);
+        return spy(new MojoExecution(null));
     }
 
     /**
@@ -319,8 +326,29 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * @return a MavenProject mock
      */
     private MavenProject mockMavenProject() {
-        MavenProject mavenProject = Mockito.mock(MavenProject.class);
-        lenient().when(mavenProject.getProperties()).thenReturn(new Properties());
+        MavenProject mavenProject = spy(new MavenProject());
+        Build build = spy(new Build());
+
+        build.setDirectory(Paths.get(getBasedir(), "target").toString());
+        build.setOutputDirectory(Paths.get(getBasedir(), "target", "classes").toString());
+        build.setTestOutputDirectory(
+                Paths.get(getBasedir(), "target", "test-classes").toString());
+        build.setSourceDirectory(Paths.get(getBasedir(), "src", "main", "java").toString());
+        build.setTestSourceDirectory(
+                Paths.get(getBasedir(), "src", "test", "java").toString());
+
+        Resource resource = spy(new Resource());
+        resource.setDirectory(Paths.get(getBasedir(), "src", "main", "resource").toString());
+        build.setResources(Arrays.asList(resource));
+
+        Resource testResource = spy(new Resource());
+        testResource.setDirectory(
+                Paths.get(getBasedir(), "src", "test", "resource").toString());
+        build.setTestResources(Arrays.asList(resource));
+
+        mavenProject.setBuild(build);
+        mavenProject.addCompileSourceRoot(build.getSourceDirectory());
+        mavenProject.addTestCompileSourceRoot(build.getTestSourceDirectory());
         return mavenProject;
     }
 
@@ -339,32 +367,33 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         String pom = injectMojo.pom();
         Path basedir = Paths.get(getTestBasedir(extensionContext));
         String[] coord = mojoCoordinates(goal, descriptor);
-        Xpp3Dom pomDom;
+        Xpp3Dom pomDom = null;
+        Path pomPath = null;
         if (pom.startsWith("file:")) {
-            Path path = basedir.resolve(pom.substring("file:".length()));
-            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
+            pomPath = basedir.resolve(pom.substring("file:".length()));
         } else if (pom.startsWith("classpath:")) {
             URL url = holder.getResource(pom.substring("classpath:".length()));
             if (url == null) {
                 throw new IllegalStateException("Unable to find pom on classpath: " + pom);
             }
-            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(url.openStream()));
+            pomPath = Paths.get(url.toURI());
         } else if (pom.contains("<project>")) {
             pomDom = Xpp3DomBuilder.build(new StringReader(pom));
         } else if (!pom.isEmpty()) {
-            Path path = basedir.resolve(pom);
-            pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
+            pomPath = basedir.resolve(pom);
         } else if (isBasedirSet(extensionContext)) {
             // only look for a pom.xml if basedir is explicitly set
-            Path path = basedir.resolve("pom.xml");
-            if (Files.exists(path)) {
-                pomDom = Xpp3DomBuilder.build(new XmlStreamReader(path.toFile()));
+            pomPath = basedir.resolve("pom.xml");
+        }
+
+        if (pomDom == null) {
+            if (pomPath != null && Files.exists(pomPath)) {
+                pomDom = Xpp3DomBuilder.build(new XmlStreamReader(pomPath.toFile()));
             } else {
                 pomDom = new Xpp3Dom("");
             }
-        } else {
-            pomDom = new Xpp3Dom("");
         }
+
         Xpp3Dom pluginConfiguration = extractPluginConfiguration(coord[1], pomDom);
         if (!mojoParameters.isEmpty()) {
             List<Xpp3Dom> children = mojoParameters.stream()
@@ -378,7 +407,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             children.forEach(config::addChild);
             pluginConfiguration = Xpp3Dom.mergeXpp3Dom(config, pluginConfiguration);
         }
-        return lookupMojo(extensionContext, coord, pluginConfiguration, descriptor);
+        return lookupMojo(extensionContext, coord, pluginConfiguration, descriptor, pomPath);
     }
 
     private boolean isBasedirSet(ExtensionContext extensionContext) {
@@ -400,7 +429,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      * lookup the mojo while we have all the relevent information
      */
     protected Mojo lookupMojo(
-            ExtensionContext extensionContext, String[] coord, Xpp3Dom pluginConfiguration, PluginDescriptor descriptor)
+            ExtensionContext extensionContext,
+            String[] coord,
+            Xpp3Dom pluginConfiguration,
+            PluginDescriptor descriptor,
+            Path pomPath)
             throws Exception {
         PlexusContainer plexusContainer = getContainer(extensionContext);
 
@@ -426,17 +459,26 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
         if (mockingDetails(session).isMock()) {
             lenient().doReturn(mavenProject).when(session).getCurrentProject();
+            lenient().doReturn(request.getLocalRepository()).when(session).getLocalRepository();
         }
 
         if (mockingDetails(mavenProject).isMock()) {
-            lenient()
-                    .doReturn(new File(getTestBasedir(extensionContext)))
-                    .when(mavenProject)
-                    .getBasedir();
+            if (mockingDetails(mavenProject).isSpy() && pomPath != null) {
+                mavenProject.setFile(pomPath.toFile());
+            } else {
+                lenient()
+                        .doReturn(new File(getTestBasedir(extensionContext)))
+                        .when(mavenProject)
+                        .getBasedir();
+            }
         }
 
         if (mojoDescriptor.isPresent() && mockingDetails(mojoExecution).isMock()) {
-            lenient().doReturn(mojoDescriptor.get()).when(mojoExecution).getMojoDescriptor();
+            if (mockingDetails(mojoExecution).isSpy()) {
+                mojoExecution.setMojoDescriptor(mojoDescriptor.get());
+            } else {
+                lenient().doReturn(mojoDescriptor.get()).when(mojoExecution).getMojoDescriptor();
+            }
         }
 
         if (pluginConfiguration != null) {
@@ -660,6 +702,20 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     public static String getBasedir() {
         return PlexusExtension.getBasedir();
+    }
+
+    /**
+     * Gets the file according to base directory for test resources.
+     */
+    public static File getTestFile(String path) {
+        return PlexusExtension.getTestFile(path);
+    }
+
+    /**
+     * Gets the path according to base directory for test resources.
+     */
+    public static String getTestPath(String path) {
+        return PlexusExtension.getTestPath(path);
     }
 
     /**
