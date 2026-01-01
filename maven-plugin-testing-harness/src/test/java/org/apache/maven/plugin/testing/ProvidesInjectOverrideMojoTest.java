@@ -27,6 +27,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -74,7 +75,7 @@ class ProvidesInjectOverrideMojoTest {
 
     @Test
     @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
-    public void bennShouldBeInjected(ProvidesInjectMojo mojo) {
+    void bennShouldBeInjected(ProvidesInjectMojo mojo) {
         assertNotNull(mojo);
         // session provided by the @Provides method should be used
         assertSame(session, mojo.getSession());
@@ -85,5 +86,33 @@ class ProvidesInjectOverrideMojoTest {
 
         assertSame(mojoExecution, mojo.getMojoExecution());
         assertSame(mojoExecution, mojo.getMojoExecutionFromBean());
+    }
+
+    @Nested
+    class NestedTest {
+
+        @Mock
+        private MavenProject nestedProject;
+
+        @Provides
+        public MavenProject mockMavenProject() {
+            return nestedProject;
+        }
+
+        @Test
+        @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
+        void bennFromParentClassShouldBeInjected(ProvidesInjectMojo mojo) {
+
+            assertNotNull(mojo);
+            // session provided by the @Provides method should be used
+            assertSame(session, mojo.getSession());
+            assertSame(session, mojo.getSessionFromBean());
+
+            assertSame(nestedProject, mojo.getProject());
+            assertSame(nestedProject, mojo.getProjectFromBean());
+
+            assertSame(mojoExecution, mojo.getMojoExecution());
+            assertSame(mojoExecution, mojo.getMojoExecutionFromBean());
+        }
     }
 }

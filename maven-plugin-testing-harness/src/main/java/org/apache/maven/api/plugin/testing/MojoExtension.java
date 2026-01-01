@@ -221,10 +221,12 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
         PlexusContainer plexusContainer = getContainer(context);
 
-        ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
-            binder.install(ProviderMethodsModule.forObject(context.getRequiredTestInstance()));
-            binder.install(new MavenProvidesModule(context.getRequiredTestInstance()));
-        });
+        context.getRequiredTestInstances().getAllInstances().forEach(testInstance -> ((DefaultPlexusContainer)
+                        plexusContainer)
+                .addPlexusInjector(Collections.emptyList(), binder -> {
+                    binder.install(ProviderMethodsModule.forObject(testInstance));
+                    binder.install(new MavenProvidesModule(testInstance));
+                }));
 
         addMock(plexusContainer, Log.class, () -> new MojoLogWrapper(LoggerFactory.getLogger("anonymous")));
         MavenProject mavenProject = addMock(plexusContainer, MavenProject.class, this::mockMavenProject);
@@ -243,9 +245,11 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         executionScope.seed(MavenProject.class, mavenProject);
         executionScope.seed(MojoExecution.class, mojoExecution);
 
-        ((DefaultPlexusContainer) plexusContainer).addPlexusInjector(Collections.emptyList(), binder -> {
-            binder.requestInjection(context.getRequiredTestInstance());
-        });
+        context.getRequiredTestInstances().getAllInstances().forEach(testInstance -> ((DefaultPlexusContainer)
+                        plexusContainer)
+                .addPlexusInjector(Collections.emptyList(), binder -> {
+                    binder.requestInjection(testInstance);
+                }));
 
         Map<Object, Object> map = plexusContainer.getContext().getContextData();
 

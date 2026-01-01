@@ -95,6 +95,9 @@ public class ParametersMojoTest {
         @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = PROPERTY_POM_DIR + POM_DOT_XML_FILE)
         @MojoParameter(name = "plain", value = "test-${property}")
         void testPropertyPom(ParametersMojo mojo) {
+
+            assertNotNull(log, "log from parent class should be injected properly");
+
             assertEquals("test-testPropertyValue", mojo.getPlain());
             assertEquals("testPropertyValue", mojo.getWithProperty());
             assertEquals("default", mojo.getWithDefault());
