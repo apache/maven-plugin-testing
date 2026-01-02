@@ -17,4 +17,4 @@
  * under the License.
  */
 
-asfMavenTlpStdBuild()
+asfMavenTlpStdBuild(branchesToNotify: ['maven-plugin-testing-3.x'])
