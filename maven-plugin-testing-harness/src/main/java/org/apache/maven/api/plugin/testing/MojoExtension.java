@@ -463,8 +463,15 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
 
         if (mockingDetails(mavenProject).isMock()) {
-            if (mockingDetails(mavenProject).isSpy() && pomPath != null) {
-                mavenProject.setFile(pomPath.toFile());
+            if (mockingDetails(mavenProject).isSpy()) {
+                // there is no setter for basedir, so set it via reflection
+                setVariableValueToObject(
+                        mavenProject, "basedir", Paths.get(getBasedir()).toFile());
+
+                // we only set the pom file
+                // setFile also change a basedir, so should not be used here
+                mavenProject.setPomFile(
+                        Optional.ofNullable(pomPath).map(Path::toFile).orElse(null));
             } else {
                 lenient()
                         .doReturn(new File(getTestBasedir(extensionContext)))
