@@ -20,13 +20,18 @@ package org.apache.maven.plugin.testing;
 
 import javax.inject.Inject;
 
+import java.io.File;
+
 import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -44,6 +49,11 @@ public class ProvidesInjectMojoTest {
 
     @Inject
     private MojoExecution mojoExecution;
+
+    @BeforeEach
+    void setup() {
+        assertEquals(new File(MojoExtension.getBasedir()), project.getBasedir());
+    }
 
     @Test
     @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
