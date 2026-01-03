@@ -349,6 +349,16 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         mavenProject.setBuild(build);
         mavenProject.addCompileSourceRoot(build.getSourceDirectory());
         mavenProject.addTestCompileSourceRoot(build.getTestSourceDirectory());
+
+        try {
+            // there is no setter for basedir, so set it via reflection
+            setVariableValueToObject(
+                    mavenProject, "basedir", Paths.get(getBasedir()).toFile());
+        } catch (IllegalAccessException e) {
+            // should not happen
+            throw new RuntimeException(e);
+        }
+
         return mavenProject;
     }
 
@@ -463,20 +473,13 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         }
 
         if (mockingDetails(mavenProject).isMock()) {
+            File pomFile = Optional.ofNullable(pomPath).map(Path::toFile).orElse(null);
             if (mockingDetails(mavenProject).isSpy()) {
-                // there is no setter for basedir, so set it via reflection
-                setVariableValueToObject(
-                        mavenProject, "basedir", Paths.get(getBasedir()).toFile());
-
                 // we only set the pom file
                 // setFile also change a basedir, so should not be used here
-                mavenProject.setPomFile(
-                        Optional.ofNullable(pomPath).map(Path::toFile).orElse(null));
+                mavenProject.setPomFile(pomFile);
             } else {
-                lenient()
-                        .doReturn(new File(getTestBasedir(extensionContext)))
-                        .when(mavenProject)
-                        .getBasedir();
+                lenient().doReturn(pomFile).when(mavenProject).getFile();
             }
         }
 
