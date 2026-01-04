@@ -171,6 +171,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
             Set<MojoParameter> mojoParameters = new LinkedHashSet<>();
 
+            extensionContext.getEnclosingTestClasses().forEach(testClass -> {
+                mojoParameters.addAll(Arrays.asList(testClass.getAnnotationsByType(MojoParameter.class)));
+            });
+
             extensionContext
                     .getTestClass()
                     .map(c -> c.getAnnotationsByType(MojoParameter.class))
@@ -201,7 +205,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         String basedir = AnnotationSupport.findAnnotation(context.getElement().get(), Basedir.class)
                 .map(Basedir::value)
                 .orElseGet(() -> {
-                    return AnnotationSupport.findAnnotation(context.getTestClass(), Basedir.class)
+                    return AnnotationSupport.findAnnotation(
+                                    context.getRequiredTestClass(), Basedir.class, context.getEnclosingTestClasses())
                             .map(Basedir::value)
                             .orElse(null);
                 });
@@ -518,7 +523,8 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     private boolean isRealRepositorySessionNotRequired(ExtensionContext context) {
-        return !AnnotationSupport.findAnnotation(context.getTestClass(), MojoTest.class)
+        return !AnnotationSupport.findAnnotation(
+                        context.getRequiredTestClass(), MojoTest.class, context.getEnclosingTestClasses())
                 .map(MojoTest::realRepositorySession)
                 .orElse(false);
     }
