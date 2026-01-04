@@ -27,8 +27,8 @@ import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -62,8 +62,18 @@ class SimpleResolveMojoTest {
     @Test
     @InjectMojo(goal = "simple-resolve")
     @MojoParameter(name = "artifact", value = "org.apache.commons:commons-lang3:3.20.0")
-    void artifactShouldBeResolved(SimpleResolveMojo mojo) throws MojoExecutionException {
+    void artifactShouldBeResolved(SimpleResolveMojo mojo) {
         assertDoesNotThrow(mojo::execute);
+    }
+
+    @Nested
+    class NestedTest {
+        @Test
+        @InjectMojo(goal = "simple-resolve")
+        @MojoParameter(name = "artifact", value = "org.apache.commons:commons-lang3:3.20.0")
+        void artifactShouldBeResolved(SimpleResolveMojo mojo) {
+            assertDoesNotThrow(mojo::execute);
+        }
     }
 }
 // END SNIPPET: resolve-mojo-test

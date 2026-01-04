@@ -18,11 +18,14 @@
  */
 package org.apache.maven.plugin.testing;
 
+import java.io.File;
+
 import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,12 +36,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @MojoParameter(name = "plain", value = "class-value")
 class AnnotationLevelMojoTest {
 
+    private static final String FS = File.separator;
+
     @Test
     @InjectMojo(goal = "parameters")
     void classLevelValues(ParametersMojo mojo) {
         assertEquals("class-value", mojo.getPlain());
         assertTrue(
-                MojoExtension.getBasedir().endsWith("class-basedir"),
+                MojoExtension.getBasedir().endsWith(FS + "class-basedir"),
                 "Basedir value did not came from class annotation");
     }
 
@@ -49,7 +54,7 @@ class AnnotationLevelMojoTest {
     void methodLevelValues(ParametersMojo mojo) {
         assertEquals("method-value", mojo.getPlain());
         assertTrue(
-                MojoExtension.getBasedir().endsWith("method-basedir"),
+                MojoExtension.getBasedir().endsWith(FS + "method-basedir"),
                 "Basedir value did not came from method annotation");
     }
 
@@ -68,5 +73,62 @@ class AnnotationLevelMojoTest {
                     ParametersMojo alternateMojo) {
         assertEquals("method-value", mojo.getPlain());
         assertEquals("param-value", alternateMojo.getPlain());
+    }
+
+    @Nested
+    class NestedTest {
+        // all tests are duplicated from parent class
+
+        protected String nestedAnnotationValue() {
+            return "";
+        }
+
+        @Test
+        @InjectMojo(goal = "parameters")
+        void classLevelValues(ParametersMojo mojo) {
+            assertEquals(nestedAnnotationValue() + "class-value", mojo.getPlain());
+            assertTrue(
+                    MojoExtension.getBasedir().endsWith(FS + nestedAnnotationValue() + "class-basedir"),
+                    "Basedir value did not came from class annotation: " + MojoExtension.getBasedir());
+        }
+
+        @Test
+        @InjectMojo(goal = "parameters")
+        @Basedir("method-basedir")
+        @MojoParameter(name = "plain", value = "method-value")
+        void methodLevelValues(ParametersMojo mojo) {
+            assertEquals("method-value", mojo.getPlain());
+            assertTrue(
+                    MojoExtension.getBasedir().endsWith(FS + "method-basedir"),
+                    "Basedir value did not came from method annotation");
+        }
+
+        @Test
+        void parameterLevelValues(
+                @InjectMojo(goal = "parameters") @MojoParameter(name = "plain", value = "param-level-param-value")
+                        ParametersMojo mojo) {
+            assertEquals("param-level-param-value", mojo.getPlain());
+        }
+
+        @Test
+        @MojoParameter(name = "plain", value = "method-value")
+        void mojoParameterOnMethod(
+                @InjectMojo(goal = "parameters") ParametersMojo mojo,
+                @InjectMojo(goal = "parameters") @MojoParameter(name = "plain", value = "param-value")
+                        ParametersMojo alternateMojo) {
+            assertEquals("method-value", mojo.getPlain());
+            assertEquals("param-value", alternateMojo.getPlain());
+        }
+    }
+
+    @Nested
+    @Basedir("nested-class-basedir")
+    @MojoParameter(name = "plain", value = "nested-class-value")
+    class NestedAnnotationLevelTest extends NestedTest {
+
+        @Override
+        protected String nestedAnnotationValue() {
+            return "nested-";
+        }
     }
 }
