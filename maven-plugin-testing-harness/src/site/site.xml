@@ -25,6 +25,7 @@ under the License.
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Getting Started" href="/getting-started/index.html"/>
+      <item name="Migration to 3.4.0+" href="/migration-3.4.0.html"/>
       <item name="JavaDocs" href="apidocs/index.html"/>
       <item name="Source Xref" href="xref/index.html"/>
       <item name="FAQ" href="/faq.html"/>

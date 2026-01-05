@@ -27,10 +27,12 @@ import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -46,6 +48,9 @@ class SimpleResolveMojoTest {
     // inject the Maven session to customize it for tests
     @Inject
     private MavenSession session;
+
+    @Inject
+    private Log log;
 
     @BeforeEach
     void beforeEach() {
@@ -64,6 +69,8 @@ class SimpleResolveMojoTest {
     @MojoParameter(name = "artifact", value = "org.apache.commons:commons-lang3:3.20.0")
     void artifactShouldBeResolved(SimpleResolveMojo mojo) {
         assertDoesNotThrow(mojo::execute);
+
+        Mockito.verify(log, Mockito.times(1)).info(Mockito.contains("Resolved artifact to"));
     }
 
     @Nested
@@ -73,6 +80,8 @@ class SimpleResolveMojoTest {
         @MojoParameter(name = "artifact", value = "org.apache.commons:commons-lang3:3.20.0")
         void artifactShouldBeResolved(SimpleResolveMojo mojo) {
             assertDoesNotThrow(mojo::execute);
+
+            Mockito.verify(log, Mockito.times(1)).info(Mockito.contains("Resolved artifact to"));
         }
     }
 }

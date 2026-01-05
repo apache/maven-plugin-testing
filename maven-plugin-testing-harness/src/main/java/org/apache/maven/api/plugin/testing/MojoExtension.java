@@ -138,7 +138,10 @@ import static org.mockito.Mockito.spy;
  * </pre>
  **
  * <p>For custom POM configurations, you can specify a POM file using the {@link InjectMojo#pom()}
- * attribute. The extension will merge this configuration with default test project settings.</p>*
+ * attribute. The extension will merge this configuration with default test project settings.</p>
+ *
+ * <p><b>NOTE:</b> only plugin configuration is taken from provided POM, all other tags are ignored.</p>
+ *
  *
  * @see MojoTest
  * @see InjectMojo

@@ -23,203 +23,103 @@ date: February 2008
 
 ### NOTE
 
-`JUnit 3` based tests are deprecated since `3.4.0`.
-
-Use JUnit 5 annotations, consult [javadocs](../apidocs/org/apache/maven/api/plugin/testing/package-summary.html) for examples.
-
- **Note**: This example improves the [cookbook](../getting-started/index.html) to play with artifact handler.
+**Note**: This example improves the [cookbook](../getting-started/index.html) to play with artifact handler.
 
 
- Sometimes, your Mojo uses project artifact and ArtifactHandler mechanisms. For instance, you could need to filter on Java projects, i.e.:
+Sometimes, your Mojo uses project artifact and ArtifactHandler mechanisms. For instance, you could need to filter on Java projects, i.e.:
 
+```java
+import javax.inject.Inject;
 
+import org.apache.maven.project.MavenProject;
 
-```
-public class MyMojo
-    extends AbstractMojo
-{
+public class MyMojo extends AbstractMojo {
     /**
      * The Maven Project.
      */
-    @Component
-    protected MavenProject project;
+    private final MavenProject project;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        ...
+    @Inject
+    MyMojo(MavenProject project) {
+        this.project = project;
+    }
+
+    public void execute() throws MojoExecutionException {
+        // ...
 
         ArtifactHandler artifactHandler = project.getArtifact().getArtifactHandler();
-        if ( "java".equals( artifactHandler.getLanguage() ) )
-        {
-            ...
+        if ("java".equals(artifactHandler.getLanguage())) {
+            //...
         }
 
-        ...
-     }
+        // ...
+    }
 }
 ```
 
-### Create Stubs
+### Create a test
 
+```java
+import org.apache.maven.api.di.Provides;import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;import org.apache.maven.project.MavenProject;
+import org.junit.jupiter.api.Nested;
+import org.mockito.Mockito;
 
+@MojoTest
+class ArtifactTest {
 
-```
-public class MyArtifactHandlerStub
-    extends DefaultArtifactHandler
-{
-    private String language;
+    @Inject
+    private MavenProject project;
 
-    public String getLanguage()
-    {
-        if ( language == null )
-        {
-            language = "java";
+    @Test
+    @InjectMojo(goal = "test")
+    void testUsingMockito(MyMojo mojo) {
+        // Mock ArtifactHandler
+        ArtifactHandler artifactHandler = Mockito.mock(ArtifactHandler.class);
+        Mockito.when(artifactHandler.getLanguage()).thenReturn("java");
+
+        // Mock Artifact
+        Artifact artifact = Mockito.mock(Artifact.class);
+        Mockito.when(artifact.getArtifactHandler()).thenReturn(artifactHandler);
+
+        // Set the mocked Artifact to the default provided project
+        project.setArtifact(artifact);
+
+        // Now you can test your Mojo logic that depends on the ArtifactHandler
+        mojo.execute();
+    }
+
+    @Nested
+    class NestedTest1 {
+
+        @Inject
+        private ArtifactHandlerManager artifactHandlerManager;
+
+        @Provides
+        MavenProject stubbedProject() {
+            MavenProject stubProject = new CustomMavenProject(); // your custom implementation
+            
+            ArtifactHandler stubArtifactHandler = new CustomArtifactHandler(); // your custom implementation
+            
+            // You can also get a real ArtifactHandler from the manager if needed
+            ArtifactHandler jarArtifactHandler = artifactHandlerManager.getArtifactHandler("jar");
+            
+            Artifact stubArtifact = new CustomArtifact(stubArtifactHandler); // your custom implementation
+            
+            stubProject.setArtifact(stubArtifact);
+            return stubProject;
         }
 
-        return language;
-    }
-
-    public void setLanguage( String language )
-    {
-        this.language = language;
-    }
-}
-```
-
-
-```
-public class MyArtifactStub
-    extends ArtifactStub
-{
-    private String groupId;
-
-    private String artifactId;
-
-    private String version;
-
-    private String packaging;
-
-    private VersionRange versionRange;
-
-    private ArtifactHandler handler;
-
-    /**
-     * @param groupId
-     * @param artifactId
-     * @param version
-     * @param packaging
-     */
-    public ProjectInfoPluginArtifactStub( String groupId, String artifactId,
-                                          String version, String packaging )
-    {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
-        this.packaging = packaging;
-        versionRange = VersionRange.createFromVersion( version );
-    }
-
-    /** {@inheritDoc} */
-    public void setGroupId( String groupId )
-    {
-        this.groupId = groupId;
-    }
-
-    /** {@inheritDoc} */
-    public String getGroupId()
-    {
-        return groupId;
-    }
-
-    /** {@inheritDoc} */
-    public void setArtifactId( String artifactId )
-    {
-        this.artifactId = artifactId;
-    }
-
-    /** {@inheritDoc} */
-    public String getArtifactId()
-    {
-        return artifactId;
-    }
-
-    /** {@inheritDoc} */
-    public void setVersion( String version )
-    {
-        this.version = version;
-    }
-
-    /** {@inheritDoc} */
-    public String getVersion()
-    {
-        return version;
-    }
-
-    /**
-     * @param packaging
-     */
-    public void setPackaging( String packaging )
-    {
-        this.packaging = packaging;
-    }
-
-    /**
-     * @return the packaging
-     */
-    public String getPackaging()
-    {
-        return packaging;
-    }
-
-    /** {@inheritDoc} */
-    public VersionRange getVersionRange()
-    {
-        return versionRange;
-    }
-
-    /** {@inheritDoc} */
-    public void setVersionRange( VersionRange versionRange )
-    {
-        this.versionRange = versionRange;
-    }
-
-    /** {@inheritDoc} */
-    public ArtifactHandler getArtifactHandler()
-    {
-        return handler;
-    }
-
-    /** {@inheritDoc} */
-    public void setArtifactHandler( ArtifactHandler handler )
-    {
-        this.handler = handler;
+        @Test
+        @InjectMojo(goal = "test")
+        void testUsingStubbedProject (MyMojo mojo) {
+            // Use the stubbed project in your test
+            mojo.execute();
+        }
     }
 }
 ```
-
-
-```
-public class MyProjectStub
-    extends MavenProjectStub
-{
-    /**
-     * Default constructor
-     */
-    public MyProjectStub()
-    {
-        ...
-
-        Artifact artifact = new MyArtifactStub( getGroupId(), getArtifactId(),
-                                                getVersion(), getPackaging() );
-        artifact.setArtifactHandler( new MyArtifactHandlerStub() );
-        setArtifact( artifact );
-
-        ...
-    }
-
-    ...
-}
-```
-
 

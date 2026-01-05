@@ -22,134 +22,60 @@ date: February 2008
 
 ### NOTE
 
-`JUnit 3` based tests are deprecated since `3.4.0`.
-
-Use JUnit 5 annotations, consult [javadocs](../apidocs/org/apache/maven/api/plugin/testing/package-summary.html) for examples.
-
  **Note**: This example improves the [cookbook](../getting-started/index.html) for multi-project testing.
 
+Your Mojo should have `aggregator` parameter set to `true` - [Maven Plugin Tools Java Annotations](https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html)
 
- Your Mojo should have `@aggregator` parameter, i.e.:
-
-
-
- - with java annotations ([maven-plugin-plugin 3.x](/plugin-tools/)):
-
-```
-@Mojo( name = "touch", aggregator = true )
-public class MyMojo
-    extends AbstractMojo
-{
+```java
+@Mojo(name = "touch", aggregator = true)
+public class MyMojo extends AbstractMojo {
   ...
 }
 ```
 
 
- - or with javadoc tags:
-
-```
-/**
- * @goal touch
- * @aggregator
- */
-public class MyMojo
-    extends AbstractMojo
-{
-  ...
-}
-```
+To test a Mojo in a multiproject area, you need to define several stubs, i.e. for the main test project and its modules.
 
 
+### Configure Mian project and create Stubs for the sub projects
 
- To test a Mojo in a multiproject area, you need to define several stubs, i.e. for the main test project and its modules.
+```java
+import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.mockito.Mockito;
 
+@MojoTest
+class AggregateTest {
 
-### Create Stubs
+    @Inject
+    private MavenProject project;
 
+    @Inject
+    private MavenSession session;
 
- Stub for the main test project:
+    @BeforeEach
+    void setup() {
+        // Configure the main project as execution root
+        project.setExecutionRoot(true);
 
+        MavenProject stub1 = new MavenProject();
+        // configure stub1 as needed
 
+        MavenProject stub2 = new MavenProject();
+        // configure stub2 as needed
 
-```
-public class MyProjectStub
-    extends MavenProjectStub
-{
-    /**
-     * Default constructor
-     */
-    public MyProjectStub()
-    {
-        ...
-
-        setExecutionRoot( true );
+        // return all projects in the reactor - reactorProjects
+        Mockito.when(session.getProjects()).thenReturn(Arrays.asList(project, stub1, stub2));
     }
 
-    /** {@inheritDoc} */
-    public MavenProject getExecutionProject()
-    {
-        return this;
+    @Test
+    @Basedir("/unit/aggregate-test")
+    @InjectMojo(goal = "aggregate")
+    void aggregate(AggregatorMojo mojo) throws Exception {
+
+        mojo.execute();
+
+        // Verify behavior across all projects
     }
 }
 ```
-
- Stubs for the subprojects:
-
-
-
-```
-public class SubProject1Stub
-    extends MavenProjectStub
-{
-    /**
-     * Default constructor
-     */
-    public SubProject1Stub()
-    {
-        ...
-    }
-}
-```
-
-
-```
-public class SubProject2Stub
-    extends MavenProjectStub
-{
-    /**
-     * Default constructor
-     */
-    public SubProject2Stub()
-    {
-        ...
-    }
-}
-```
-
-
-### Configure `project-to-test` pom
-
-
-
-```
-<project>
-  ...
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-my-plugin</artifactId>
-        <configuration>
-          ...
-          <project implementation="org.apache.maven.plugin.my.stubs.MyProjectStub"/>
-          <reactorProjects>
-            <project implementation="org.apache.maven.plugin.my.stubs.SubProject1Stub"/>
-            <project implementation="org.apache.maven.plugin.my.stubs.SubProject2Stub"/>
-          </reactorProjects>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-</project>
-```
-
-
