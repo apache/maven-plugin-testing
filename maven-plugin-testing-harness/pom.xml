@@ -87,23 +87,6 @@ under the License.
       <version>${wagonVersion}</version>
       <scope>provided</scope>
     </dependency>
-    <!--
-    Keep this one as isolated as possible.
-    But has to be present, as Maven 3 object graph is incomplete without it
-    -->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-compat</artifactId>
-      <version>${mavenVersion}</version>
-      <scope>runtime</scope>
-      <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
