@@ -20,8 +20,10 @@ date: February 2008
 <!--  under the License. -->
 ## Maven Plugin Testing Harness
 
+The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojos, i.e. by pre-constructing the [Plexus](https://codehaus-plexus.github.io/plexus-containers/)/[Sisu](https://eclipse.dev/sisu/org.eclipse.sisu.plexus/) components,
+providing stub objects for Maven functionality such as projects, and populating fields from an XML file that resembles the plugin configuration in the POM.
 
-The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojos, i.e. by pre-constructing the [Plexus](http://plexus.codehaus.org) components, providing stub objects for Maven functionality such as projects, and populating fields from an XML file that resembles the plugin configuration in the POM.
+The Maven Plugin Testing Harness provides default stubs/mocks for most commonly used Maven objects, such as `MavenProject`, `MavenSession`, etc.
 
 The best way to start is to read the cookbook [How to use Maven Plugin Testing Harness](./getting-started/index.html).
 
@@ -31,11 +33,13 @@ Since version `3.4.0`, the Maven Plugin Testing Harness has been migrated to use
 This change allows for more modern testing practices and improved integration with other tools.
 
 JUnit 5 extension `MojoExtension` and annotation `@MojoTest` have similar functionalities 
-as in [Maven 4](https://maven.apache.org/ref/4-LATEST/maven-impl-modules/maven-testing/apidocs/index.html)
+as in [Maven 4](https://maven.apache.org/ref/4-LATEST/impl/maven-testing/apidocs/index.html)
 for easier migration of tests for Maven 4.
 
 Project still supports JUnit 3/4 `AbstractMojoTestCase` and JUnit 4 `MojoRule` tests for backward compatibility 
 but new tests should be written using JUnit 5.
+
+There are some [migration receipts](./migration-3.4.0.html) to help you migrate your existing tests.
 
 Therefore, some project dependencies have been set as optional to avoid conflicts with existing JUnit 3/4 and JUnit 5 tests.
 
@@ -48,17 +52,12 @@ Your project should depend on the following artifacts, if needed:
 
 ### Examples
 
- The following examples shows how to use the Testing Harness in more advanced use cases:
-
+The following examples shows how to use the Testing Harness in more advanced use cases:
 
  - [Testing Complex Mojo Parameters](./examples/complex-mojo-parameters.html)
-
  - [Testing Multiproject](./examples/multiproject.html)
-
  - [Testing Using Repositories](./examples/repositories.html)
-
  - [Testing Project Artifact](./examples/artifact.html)
-
  - [Plugins testing summary](https://maven.apache.org/plugin-developers/plugin-testing.html)
 
 

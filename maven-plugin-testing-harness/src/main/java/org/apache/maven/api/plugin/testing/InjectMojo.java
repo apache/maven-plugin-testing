@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * which Mojo should be instantiated and how it should be configured.
  *
  * <p>The annotation requires a {@code goal} attribute to specify which Mojo goal
- * should be instantiated. Optionally, a custom {@code pom} file can be specified
+ * should be instantiated. Optionally, a custom {@code POM} file can be specified
  * to provide specific configuration for the test.</p>
  *
  * <p>Example usage on a test method:</p>
@@ -85,7 +85,24 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface InjectMojo {
 
+    /**
+     * Specifies the goal of the Mojo to instantiate.
+     * This is a required attribute that maps to the Mojo's {@code @Mojo(name = "...")}
+     * annotation value.
+     *
+     * @return the goal name of the Mojo to test
+     */
     String goal();
 
+    /**
+     * Specifies an optional POM file to use for Mojo configuration.
+     * The path is relative to the test class location.
+     *
+     * <p><b>NOTE:</b> only plugin configuration is taken from provided POM, all other tags are ignored.</p>
+     *
+     * <p>If not specified, the default project configuration will be used.</p>
+     *
+     * @return the path to a custom POM file, or an empty string to use defaults
+     */
     String pom() default "";
 }
