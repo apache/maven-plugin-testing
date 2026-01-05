@@ -21,9 +21,9 @@ date: February 2008
 ## Maven Plugin Testing Harness
 
 
- The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojos, i.e. by pre-constructing the [Plexus](http://plexus.codehaus.org) components, providing stub objects for Maven functionality such as projects, and populating fields from an XML file that resembles the plugin configuration in the POM.
+The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojos, i.e. by pre-constructing the [Plexus](http://plexus.codehaus.org) components, providing stub objects for Maven functionality such as projects, and populating fields from an XML file that resembles the plugin configuration in the POM.
 
- The best way to start is to read the cookbook [How to use Maven Plugin Testing Harness](./getting-started/index.html).
+The best way to start is to read the cookbook [How to use Maven Plugin Testing Harness](./getting-started/index.html).
 
 ### Migration to 3.4.0
 
@@ -42,12 +42,11 @@ Therefore, some project dependencies have been set as optional to avoid conflict
 Your project should depend on the following artifacts, if needed:
 
 - `org.codehaus.plexus:plexus-archiver` - used by `ArtifactStubFactory` 
-- `org.apache.maven:maven-compat` - used by `MojoRule`
+- `org.apache.maven:maven-compat` - used by `MojoRule` (not needed with Maven 3.9.12+)
 - `org.junit.jupiter:junit-jupiter-api` - used for JUnit 5 tests
 - `junit:junit` - used for JUnit 3/4 tests
 
 ### Examples
-
 
  The following examples shows how to use the Testing Harness in more advanced use cases:
 
