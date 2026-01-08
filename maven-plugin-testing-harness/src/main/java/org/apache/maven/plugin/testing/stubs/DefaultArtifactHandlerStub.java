@@ -61,7 +61,9 @@ public class DefaultArtifactHandlerStub implements ArtifactHandler {
         this.type = type;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getExtension() {
         if (extension == null) {
@@ -77,13 +79,17 @@ public class DefaultArtifactHandlerStub implements ArtifactHandler {
         return type;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getClassifier() {
         return classifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDirectory() {
         if (directory == null) {
@@ -92,7 +98,9 @@ public class DefaultArtifactHandlerStub implements ArtifactHandler {
         return directory;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPackaging() {
         if (packaging == null) {
@@ -101,13 +109,17 @@ public class DefaultArtifactHandlerStub implements ArtifactHandler {
         return packaging;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isIncludesDependencies() {
         return includesDependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getLanguage() {
         if (language == null) {
@@ -117,63 +129,65 @@ public class DefaultArtifactHandlerStub implements ArtifactHandler {
         return language;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isAddedToClasspath() {
         return addedToClasspath;
     }
 
     /**
-     * @param theAddedToClasspath The addedToClasspath to set.
+     * @param theAddedToClasspath the addedToClasspath to set
      */
     public void setAddedToClasspath(boolean theAddedToClasspath) {
         this.addedToClasspath = theAddedToClasspath;
     }
 
     /**
-     * @param theClassifier The classifier to set.
+     * @param theClassifier the classifier to set
      */
     public void setClassifier(String theClassifier) {
         this.classifier = theClassifier;
     }
 
     /**
-     * @param theDirectory The directory to set.
+     * @param theDirectory the directory to set
      */
     public void setDirectory(String theDirectory) {
         this.directory = theDirectory;
     }
 
     /**
-     * @param theExtension The extension to set.
+     * @param theExtension the extension to set
      */
     public void setExtension(String theExtension) {
         this.extension = theExtension;
     }
 
     /**
-     * @param theIncludesDependencies The includesDependencies to set.
+     * @param theIncludesDependencies the includesDependencies to set
      */
     public void setIncludesDependencies(boolean theIncludesDependencies) {
         this.includesDependencies = theIncludesDependencies;
     }
 
     /**
-     * @param theLanguage The language to set.
+     * @param theLanguage the language to set
      */
     public void setLanguage(String theLanguage) {
         this.language = theLanguage;
     }
 
     /**
-     * @param thePackaging The packaging to set.
+     * @param thePackaging the packaging to set
      */
     public void setPackaging(String thePackaging) {
         this.packaging = thePackaging;
     }
 
     /**
-     * @param theType The type to set.
+     * @param theType the type to set
      */
     public void setType(String theType) {
         this.type = theType;

@@ -37,7 +37,12 @@ import java.lang.annotation.Target;
  *
  * <p>Example usage with a single parameter:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoParameters
+ * @see InjectMojo
+ * @see MojoTest
+ * @since 3.4.0
  * @Test
  * @InjectMojo(goal = "compile")
  * @MojoParameter(name = "source", value = "1.8")
@@ -46,7 +51,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
  * <p>Example usage with multiple parameters:</p>
  * <pre>
  * {@code
@@ -60,11 +64,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
- * @see MojoParameters
- * @see InjectMojo
- * @see MojoTest
- * @since 3.4.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(MojoParameters.class)

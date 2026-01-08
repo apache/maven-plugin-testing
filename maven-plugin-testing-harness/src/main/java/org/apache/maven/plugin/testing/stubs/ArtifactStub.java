@@ -63,44 +63,56 @@ public class ArtifactStub implements Artifact {
         return 0;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGroupId() {
         return groupId;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getArtifactId() {
         return artifactId;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
         return version;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setVersion(String version) {
         this.version = version;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getScope() {
         return scope;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getType() {
         return type;
     }
 
     /**
-     * Set a new type
+     * Set a new type.
      *
      * @param type
      */
@@ -108,32 +120,40 @@ public class ArtifactStub implements Artifact {
         this.type = type;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getClassifier() {
         return classifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasClassifier() {
         return classifier != null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public File getFile() {
         return file;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setFile(File file) {
         this.file = file;
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getBaseVersion()
      */
     @Override
@@ -152,7 +172,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getId()
      */
     @Override
@@ -161,7 +181,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>groupId:artifactId:type:classifier</code>.
+     * @return <code>groupId:artifactId:type:classifier</code>
      * @see org.apache.maven.artifact.Artifact#getDependencyConflictId()
      */
     @Override
@@ -187,7 +207,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getMetadataList()
      */
     @Override
@@ -195,13 +215,17 @@ public class ArtifactStub implements Artifact {
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setRepository(ArtifactRepository artifactRepository) {
         this.artifactRepository = artifactRepository;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArtifactRepository getRepository() {
         return artifactRepository;
@@ -218,7 +242,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getDownloadUrl()
      */
     @Override
@@ -237,7 +261,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getDependencyFilter()
      */
     @Override
@@ -256,7 +280,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getArtifactHandler()
      */
     @Override
@@ -265,7 +289,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getDependencyTrail()
      */
     @Override
@@ -283,14 +307,16 @@ public class ArtifactStub implements Artifact {
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setScope(String scope) {
         this.scope = scope;
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getVersionRange()
      */
     @Override
@@ -318,20 +344,24 @@ public class ArtifactStub implements Artifact {
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.Artifact#isSnapshot()
      */
     @Override
@@ -351,7 +381,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.Artifact#isResolved()
      */
     @Override
@@ -380,7 +410,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.Artifact#isRelease()
      */
     @Override
@@ -399,7 +429,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getAvailableVersions()
      */
     @Override
@@ -418,7 +448,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.Artifact#isOptional()
      */
     @Override
@@ -437,7 +467,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.Artifact#getSelectedVersion()
      */
     @Override
@@ -446,7 +476,7 @@ public class ArtifactStub implements Artifact {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.Artifact#isSelectedVersionKnown()
      */
     @Override

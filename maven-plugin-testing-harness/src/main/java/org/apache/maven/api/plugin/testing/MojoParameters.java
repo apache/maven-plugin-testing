@@ -35,20 +35,24 @@ import java.lang.annotation.Target;
  *
  * <p>Example of direct usage:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoParameter
+ * @see InjectMojo
+ * @see MojoTest
+ * @since 3.4.0
  * @Test
  * @InjectMojo(goal = "compile")
  * @MojoParameters({
- *     @MojoParameter(name = "source", value = "1.8"),
- *     @MojoParameter(name = "target", value = "1.8"),
- *     @MojoParameter(name = "debug", value = "true")
+ * @MojoParameter(name = "source", value = "1.8"),
+ * @MojoParameter(name = "target", value = "1.8"),
+ * @MojoParameter(name = "debug", value = "true")
  * })
  * void testCompilation(CompileMojo mojo) {
  *     mojo.execute();
  * }
  * }
  * </pre>
- *
  * <p>Equivalent usage with repeatable annotation:</p>
  * <pre>
  * {@code
@@ -62,11 +66,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
- * @see MojoParameter
- * @see InjectMojo
- * @see MojoTest
- * @since 3.4.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

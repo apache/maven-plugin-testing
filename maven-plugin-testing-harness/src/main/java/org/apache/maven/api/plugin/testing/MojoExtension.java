@@ -123,12 +123,18 @@ import static org.mockito.Mockito.spy;
  *
  * <p>Example usage in a test class:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoTest
+ * @see InjectMojo
+ * @see MojoParameter
+ * @see Basedir
+ * @since 3.4.0
  * @MojoTest
  * class MyMojoTest {
- *     @Test
- *     @InjectMojo(goal = "my-goal")
- *     @MojoParameter(name = "outputDirectory", value = "${project.build.directory}/generated")
+ * @Test
+ * @InjectMojo(goal = "my-goal")
+ * @MojoParameter(name = "outputDirectory", value = "${project.build.directory}/generated")
  *     void testMojoExecution(MyMojo mojo) throws Exception {
  *         mojo.execute();
  *         // verify execution results
@@ -136,18 +142,9 @@ import static org.mockito.Mockito.spy;
  * }
  * }
  * </pre>
- **
  * <p>For custom POM configurations, you can specify a POM file using the {@link InjectMojo#pom()}
  * attribute. The extension will merge this configuration with default test project settings.</p>
- *
  * <p><b>NOTE:</b> only plugin configuration is taken from provided POM, all other tags are ignored.</p>
- *
- *
- * @see MojoTest
- * @see InjectMojo
- * @see MojoParameter
- * @see Basedir
- * @since 3.4.0
  */
 public class MojoExtension extends PlexusExtension implements ParameterResolver {
 
@@ -308,7 +305,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * Default MojoExecution mock
+     * Default MojoExecution mock.
      *
      * @return a MojoExecution mock
      */
@@ -317,7 +314,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * Default MavenSession mock
+     * Default MavenSession mock.
      *
      * @return a MavenSession mock
      */
@@ -329,7 +326,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * Default MavenProject mock
+     * Default MavenProject mock.
      *
      * @return a MavenProject mock
      */
@@ -444,7 +441,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * lookup the mojo while we have all the relevent information
+     * Lookup the mojo while we have all the relevent information.
      */
     protected Mojo lookupMojo(
             ExtensionContext extensionContext,
@@ -536,7 +533,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * Create a MavenExecutionRequest if not already present in the MavenSession
+     * Create a MavenExecutionRequest if not already present in the MavenSession.
      */
     private void createMavenExecutionRequest(ExtensionContext context) throws ComponentLookupException {
         PlexusContainer container = getContainer(context);
@@ -738,7 +735,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
     }
 
     /**
-     * Convenience method to set values to variables in objects that don't have setters
+     * Convenience method to set values to variables in objects that don't have setters.
      */
     public static void setVariableValueToObject(Object object, String variable, Object value)
             throws IllegalAccessException {

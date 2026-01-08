@@ -80,11 +80,10 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
+ * @author jesse
  * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use this class but {@link MojoTest}
  * instead.
- *
- * @author jesse
  */
 @Deprecated
 public abstract class AbstractMojoTestCase extends PlexusTestCase {
@@ -253,7 +252,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Lookup the mojo leveraging the subproject pom
+     * Lookup the mojo leveraging the subproject pom.
      *
      * @param goal
      * @param pluginPom
@@ -265,7 +264,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Lookup an empty mojo
+     * Lookup an empty mojo.
      *
      * @param goal
      * @param pluginPom
@@ -277,7 +276,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Lookup the mojo leveraging the actual subprojects pom
+     * Lookup the mojo leveraging the actual subprojects pom.
      *
      * @param goal
      * @param pom
@@ -301,7 +300,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Lookup the mojo leveraging the actual subprojects pom
+     * Lookup the mojo leveraging the actual subprojects pom.
      *
      * @param goal
      * @param pom
@@ -332,7 +331,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
     */
     /**
-     * lookup the mojo while we have all of the relavent information
+     * Lookup the mojo while we have all of the relavent information.
      *
      * @param groupId
      * @param artifactId
@@ -366,10 +365,8 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     *
      * @param project
      * @param goal
-     * @return
      * @throws Exception
      * @since 2.0
      */
@@ -378,12 +375,10 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     *
      * @param session
      * @param execution
-     * @return
-     * @throws Exception
      * @throws ComponentConfigurationException
+     * @throws Exception
      * @since 2.0
      */
     protected <T extends Mojo> T lookupConfiguredMojo(MavenSession session, MojoExecution execution)
@@ -419,9 +414,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     *
      * @param project
-     * @return
      * @since 2.0
      */
     protected MavenSession newMavenSession(MavenProject project) {
@@ -435,9 +428,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     *
      * @param goal
-     * @return
      * @since 2.0
      */
     protected MojoExecution newMojoExecution(String goal) {
@@ -546,7 +537,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Configure the mojo
+     * Configure the mojo.
      *
      * @param mojo
      * @param artifactId
@@ -568,7 +559,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Configure the mojo with the given plexus configuration
+     * Configure the mojo with the given plexus configuration.
      *
      * @param mojo
      * @param pluginConfiguration
@@ -647,7 +638,7 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * Convenience method to set values to variables in objects that don't have setters
+     * Convenience method to set values to variables in objects that don't have setters.
      *
      * @param object
      * @param variable
@@ -663,13 +654,12 @@ public abstract class AbstractMojoTestCase extends PlexusTestCase {
     }
 
     /**
-     * sometimes the parent element might contain the correct value so generalize that access
+     * Sometimes the parent element might contain the correct value so generalize that access
      *
-     * TODO find out where this is probably done elsewhere
+     * TODO find out where this is probably done elsewhere.
      *
      * @param pluginPomDom
      * @param element
-     * @return
      * @throws Exception
      */
     private String resolveFromRootThenParent(Xpp3Dom pluginPomDom, String element) throws Exception {

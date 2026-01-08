@@ -19,31 +19,31 @@
 package org.apache.maven.plugin.testing;
 
 /**
- * ConfigurationException
+ * ConfigurationException.
  *
  * @author jesse
  */
 public class ConfigurationException extends Exception {
-    /** serialVersionUID */
+    /** SerialVersionUID. */
     static final long serialVersionUID = -6180939638742159065L;
 
     /**
-     * @param message The detailed message.
+     * @param message the detailed message
      */
     public ConfigurationException(String message) {
         super(message);
     }
 
     /**
-     * @param cause The detailed cause.
+     * @param cause the detailed cause
      */
     public ConfigurationException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message The detailed message.
-     * @param cause The detailed cause.
+     * @param message the detailed message
+     * @param cause the detailed cause
      */
     public ConfigurationException(String message, Throwable cause) {
         super(message, cause);

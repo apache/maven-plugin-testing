@@ -37,7 +37,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     private String baseDir = null;
 
     /**
-     * Default constructor
+     * Default constructor.
      *
      * @param dir the basedir
      */
@@ -46,7 +46,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return the <code>artifactId</code>.
+     * @return the <code>artifactId</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#pathOf(org.apache.maven.artifact.Artifact)
      */
     @Override
@@ -55,7 +55,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#pathOfRemoteRepositoryMetadata(org.apache.maven.artifact.metadata.ArtifactMetadata)
      */
     @Override
@@ -64,7 +64,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return the filename of this metadata on the local repository.
+     * @return the filename of this metadata on the local repository
      * @see org.apache.maven.artifact.repository.ArtifactRepository#pathOfLocalRepositoryMetadata(org.apache.maven.artifact.metadata.ArtifactMetadata, org.apache.maven.artifact.repository.ArtifactRepository)
      */
     @Override
@@ -73,7 +73,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getUrl()
      */
     @Override
@@ -82,7 +82,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>basedir</code>.
+     * @return <code>basedir</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getBasedir()
      */
     @Override
@@ -91,7 +91,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getProtocol()
      */
     @Override
@@ -100,7 +100,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getId()
      */
     @Override
@@ -109,7 +109,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getSnapshots()
      */
     @Override
@@ -118,7 +118,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getReleases()
      */
     @Override
@@ -127,7 +127,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getLayout()
      */
     @Override
@@ -136,7 +136,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>null</code>.
+     * @return <code>null</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#getKey()
      */
     @Override
@@ -145,7 +145,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#isUniqueVersion()
      */
     @Override
@@ -164,7 +164,7 @@ public class StubArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * @return <code>false</code>.
+     * @return <code>false</code>
      * @see org.apache.maven.artifact.repository.ArtifactRepository#isBlacklisted()
      */
     @Override

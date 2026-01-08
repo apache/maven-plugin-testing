@@ -59,7 +59,7 @@ public class ArtifactStubFactory {
     private ArchiverManager archiverManager;
 
     /**
-     * Default constructor. This should be used only if real files aren't needed...just the artifact objects
+     * Default constructor. This should be used only if real files aren't needed...just the artifact objects.
      */
     public ArtifactStubFactory() {
         this.workingDir = null;
@@ -67,7 +67,7 @@ public class ArtifactStubFactory {
     }
 
     /**
-     * This constructor is to be used if files are needed and to set a working dir
+     * This constructor is to be used if files are needed and to set a working dir.
      *
      * @param workingDir
      * @param createFiles
@@ -168,7 +168,7 @@ public class ArtifactStubFactory {
     /**
      * Creates a new empty file and attaches it to the artifact.
      *
-     * @param artifact to attach the file to.
+     * @param artifact to attach the file to
      * @param workingDir where to locate the new file
      * @throws IOException
      */
@@ -181,8 +181,8 @@ public class ArtifactStubFactory {
      * will be created.
      *
      * @param artifact to attach
-     * @param workingDir where to copy the srcFile.
-     * @param srcFile file to be attached.
+     * @param workingDir where to copy the srcFile
+     * @param srcFile file to be attached
      * @throws IOException
      */
     public void setArtifactFile(Artifact artifact, File workingDir, File srcFile) throws IOException {
@@ -193,7 +193,7 @@ public class ArtifactStubFactory {
      * Creates an unpackable file (zip,jar etc) containing an empty file.
      *
      * @param artifact to attach
-     * @param workingDir where to create the file.
+     * @param workingDir where to create the file
      * @throws IOException
      */
     public void setUnpackableArtifactFile(Artifact artifact, File workingDir) throws IOException {
@@ -205,7 +205,7 @@ public class ArtifactStubFactory {
      * created.
      *
      * @param artifact to attach
-     * @param workingDir where to create the file.
+     * @param workingDir where to create the file
      * @param srcFile
      * @throws IOException if any
      */
@@ -214,7 +214,7 @@ public class ArtifactStubFactory {
     }
 
     /**
-     * Creates a file that can be copied or unpacked based on the passed in artifact
+     * Creates a file that can be copied or unpacked based on the passed in artifact.
      *
      * @param artifact
      * @param workingDir
@@ -252,7 +252,6 @@ public class ArtifactStubFactory {
 
     /**
      * @param artifact
-     * @return
      */
     public static String getUnpackableFileName(Artifact artifact) {
         return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-"
@@ -262,9 +261,9 @@ public class ArtifactStubFactory {
     /**
      * @param artifact
      * @param destFile
-     * @throws NoSuchArchiverException
      * @throws ArchiverException if any
      * @throws IOException if any
+     * @throws NoSuchArchiverException
      */
     public void createUnpackableFile(Artifact artifact, File destFile)
             throws NoSuchArchiverException, ArchiverException, IOException {
@@ -413,49 +412,49 @@ public class ArtifactStubFactory {
     }
 
     /**
-     * @return Returns the createFiles.
+     * @return the createFiles
      */
     public boolean isCreateFiles() {
         return this.createFiles;
     }
 
     /**
-     * @param createFiles The createFiles to set.
+     * @param createFiles the createFiles to set
      */
     public void setCreateFiles(boolean createFiles) {
         this.createFiles = createFiles;
     }
 
     /**
-     * @return Returns the workingDir.
+     * @return the workingDir
      */
     public File getWorkingDir() {
         return this.workingDir;
     }
 
     /**
-     * @param workingDir The workingDir to set.
+     * @param workingDir the workingDir to set
      */
     public void setWorkingDir(File workingDir) {
         this.workingDir = workingDir;
     }
 
     /**
-     * @return Returns the srcFile.
+     * @return the srcFile
      */
     public File getSrcFile() {
         return this.srcFile;
     }
 
     /**
-     * @param srcFile The srcFile to set.
+     * @param srcFile the srcFile to set
      */
     public void setSrcFile(File srcFile) {
         this.srcFile = srcFile;
     }
 
     /**
-     * Convenience method to set values to variables in objects that don't have setters
+     * Convenience method to set values to variables in objects that don't have setters.
      *
      * @param object
      * @param variable
@@ -475,9 +474,9 @@ public class ArtifactStubFactory {
      * Builds the file name. If removeVersion is set, then the file name must be reconstructed from the artifactId,
      * Classifier (if used) and Type. Otherwise, this method returns the artifact file name.
      *
-     * @param artifact File to be formatted.
-     * @param removeVersion Specifies if the version should be removed from the file name.
-     * @return Formatted file name in the format artifactId-[version]-[classifier].[type]
+     * @param artifact file to be formatted
+     * @param removeVersion specifies if the version should be removed from the file name
+     * @return formatted file name in the format artifactId-[version]-[classifier].[type]
      */
     public static String getFormattedFileName(Artifact artifact, boolean removeVersion) {
         String destFileName = null;

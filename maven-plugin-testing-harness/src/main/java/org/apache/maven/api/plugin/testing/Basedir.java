@@ -28,14 +28,18 @@ import java.lang.annotation.Target;
  * Specifies the base directory for test resources in Maven plugin tests.
  * This annotation can be applied to test methods, or test class, to define where test resources are located.
  *
- ** <p>Example usage:</p>
+ * * <p>Example usage:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoTest
+ * @see MojoExtension
+ * @since 3.4.0
  * @MojoTest
  * class MyMojoTest {
- *     @Test
- *     @Basedir("src/test/resources/specific-test-case")
- *     @InjectMojo(goal = "compile")
+ * @Test
+ * @Basedir("src/test/resources/specific-test-case")
+ * @InjectMojo(goal = "compile")
  *     void testSpecificCase(MyMojo mojo) {
  *         // Test resources will be loaded from src/test/resources/specific-test-case
  *         mojo.execute();
@@ -43,10 +47,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
- * @see MojoTest
- * @see MojoExtension
- * @since 3.4.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

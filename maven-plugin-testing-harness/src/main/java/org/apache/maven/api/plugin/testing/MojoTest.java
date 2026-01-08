@@ -39,30 +39,33 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * <p>Example usage:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoExtension
+ * @see InjectMojo
+ * @see MojoParameter
+ * @see Provides
+ * @since 4.0.0
  * @MojoTest
  * class MyMojoTest {
- *     @Inject
+ * @Inject
  *     private SomeComponent component;
- *
- *     @Test
- *     @InjectMojo(goal = "my-goal")
- *     @MojoParameter(name = "parameter", value = "value")
+ * @Test
+ * @InjectMojo(goal = "my-goal")
+ * @MojoParameter(name = "parameter", value = "value")
  *     void testMojoExecution(MyMojo mojo) {
  *         // mojo is instantiated with the specified parameters
  *         // component is automatically injected
  *         mojo.execute();
  *         // verify execution results
  *     }
- *
- *     @Provides
+ * @Provides
  *     SomeComponent provideMockedComponent() {
  *         return mock(SomeComponent.class);
  *     }
  * }
  * }
  * </pre>
- *
  * <p>The annotation supports:</p>
  * <ul>
  *   <li>Automatic Mojo instantiation and configuration</li>
@@ -72,13 +75,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *   <li>Custom POM configuration via {@link InjectMojo#pom()}</li>
  *   <li>Base directory configuration for test resources via {@link Basedir}</li>
  * </ul>
- *
- *
- * @see MojoExtension
- * @see InjectMojo
- * @see MojoParameter
- * @see Provides
- * @since 4.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MojoExtension.class)

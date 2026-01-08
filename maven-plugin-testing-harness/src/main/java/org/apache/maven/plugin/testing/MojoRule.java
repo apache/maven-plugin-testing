@@ -53,12 +53,11 @@ import org.junit.runners.model.Statement;
  * exhibited as {@code public} in the rule. You may annotate single tests methods with
  * {@link WithoutMojo} to prevent the rule from firing.
  *
+ * @author Mirko Friedenhagen
+ * @since 2.2
  * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use rules but extensions {@link MojoExtension}
  * instead.
- *
- * @author Mirko Friedenhagen
- * @since 2.2
  */
 @Deprecated
 public class MojoRule implements TestRule {
@@ -110,7 +109,7 @@ public class MojoRule implements TestRule {
     }
 
     /**
-     * Lookup the mojo leveraging the subproject pom
+     * Lookup the mojo leveraging the subproject pom.
      *
      * @param goal
      * @param pluginPom
@@ -122,7 +121,7 @@ public class MojoRule implements TestRule {
     }
 
     /**
-     * Lookup an empty mojo
+     * Lookup an empty mojo.
      *
      * @param goal
      * @param pluginPom
@@ -134,7 +133,7 @@ public class MojoRule implements TestRule {
     }
 
     /**
-     * Lookup the mojo leveraging the actual subprojects pom
+     * Lookup the mojo leveraging the actual subprojects pom.
      *
      * @param goal
      * @param pom
@@ -146,7 +145,7 @@ public class MojoRule implements TestRule {
     }
 
     /**
-     * Lookup the mojo leveraging the actual subprojects pom
+     * Lookup the mojo leveraging the actual subprojects pom.
      *
      * @param goal
      * @param pom
@@ -237,7 +236,7 @@ public class MojoRule implements TestRule {
     }
 
     /**
-     * Convenience method to set values to variables in objects that don't have setters
+     * Convenience method to set values to variables in objects that don't have setters.
      *
      * @param object
      * @param variable

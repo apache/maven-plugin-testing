@@ -34,7 +34,9 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
  */
 @Deprecated
 public class ResolverExpressionEvaluatorStub implements ExpressionEvaluator {
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object evaluate(String expr) throws ExpressionEvaluationException {
 
@@ -102,7 +104,9 @@ public class ResolverExpressionEvaluatorStub implements ExpressionEvaluator {
         return expr;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public File alignToBaseDirectory(File file) {
         if (file.getAbsolutePath().startsWith(PlexusTestCase.getBasedir())) {

@@ -35,11 +35,10 @@ import org.junit.runner.Description;
 /**
  * Junit4 test {@link Rule} to extract and assert test resources.
  *
+ * @since 3.1.0
  * @deprecated As of version 3.4.0, it is advised to work with JUnit5 tests which do not
  * use rules but extensions {@link MojoExtension}
  * instead.
- *
- * @since 3.1.0
  */
 @Deprecated
 public class TestResources extends TestWatcher {
@@ -73,7 +72,7 @@ public class TestResources extends TestWatcher {
      * and test project name, which allows the same test project can be used by multiple tests and by different
      * instances of the same parametrized tests.
      * <p>
-     * TODO Provide alternative working directory naming for Windows, which still limits path names to ~250 charecters
+     * TODO Provide alternative working directory naming for Windows, which still limits path names to ~250 charecters.
      */
     public File getBasedir(String project) throws IOException {
         if (name == null) {

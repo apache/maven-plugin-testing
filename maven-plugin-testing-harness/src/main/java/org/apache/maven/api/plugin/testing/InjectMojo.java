@@ -35,7 +35,12 @@ import java.lang.annotation.Target;
  *
  * <p>Example usage on a test method:</p>
  * <pre>
- * {@code
+ * {@code.
+ *
+ * @see MojoTest
+ * @see MojoParameter
+ * @see MojoExtension
+ * @since 3.4.0
  * @Test
  * @InjectMojo(goal = "compile")
  * void testCompileMojo(CompileMojo mojo) {
@@ -44,7 +49,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
  * <p>Example usage with a custom POM:</p>
  * <pre>
  * {@code
@@ -59,7 +63,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
  * <p>The annotation can be used in conjunction with {@link MojoParameter} to provide
  * specific parameter values for the Mojo:</p>
  * <pre>
@@ -74,11 +77,6 @@ import java.lang.annotation.Target;
  * }
  * }
  * </pre>
- *
- * @see MojoTest
- * @see MojoParameter
- * @see MojoExtension
- * @since 3.4.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

@@ -160,7 +160,7 @@ public class MavenProjectStub extends MavenProject {
     private Build build;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public MavenProjectStub() {
         this(new Model());
@@ -178,7 +178,7 @@ public class MavenProjectStub extends MavenProject {
      * Loads the model for this stub from the specified POM. For convenience, any checked exception caused by I/O or
      * parser errors will be wrapped into an unchecked exception.
      *
-     * @param pomFile The path to the POM file to load, must not be <code>null</code>. If this path is relative, it
+     * @param pomFile the path to the POM file to load, must not be <code>null</code>. If this path is relative, it
      *            is resolved against the return value of {@link #getBasedir()}.
      */
     protected void readModel(File pomFile) {
@@ -195,7 +195,7 @@ public class MavenProjectStub extends MavenProject {
     }
 
     /**
-     * No project model is associated
+     * No project model is associated.
      *
      * @param project the given project
      */
@@ -213,31 +213,41 @@ public class MavenProjectStub extends MavenProject {
         return "";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Artifact getArtifact() {
         return artifact;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setArtifact(Artifact artifact) {
         this.artifact = artifact;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Model getModel() {
         return model;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MavenProject getParent() {
         return parent;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setParent(MavenProject mavenProject) {
         this.parent = mavenProject;
@@ -263,7 +273,9 @@ public class MavenProjectStub extends MavenProject {
         return Collections.<ArtifactRepository>emptyList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasParent() {
         if (parent != null) {
@@ -273,19 +285,25 @@ public class MavenProjectStub extends MavenProject {
         return false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public File getFile() {
         return file;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setFile(File file) {
         this.file = file;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public File getBasedir() {
         return new File(PlexusExtension.getBasedir());
@@ -321,7 +339,9 @@ public class MavenProjectStub extends MavenProject {
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addCompileSourceRoot(String string) {
         if (compileSourceRoots == null) {
@@ -331,7 +351,9 @@ public class MavenProjectStub extends MavenProject {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addScriptSourceRoot(String string) {
         if (scriptSourceRoots == null) {
@@ -341,7 +363,9 @@ public class MavenProjectStub extends MavenProject {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addTestCompileSourceRoot(String string) {
         if (testCompileSourceRoots == null) {
@@ -351,25 +375,33 @@ public class MavenProjectStub extends MavenProject {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getCompileSourceRoots() {
         return compileSourceRoots;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getScriptSourceRoots() {
         return scriptSourceRoots;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getTestCompileSourceRoots() {
         return testCompileSourceRoots;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getCompileClasspathElements() throws DependencyResolutionRequiredException {
         return compileSourceRoots;
@@ -382,61 +414,81 @@ public class MavenProjectStub extends MavenProject {
         this.compileArtifacts = compileArtifacts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Artifact> getCompileArtifacts() {
         return compileArtifacts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Dependency> getCompileDependencies() {
         return compileDependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
         return testClasspathElements;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Artifact> getTestArtifacts() {
         return testArtifacts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Dependency> getTestDependencies() {
         return testDependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getRuntimeClasspathElements() throws DependencyResolutionRequiredException {
         return runtimeClasspathElements;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Artifact> getRuntimeArtifacts() {
         return runtimeArtifacts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Dependency> getRuntimeDependencies() {
         return runtimeDependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getSystemClasspathElements() throws DependencyResolutionRequiredException {
         return systemClasspathElements;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Artifact> getSystemArtifacts() {
         return systemArtifacts;
@@ -594,19 +646,25 @@ public class MavenProjectStub extends MavenProject {
         this.model = model;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Dependency> getSystemDependencies() {
         return systemDependencies;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setModelVersion(String string) {
         this.modelVersion = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getModelVersion() {
         return modelVersion;
@@ -622,85 +680,113 @@ public class MavenProjectStub extends MavenProject {
         return "";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setGroupId(String string) {
         this.groupId = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGroupId() {
         return groupId;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setArtifactId(String string) {
         this.artifactId = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getArtifactId() {
         return artifactId;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setName(String string) {
         this.name = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return name;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setVersion(String string) {
         this.version = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
         return version;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPackaging() {
         return packaging;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPackaging(String string) {
         this.packaging = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setInceptionYear(String string) {
         this.inceptionYear = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getInceptionYear() {
         return inceptionYear;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setUrl(String string) {
         this.url = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getUrl() {
         return url;
@@ -776,13 +862,17 @@ public class MavenProjectStub extends MavenProject {
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDescription(String string) {
         this.description = string;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
         return description;
@@ -918,13 +1008,17 @@ public class MavenProjectStub extends MavenProject {
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setBuild(Build build) {
         this.build = build;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Build getBuild() {
         return build;
@@ -990,13 +1084,17 @@ public class MavenProjectStub extends MavenProject {
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setLicenses(List<License> licenses) {
         this.licenses = licenses;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<License> getLicenses() {
         return licenses;
@@ -1218,25 +1316,33 @@ public class MavenProjectStub extends MavenProject {
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MavenProject> getCollectedProjects() {
         return collectedProjects;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCollectedProjects(List<MavenProject> list) {
         this.collectedProjects = list;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPluginArtifactRepositories(List<ArtifactRepository> list) {
         this.pluginArtifactRepositories = list;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ArtifactRepository> getPluginArtifactRepositories() {
         return pluginArtifactRepositories;
@@ -1262,19 +1368,25 @@ public class MavenProjectStub extends MavenProject {
         return Collections.<Repository>emptyList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setActiveProfiles(List<Profile> list) {
         activeProfiles = list;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Profile> getActiveProfiles() {
         return activeProfiles;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addAttachedArtifact(Artifact artifact) {
         if (attachedArtifacts == null) {
@@ -1284,7 +1396,9 @@ public class MavenProjectStub extends MavenProject {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Artifact> getAttachedArtifacts() {
         return attachedArtifacts;
@@ -1350,37 +1464,49 @@ public class MavenProjectStub extends MavenProject {
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Artifact> getDependencyArtifacts() {
         return dependencyArtifacts;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDependencyArtifacts(Set<Artifact> set) {
         this.dependencyArtifacts = set;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setReleaseArtifactRepository(ArtifactRepository artifactRepository) {
         this.releaseArtifactRepository = artifactRepository;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSnapshotArtifactRepository(ArtifactRepository artifactRepository) {
         this.snapshotArtifactRepository = artifactRepository;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setOriginalModel(Model model) {
         this.originalModel = model;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Model getOriginalModel() {
         return originalModel;
@@ -1457,19 +1583,25 @@ public class MavenProjectStub extends MavenProject {
         return Collections.<String, MavenProject>emptyMap();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isExecutionRoot() {
         return executionRoot;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setExecutionRoot(boolean b) {
         this.executionRoot = b;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDefaultGoal() {
         return defaultGoal;
