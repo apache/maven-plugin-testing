@@ -37,7 +37,7 @@ public class MyMojo extends AbstractMojo {
 To test a Mojo in a multiproject area, you need to define several stubs, i.e. for the main test project and its modules.
 
 
-### Configure Mian project and create Stubs for the sub projects
+### Configure main project and create Stubs for the subprojects
 
 ```java
 import org.apache.maven.api.plugin.testing.MojoTest;

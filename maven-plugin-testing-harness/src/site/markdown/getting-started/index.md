@@ -112,7 +112,7 @@ class MyMojoTest {
 ```
 
 
-**Note**: By convention, projects for unit testing your should be in the test resources directory.
+**Note**: By convention, projects for unit testing should be in the test resources directory.
 
 #### Configuring `project-to-test` POM
 
