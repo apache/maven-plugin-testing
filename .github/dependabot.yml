@@ -17,6 +17,12 @@
 version: 2
 updates:
 
+  # Alos update the GitHub Actions workflows on deffault branch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
