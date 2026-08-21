@@ -48,14 +48,17 @@ under the License.
     <tag>master</tag>
     <url>https://github.com/apache/maven-plugin-testing/tree/${project.scm.tag}</url>
   </scm>
+
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/apache/maven-plugin-testing/issues</url>
   </issueManagement>
+
   <ciManagement>
     <system>Jenkins</system>
     <url>https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/</url>
   </ciManagement>
+
   <distributionManagement>
     <site>
       <id>apache.website</id>
