@@ -34,3 +34,7 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "maven-plugin-testing-3.x"
+    ignore:
+      # Mockito 5 requires Java 11; the build still runs on JDK 8
+      - dependency-name: "org.mockito:*"
+        versions: [">= 5.0.0"]
