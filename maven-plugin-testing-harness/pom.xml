@@ -32,7 +32,7 @@ under the License.
 
   <properties>
     <mavenVersion>3.10.0</mavenVersion>
-    <resloverVersion>1.9.27</resloverVersion>
+    <resloverVersion>2.0.24</resloverVersion>
   </properties>
 
   <dependencies>
@@ -108,7 +108,7 @@ under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-transport-http</artifactId>
+      <artifactId>maven-resolver-transport-apache</artifactId>
       <version>${resloverVersion}</version>
       <scope>test</scope>
     </dependency>
