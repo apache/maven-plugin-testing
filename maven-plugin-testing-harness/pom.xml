@@ -31,8 +31,8 @@ under the License.
   <description>The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojo.</description>
 
   <properties>
-    <mavenVersion>3.9.16</mavenVersion>
-    <resloverVersion>1.9.27</resloverVersion>
+    <mavenVersion>3.10.0</mavenVersion>
+    <resloverVersion>2.0.24</resloverVersion>
   </properties>
 
   <dependencies>
@@ -108,7 +108,7 @@ under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-transport-http</artifactId>
+      <artifactId>maven-resolver-transport-apache</artifactId>
       <version>${resloverVersion}</version>
       <scope>test</scope>
     </dependency>
