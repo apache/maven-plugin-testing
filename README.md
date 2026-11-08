@@ -21,8 +21,8 @@ Contributing to [Apache Maven Plugin Testing](https://maven.apache.org/plugin-te
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven.plugin-testing/maven-plugin-testing-harness?filter=3.*&label=Maven%20Central
 )](https://search.maven.org/artifact/org.apache.maven.plugin-testing/maven-plugin-testing)
 [![Reproducible Builds](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jvm-repo-rebuild/reproducible-central/master/content/org/apache/maven/plugin-testing/maven-plugin-testing/badge.json)](https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org/apache/maven/plugin-testing/maven-plugin-testing/README.md)
-[![Jenkins Status](https://img.shields.io/jenkins/s/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/maven-plugin-testing-3.x.svg)][build]
-[![Jenkins tests](https://img.shields.io/jenkins/t/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/maven-plugin-testing-3.x.svg)][test-results]
+[![Jenkins Status](https://img.shields.io/jenkins/s/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/master.svg)][build]
+[![Jenkins tests](https://img.shields.io/jenkins/t/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/master.svg)][test-results]
 
 You have found a bug or you have an idea for a cool new feature? Contributing
 code is a great way to give something back to the open source community. Before
@@ -87,5 +87,5 @@ Additional Resources
 [ml-list]: https://maven.apache.org/mailing-lists.html
 [code-style]: https://maven.apache.org/developers/conventions/code.html
 [cla]: https://www.apache.org/licenses/#clas
-[test-results]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/maven-plugin-testing-3.x/lastCompletedBuild/testReport/
-[build]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/maven-plugin-testing-3.x/
+[test-results]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/master/lastCompletedBuild/testReport/
+[build]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-plugin-testing/job/master/

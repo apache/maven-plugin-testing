@@ -19,7 +19,7 @@ name: PR Automation
 on:
   push:
     branches:
-      - maven-plugin-testing-3.x
+      - master
 
 jobs:
   pr-automation:
