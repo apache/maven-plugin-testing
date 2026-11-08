@@ -72,6 +72,14 @@ under the License.
           <editable>true</editable>
           <description></description>
         </parameter>
+        <parameter>
+          <name>withAlias</name>
+          <alias>aliased</alias>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
       </parameters>
       <configuration>
         <withDefault implementation="java.lang.String" default-value="default"/>

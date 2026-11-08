@@ -52,6 +52,8 @@ public class ParametersMojoTest {
 
     private static final String PROPERTY_POM_DIR = "src/test/projects/property/";
 
+    private static final String ALIAS_POM_DIR = "src/test/projects/alias/";
+
     @Inject
     private Log log;
 
@@ -73,6 +75,12 @@ public class ParametersMojoTest {
         assertEquals("explicitWithPropertyAndDefaultValue", mojo.getWithPropertyAndDefault());
 
         assertDoesNotThrow(mojo::execute);
+    }
+
+    @Test
+    @InjectMojo(goal = "test:test-plugin:0.0.1-SNAPSHOT:parameters", pom = ALIAS_POM_DIR + POM_DOT_XML_FILE)
+    void testAliasPom(ParametersMojo mojo) {
+        assertEquals("aliasValue", mojo.getWithAlias());
     }
 
     @Test

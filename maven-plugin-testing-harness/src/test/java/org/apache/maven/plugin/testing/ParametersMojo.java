@@ -30,6 +30,8 @@ public class ParametersMojo extends AbstractMojo {
 
     private String withPropertyAndDefault;
 
+    private String withAlias;
+
     @Override
     public void execute() {
         getLog().info("Plain value = " + plain);
@@ -65,5 +67,13 @@ public class ParametersMojo extends AbstractMojo {
 
     public void setWithPropertyAndDefault(String withPropertyAndDefault) {
         this.withPropertyAndDefault = withPropertyAndDefault;
+    }
+
+    public String getWithAlias() {
+        return withAlias;
+    }
+
+    public void setWithAlias(String withAlias) {
+        this.withAlias = withAlias;
     }
 }
