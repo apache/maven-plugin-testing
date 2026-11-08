@@ -632,8 +632,12 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
             Xpp3Dom defaultConfiguration = MojoDescriptorCreator.convert(mojoDescriptor);
             for (Parameter parameter : mojoDescriptor.getParameters()) {
                 Xpp3Dom parameterConfiguration = config.getChild(parameter.getName());
-                if (parameterConfiguration == null) {
-                    parameterConfiguration = config.getChild(parameter.getAlias());
+                if (parameterConfiguration == null && parameter.getAlias() != null) {
+                    Xpp3Dom aliased = config.getChild(parameter.getAlias());
+                    if (aliased != null) {
+                        // configure the field under its name, as Maven does
+                        parameterConfiguration = new Xpp3Dom(aliased, parameter.getName());
+                    }
                 }
                 Xpp3Dom parameterDefaults = defaultConfiguration.getChild(parameter.getName());
                 parameterConfiguration = Xpp3Dom.mergeXpp3Dom(parameterConfiguration, parameterDefaults, Boolean.TRUE);
