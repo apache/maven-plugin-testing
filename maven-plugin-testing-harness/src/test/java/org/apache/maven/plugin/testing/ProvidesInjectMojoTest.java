@@ -21,6 +21,7 @@ package org.apache.maven.plugin.testing;
 import javax.inject.Inject;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoExtension;
@@ -82,5 +83,17 @@ public class ProvidesInjectMojoTest {
         assertFalse(mojo.getProject().getTestCompileSourceRoots().isEmpty());
         assertFalse(mojo.getProject().getResources().isEmpty());
         assertFalse(mojo.getProject().getTestResources().isEmpty());
+    }
+
+    @Test
+    @InjectMojo(pom = POM, goal = "test:test-plugin:0.0.1-SNAPSHOT:provides")
+    public void resourceDirectoriesShouldBeProvided(ProvidesInjectMojo mojo) {
+        String basedir = MojoExtension.getBasedir();
+        assertEquals(
+                Paths.get(basedir, "src", "main", "resources").toString(),
+                mojo.getProject().getBuild().getResources().get(0).getDirectory());
+        assertEquals(
+                Paths.get(basedir, "src", "test", "resources").toString(),
+                mojo.getProject().getBuild().getTestResources().get(0).getDirectory());
     }
 }
