@@ -355,7 +355,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         Resource testResource = spy(new Resource());
         testResource.setDirectory(
                 Paths.get(getBasedir(), "src", "test", "resources").toString());
-        build.setTestResources(Arrays.asList(resource));
+        build.setTestResources(Arrays.asList(testResource));
 
         mavenProject.setBuild(build);
         mavenProject.addCompileSourceRoot(build.getSourceDirectory());
