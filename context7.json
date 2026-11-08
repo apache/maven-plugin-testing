@@ -1,0 +1,13 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Apache Maven Plugin Testing Harness",
+  "description": "JUnit 5 extension for unit testing Maven 3 plugins: injects a configured mojo, a mocked MavenProject and MavenSession into the test.",
+  "branch": "maven-plugin-testing-3.x",
+  "folders": ["maven-plugin-testing-harness/src/site/markdown"],
+  "rules": [
+    "Annotate the test class with @MojoTest and receive the mojo as a test method parameter annotated with @InjectMojo(goal = ..., pom = ...).",
+    "AbstractMojoTestCase and MojoRule are deprecated JUnit 3 and 4 APIs; do not use them in new tests.",
+    "@InjectMojo applies only the plugin's <configuration> from the POM; the injected MavenProject is a Mockito spy, so stub any other project state the mojo reads.",
+    "Set single parameters with @MojoParameter(name = ..., value = ...) and the project directory with @Basedir."
+  ]
+}
