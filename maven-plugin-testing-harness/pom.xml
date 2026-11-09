@@ -32,7 +32,7 @@ under the License.
 
   <properties>
     <mavenVersion>3.10.0</mavenVersion>
-    <resloverVersion>2.0.24</resloverVersion>
+    <resloverVersion>2.0.25</resloverVersion>
   </properties>
 
   <dependencies>
