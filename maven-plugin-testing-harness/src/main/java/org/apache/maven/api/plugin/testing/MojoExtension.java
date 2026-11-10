@@ -21,6 +21,7 @@ package org.apache.maven.api.plugin.testing;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.AccessibleObject;
@@ -28,6 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,8 +88,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.testing.PlexusExtension;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.ReflectionUtils;
-import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.eclipse.aether.RepositorySystemSession;
@@ -270,7 +270,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
         try (InputStream is = Objects.requireNonNull(
                         classLoader.getResourceAsStream(getPluginDescriptorLocation()),
                         "Unable to find plugin descriptor: " + getPluginDescriptorLocation());
-                Reader reader = new BufferedReader(new XmlStreamReader(is));
+                Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                 InterpolationFilterReader interpolationReader = new InterpolationFilterReader(reader, map, "${", "}")) {
 
             PluginDescriptor pluginDescriptor = new PluginDescriptorBuilder().build(interpolationReader);
@@ -409,7 +409,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
 
         if (pomDom == null) {
             if (pomPath != null && Files.exists(pomPath)) {
-                pomDom = Xpp3DomBuilder.build(new XmlStreamReader(pomPath.toFile()));
+                pomDom = Xpp3DomBuilder.build(Files.newBufferedReader(pomPath, StandardCharsets.UTF_8));
             } else {
                 pomDom = new Xpp3Dom("");
             }
@@ -686,7 +686,10 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     @SuppressWarnings("unchecked")
     public static <T> T getVariableValueFromObject(Object object, String variable) throws IllegalAccessException {
-        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
+        Field field = getFieldByNameIncludingSuperclasses(variable, object.getClass());
+        Objects.requireNonNull(
+                field,
+                "Field " + variable + " not found in " + object.getClass().getName());
         field.setAccessible(true);
         return (T) field.get(object);
     }
@@ -749,10 +752,27 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     public static void setVariableValueToObject(Object object, String variable, Object value)
             throws IllegalAccessException {
-        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
-        Objects.requireNonNull(field, "Field " + variable + " not found");
+        Field field = getFieldByNameIncludingSuperclasses(variable, object.getClass());
+        Objects.requireNonNull(
+                field,
+                "Field " + variable + " not found in " + object.getClass().getName());
         field.setAccessible(true);
         field.set(object, value);
+    }
+
+    /**
+     * Traverses the class hierarchy from {@code clazz} upward and returns the first
+     * declared field matching {@code name}, or {@code null} if none is found.
+     */
+    private static Field getFieldByNameIncludingSuperclasses(String name, Class<?> clazz) {
+        for (Class<?> type = clazz; type != null && type != Object.class; type = type.getSuperclass()) {
+            try {
+                return type.getDeclaredField(name);
+            } catch (NoSuchFieldException ignored) {
+                // continue
+            }
+        }
+        return null;
     }
 
     private static class WrapEvaluator implements TypeAwareExpressionEvaluator {
