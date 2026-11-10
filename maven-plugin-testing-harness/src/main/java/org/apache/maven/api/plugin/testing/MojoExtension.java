@@ -88,6 +88,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.testing.PlexusExtension;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.eclipse.aether.RepositorySystemSession;
@@ -686,7 +687,7 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     @SuppressWarnings("unchecked")
     public static <T> T getVariableValueFromObject(Object object, String variable) throws IllegalAccessException {
-        Field field = getFieldByNameIncludingSuperclasses(variable, object.getClass());
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
         Objects.requireNonNull(
                 field,
                 "Field " + variable + " not found in " + object.getClass().getName());
@@ -752,27 +753,12 @@ public class MojoExtension extends PlexusExtension implements ParameterResolver 
      */
     public static void setVariableValueToObject(Object object, String variable, Object value)
             throws IllegalAccessException {
-        Field field = getFieldByNameIncludingSuperclasses(variable, object.getClass());
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
         Objects.requireNonNull(
                 field,
                 "Field " + variable + " not found in " + object.getClass().getName());
         field.setAccessible(true);
         field.set(object, value);
-    }
-
-    /**
-     * Traverses the class hierarchy from {@code clazz} upward and returns the first
-     * declared field matching {@code name}, or {@code null} if none is found.
-     */
-    private static Field getFieldByNameIncludingSuperclasses(String name, Class<?> clazz) {
-        for (Class<?> type = clazz; type != null && type != Object.class; type = type.getSuperclass()) {
-            try {
-                return type.getDeclaredField(name);
-            } catch (NoSuchFieldException ignored) {
-                // continue
-            }
-        }
-        return null;
     }
 
     private static class WrapEvaluator implements TypeAwareExpressionEvaluator {
